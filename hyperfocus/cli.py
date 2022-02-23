@@ -5,12 +5,12 @@ import typer
 
 from hyperfocus import __app_name__, __version__, app, config, printer
 from hyperfocus.models import Status
-from hyperfocus.services import DailyTrackerService, AppService
+from hyperfocus.services import AppService, DailyTrackerService
 
-app = app.HyperfocusTyper()
+hyperfocus_app = app.HyperfocusTyper()
 
 
-@app.command()
+@hyperfocus_app.command()
 def init(
     db_path: str = typer.Option(
         config.DEFAULT.db_path,
@@ -21,7 +21,7 @@ def init(
     AppService.initialize(db_path=Path(db_path))
 
 
-@app.command()
+@hyperfocus_app.command()
 def add():
     daily_tracker = DailyTrackerService()
     title = typer.prompt(printer.prompt("Task title"), type=str)
@@ -39,28 +39,28 @@ def _update_task(id: int, prompt_text: str, status: Status) -> None:
     daily_tracker.update_task(id=id, status=status)
 
 
-@app.command()
-def delete(id: Optional[int] = typer.Argument(None)):
+@hyperfocus_app.command()
+def delete(id: int = typer.Argument(None)):
     _update_task(id=id, prompt_text="Delete task", status=Status.DELETED)
 
 
-@app.command()
-def done(id: Optional[int] = typer.Argument(None)):
+@hyperfocus_app.command()
+def done(id: int = typer.Argument(None)):
     _update_task(id=id, prompt_text="Mark task as done", status=Status.DONE)
 
 
-@app.command()
-def reset(id: Optional[int] = typer.Argument(None)):
+@hyperfocus_app.command()
+def reset(id: int = typer.Argument(None)):
     _update_task(id=id, prompt_text="Reset task", status=Status.TODO)
 
 
-@app.command()
-def block(id: Optional[int] = typer.Argument(None)):
+@hyperfocus_app.command()
+def block(id: int = typer.Argument(None)):
     _update_task(id=id, prompt_text="Black task", status=Status.BLOCKED)
 
 
-@app.command()
-def show(id: Optional[int] = typer.Argument(None)):
+@hyperfocus_app.command()
+def show(id: int = typer.Argument(None)):
     daily_tracker = DailyTrackerService()
     if not id:
         daily_tracker.show_tasks(newline=True)
@@ -75,7 +75,7 @@ def _version_callback(value: bool):
     raise typer.Exit()
 
 
-@app.callback(invoke_without_command=True, help="Show daily tasks.")
+@hyperfocus_app.callback(invoke_without_command=True, help="Show daily tasks.")
 def main(
     ctx: typer.Context,
     version: Optional[bool] = typer.Option(

@@ -5,13 +5,13 @@ from typing import Callable, List
 
 from peewee import (
     AutoField,
-    TextField,
-    IntegerField,
     DateField,
     DateTimeField,
     ForeignKeyField,
+    IntegerField,
     Model,
     OperationalError,
+    TextField,
 )
 
 from hyperfocus.database import database

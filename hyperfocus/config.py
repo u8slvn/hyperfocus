@@ -5,7 +5,7 @@ from pathlib import Path
 import typer
 
 from hyperfocus import __app_name__
-from hyperfocus.exceptions import ConfigError, ConfigDoesNotExistError
+from hyperfocus.exceptions import ConfigDoesNotExistError, ConfigError
 
 DIR_PATH = Path(typer.get_app_dir(__app_name__))
 FILE_PATH = DIR_PATH / "config.ini"
@@ -19,7 +19,7 @@ def init(db_path: Path):
         raise ConfigError("Configuration folder creation failed")
     config_parser = configparser.ConfigParser()
     config_parser["main"] = {
-        "db_path": db_path,
+        "db_path": str(db_path),
     }
     try:
         with FILE_PATH.open("w") as file:

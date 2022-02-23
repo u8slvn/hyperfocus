@@ -90,8 +90,8 @@ def test_pretty_tasks():
         "  #  tasks\n"
         "---  --------\n"
         "  1  \x1b[37m⬢\x1b[0m Test\x1b[0m ⊕\n"
-        "  2  \x1b[31m⬢\x1b[0m Test\x1b[0m ◌\n"
-        "  3  \x1b[32m⬢\x1b[0m Test\x1b[0m ◌ "
+        "  2  \x1b[31m⬢\x1b[0m \x1b[90mTest\x1b[0m ◌\n"
+        "  3  \x1b[32m⬢\x1b[0m \x1b[9mTest\x1b[0m ◌ "
     )
     assert expected == pretty_tasks
 

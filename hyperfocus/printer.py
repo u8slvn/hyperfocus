@@ -28,11 +28,11 @@ def task(task: Task, show_details: bool = False, show_prefix: bool = False) -> s
     empty_details = "No details provided ..."
 
     title_style = {
-        Status.DELETED.value: {"fg": typer.colors.BRIGHT_BLACK},
-        Status.DONE.value: {"strikethrough": True},
-    }.get(task.status, {})
+        Status.DELETED: {"fg": typer.colors.BRIGHT_BLACK},
+        Status.DONE: {"strikethrough": True},
+    }.get(Status(task.status), {})
 
-    title = typer.style(task.title, **title_style)
+    title = typer.style(task.title, **title_style)  # type: ignore
     details = "⊕" if task.details else "◌"
     prefix = f"Task #{task.id} " if show_prefix else ""
 
@@ -47,9 +47,9 @@ def task(task: Task, show_details: bool = False, show_prefix: bool = False) -> s
 def tasks(tasks: List[Task], newline: bool = False) -> str:
     headers = ["#", "tasks"]
     suffix = "\n" if newline else ""
-    tasks = [[t.id, task(t)] for t in tasks]
+    lines = [[t.id, task(t)] for t in tasks]
 
-    return f"{tabulate(tasks, headers)} {suffix}"
+    return f"{tabulate(lines, headers)} {suffix}"
 
 
 def prompt(text: str) -> str:

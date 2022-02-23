@@ -6,7 +6,7 @@ import typer
 
 from hyperfocus import config, printer
 from hyperfocus.database import database
-from hyperfocus.models import DailyTracker, Status, Task, MODELS
+from hyperfocus.models import MODELS, DailyTracker, Status, Task
 
 
 class AppService:

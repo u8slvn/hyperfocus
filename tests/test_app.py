@@ -7,15 +7,15 @@ from hyperfocus.app import HyperfocusTyper
 
 
 def test_hyperfocus_main(mocker):
-    app = mocker.Mock()
-    mocker.patch.object(cli, "app", app)
+    hyperfocus_app = mocker.Mock()
+    mocker.patch.object(cli, "hyperfocus_app", hyperfocus_app)
     from hyperfocus import __main__ as hyperfocus
 
     mocker.patch.object(hyperfocus, "__name__", "__main__")
 
     hyperfocus.main()
 
-    app.assert_called_once()
+    hyperfocus_app.assert_called_once()
 
 
 @pytest.fixture(scope="session")

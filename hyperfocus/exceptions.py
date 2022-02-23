@@ -19,7 +19,7 @@ class DatabaseError(HyperfocusException):
     message = "Database error"
 
 
-class DatabaseNotExists(DatabaseError):
+class DatabaseDoesNotExists(DatabaseError):
     message = "Database does not exist, please run init command first"
 
 

@@ -20,7 +20,18 @@ black = "^22.1.0"
 mypy = "^0.931"
 freezegun = "^1.1.0"
 pytest-dependency = "^0.5.1"
+isort = "^5.10.1"
+types-tabulate = "^0.8.5"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
+known_third_party = ["peewee"]
+
+[[tool.mypy.overrides]]
+module="peewee"
+warn_unused_ignores = false
+ignore_missing_imports = true

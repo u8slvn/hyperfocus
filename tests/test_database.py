@@ -4,7 +4,7 @@ from peewee import OperationalError
 from hyperfocus.config import Config
 from hyperfocus.database import database
 from hyperfocus.exceptions import (
-    DatabaseNotExists,
+    DatabaseDoesNotExists,
     DatabaseError,
     DatabaseNotinitializedError,
 )
@@ -15,7 +15,7 @@ def test_database_connect_fails_if_sqlite_file_does_not_exist(tmp_test_dir):
     test_db_path = tmp_test_dir / "dont_exist_db"
     config = Config(db_path=test_db_path)
 
-    with pytest.raises(DatabaseNotExists):
+    with pytest.raises(DatabaseDoesNotExists):
         database.connect(config=config)
 
 

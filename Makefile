@@ -10,9 +10,12 @@ tests: ## Run tests.
 
 quality: ## Check quality.
 	@poetry run flake8 hyperfocus tests
+	@poetry run isort --check hyperfocus tests
 	@poetry run black --check hyperfocus tests
+	@poetry run mypy hyperfocus
 
 format: ## Format files.
+	@poetry run isort hyperfocus tests
 	@poetry run black hyperfocus tests
 
 coverage: ## Run tests with coverage.
