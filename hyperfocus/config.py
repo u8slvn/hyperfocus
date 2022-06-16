@@ -1,47 +1,55 @@
 import configparser
-from dataclasses import dataclass
 from pathlib import Path
+from typing import Optional
 
 import typer
 
 from hyperfocus import __app_name__
 from hyperfocus.exceptions import ConfigDoesNotExistError, ConfigError
 
-DIR_PATH = Path(typer.get_app_dir(__app_name__))
-FILE_PATH = DIR_PATH / "config.ini"
 
-
-def init(db_path: Path):
-    try:
-        DIR_PATH.mkdir(exist_ok=True)
-        db_path.touch()
-    except OSError:
-        raise ConfigError("Configuration folder creation failed")
-    config_parser = configparser.ConfigParser()
-    config_parser["main"] = {
-        "db_path": str(db_path),
-    }
-    try:
-        with FILE_PATH.open("w") as file:
-            config_parser.write(file)
-    except OSError:
-        raise ConfigError(f"Saving config to {FILE_PATH} failed")
-
-
-@dataclass(frozen=True)
 class Config:
-    db_path: Path
+    """Handle application config.
+    Default config directory is managed by typer.
+    """
+    _filename = "config.ini"
+    _dir_path = Path(typer.get_app_dir(__app_name__))
+    file_path = _dir_path / _filename
 
+    def __init__(self, db_path: Path, dir_path: Optional[Path] = None):
+        if dir_path:
+            self._dir_path = dir_path or self._dir_path
+            self.file_path = dir_path / self._filename
+        self.db_path = db_path
 
-def load() -> Config:
-    if not FILE_PATH.exists():
-        raise ConfigDoesNotExistError()
-    config_parser = configparser.ConfigParser()
-    config_parser.read(FILE_PATH)
+    def make_directory(self):
+        """Create config directory."""
+        try:
+            self._dir_path.mkdir(exist_ok=True)
+        except OSError:
+            raise ConfigError("Configuration folder creation failed")
 
-    return Config(
-        db_path=Path(config_parser["main"]["db_path"]),
-    )
+    @classmethod
+    def load(cls, file_path: Optional[Path] = None) -> "Config":
+        """Load config from file."""
+        file_path = file_path or cls.file_path
+        if not file_path.exists():
+            raise ConfigDoesNotExistError()
+        config_parser = configparser.ConfigParser()
+        config_parser.read(file_path)
 
+        return cls(
+            db_path=Path(config_parser["main"]["db_path"]),
+        )
 
-DEFAULT = Config(db_path=Path.home() / f".{__app_name__}.sqlite")
+    def save(self):
+        """Persist config to file."""
+        config_parser = configparser.ConfigParser()
+        config_parser["main"] = {
+            "db_file_path": str(self.db_path),
+        }
+        try:
+            with self.file_path.open("w") as file:
+                config_parser.write(file)
+        except OSError:
+            raise ConfigError(f"Saving config to {self.file_path} failed")

@@ -2,10 +2,12 @@ from pathlib import Path
 from typing import Optional
 
 import typer
+from services import DailyTrackerService, Session
 
-from hyperfocus import __app_name__, __version__, app, config, printer
-from hyperfocus.models import Status
-from hyperfocus.services import AppService, DailyTrackerService
+from hyperfocus import __app_name__, __version__, app, printer
+from hyperfocus.config import Config, ConfigInitializer
+from hyperfocus.database import database
+from hyperfocus.models import MODELS, Status
 
 hyperfocus_app = app.HyperfocusTyper()
 
@@ -13,25 +15,55 @@ hyperfocus_app = app.HyperfocusTyper()
 @hyperfocus_app.command()
 def init(
     db_path: str = typer.Option(
-        config.DEFAULT.db_path,
+        hyperfocus_app.default_db_path,
         "--db-path",
         prompt=str(printer.prompt("Database location")),
     ),
 ):
-    AppService.initialize(db_path=Path(db_path))
+    config = Config(db_path=Path(db_path))
+    config_initializer = ConfigInitializer(config=config)
+    config_initializer.make_directory()
+    config_initializer.create_database_file()
+    config.save()
+    typer.secho(
+        printer.notification(
+            text=f"Config file created successfully in {config.file_path}",
+            action="init",
+            status=printer.NotificationStatus.INFO,
+        )
+    )
+
+    database.connect(db_path=config.db_path)
+    database.init_models(MODELS)
+    typer.secho(
+        printer.notification(
+            text=f"Database initialized successfully in {config.db_path}",
+            action="init",
+            status=printer.NotificationStatus.INFO,
+        )
+    )
 
 
 @hyperfocus_app.command()
 def add():
-    daily_tracker = DailyTrackerService()
+    session = Session()
     title = typer.prompt(printer.prompt("Task title"), type=str)
     details = typer.prompt(
         printer.prompt("Task description (optional)"), default="", show_default=False
     )
-    daily_tracker.add_task(title=title, details=details)
+    task = session.daily_tracker.create_task(title=title, details=details)
+    typer.secho(
+        printer.notification(
+            text=printer.task(task=task, show_prefix=True),
+            action="created",
+            status=printer.NotificationStatus.SUCCESS,
+        )
+    )
 
 
 def _update_task(id: int, prompt_text: str, status: Status) -> None:
+    config = Config.load()
+    database.connect(db_path=config.db_path)
     daily_tracker = DailyTrackerService()
     if not id:
         daily_tracker.show_tasks(newline=True, exclude=[status])
@@ -61,6 +93,8 @@ def block(id: int = typer.Argument(None)):
 
 @hyperfocus_app.command()
 def show(id: int = typer.Argument(None)):
+    config = Config.load()
+    database.connect(db_path=config.db_path)
     daily_tracker = DailyTrackerService()
     if not id:
         daily_tracker.show_tasks(newline=True)
@@ -93,5 +127,7 @@ def main(
 ):
     if ctx.invoked_subcommand is None:
         exclude = [] if all else [Status.DELETED]
+        config = Config.load()
+        database.connect(db_path=config.db_path)
         daily_tracker = DailyTrackerService()
         daily_tracker.show_tasks(exclude=exclude)

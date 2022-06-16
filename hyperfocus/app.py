@@ -1,5 +1,6 @@
 import functools
 import sys
+from pathlib import Path
 
 import typer
 
@@ -25,6 +26,8 @@ def app_error_handler(func):
 
 
 class HyperfocusTyper(typer.Typer):
+    default_db_path = Path.home() / f".{__app_name__}.sqlite"
+
     def __call__(self, *args, **kwargs):
         super().__call__(prog_name=__app_name__, *args, **kwargs)
 

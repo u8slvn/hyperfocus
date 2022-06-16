@@ -1,30 +1,19 @@
 import pytest
 from peewee import OperationalError
 
-from hyperfocus.config import Config
 from hyperfocus.database import database
 from hyperfocus.exceptions import (
-    DatabaseDoesNotExists,
     DatabaseError,
     DatabaseNotinitializedError,
 )
 from hyperfocus.models import MODELS, db_error_handler, wrap_methods
 
 
-def test_database_connect_fails_if_sqlite_file_does_not_exist(tmp_test_dir):
-    test_db_path = tmp_test_dir / "dont_exist_db"
-    config = Config(db_path=test_db_path)
-
-    with pytest.raises(DatabaseDoesNotExists):
-        database.connect(config=config)
-
-
 def test_database_with_models(tmp_test_dir):
     test_db_path = tmp_test_dir / "test_db.sqlite"
     test_db_path.touch()
-    config = Config(db_path=test_db_path)
 
-    database.connect(config=config)
+    database.connect(db_path=test_db_path)
     database.init_models(MODELS)
 
     core_test_db = database()
