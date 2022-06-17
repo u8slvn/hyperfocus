@@ -11,15 +11,23 @@ class Session:
         config = Config.load()
         database.connect(db_path=config.db_path)
         now = datetime.now().date()
-        self.daily_tracker = DailyTrackerService(date=now)
+        self.daily_tracker_service: DailyTrackerService = DailyTrackerService(date=now)
 
     def is_a_new_day(self) -> bool:
-        return self.daily_tracker.new_day
+        return self.daily_tracker_service.new_day
+
+    @property
+    def date(self):
+        return self.daily_tracker_service.date
 
 
 class DailyTrackerService:
     def __init__(self, date: datetime.date):
         self._base, self.new_day = DailyTracker.get_or_create(date=date)
+
+    @property
+    def date(self) -> str:
+        return self._base.date
 
     def add_task(self, title: str, details: Optional[str] = None) -> Task:
         details = details.strip() if isinstance(details, str) else details

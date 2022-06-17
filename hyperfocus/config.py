@@ -2,7 +2,7 @@ import configparser
 from pathlib import Path
 from typing import Optional
 
-import typer
+import click
 
 from hyperfocus import __app_name__
 from hyperfocus.exceptions import ConfigDoesNotExistError, ConfigError
@@ -10,10 +10,10 @@ from hyperfocus.exceptions import ConfigDoesNotExistError, ConfigError
 
 class Config:
     """Handle application config.
-    Default config directory is managed by typer.
+    Default config directory is managed by click.
     """
     _filename = "config.ini"
-    _dir_path = Path(typer.get_app_dir(__app_name__))
+    _dir_path = Path(click.get_app_dir(__app_name__))
     file_path = _dir_path / _filename
 
     def __init__(self, db_path: Path, dir_path: Optional[Path] = None):
@@ -39,7 +39,7 @@ class Config:
         config_parser.read(file_path)
 
         return cls(
-            db_path=Path(config_parser["main"]["db_path"]),
+            db_path=Path(config_parser["main"]["db_file_path"]),
         )
 
     def save(self):

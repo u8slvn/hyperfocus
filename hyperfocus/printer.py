@@ -2,7 +2,7 @@ import datetime
 from enum import Enum, auto
 from typing import List
 
-import typer
+import click
 from tabulate import tabulate
 
 from hyperfocus.models import Status, Task
@@ -15,24 +15,24 @@ def date(date: datetime.date) -> str:
 def task_status(task: Task):
     symbol = "⬢"
     color = {
-        Status.TODO: typer.colors.WHITE,
-        Status.BLOCKED: typer.colors.BRIGHT_YELLOW,
-        Status.DELETED: typer.colors.RED,
-        Status.DONE: typer.colors.GREEN,
-    }.get(Status(task.status), typer.colors.BLACK)
+        Status.TODO: "white",
+        Status.BLOCKED: "bright_yellow",
+        Status.DELETED: "red",
+        Status.DONE: "green",
+    }.get(Status(task.status), "black")
 
-    return typer.style(symbol, fg=color)
+    return click.style(symbol, fg=color)
 
 
 def task(task: Task, show_details: bool = False, show_prefix: bool = False) -> str:
     empty_details = "No details provided ..."
 
     title_style = {
-        Status.DELETED: {"fg": typer.colors.BRIGHT_BLACK},
+        Status.DELETED: {"fg": "bright_black"},
         Status.DONE: {"strikethrough": True},
     }.get(Status(task.status), {})
 
-    title = typer.style(task.title, **title_style)  # type: ignore
+    title = click.style(task.title, **title_style)  # type: ignore
     details = "⊕" if task.details else "◌"
     prefix = f"Task #{task.id} " if show_prefix else ""
 
@@ -53,7 +53,7 @@ def tasks(tasks: List[Task], newline: bool = False) -> str:
 
 
 def prompt(text: str) -> str:
-    symbol = typer.style("?", fg=typer.colors.BRIGHT_GREEN)
+    symbol = click.style("?", fg="bright_green")
     return f"{symbol} {text}"
 
 
@@ -66,10 +66,10 @@ class NotificationStatus(Enum):
 
 def notification(text: str, action: str, status: NotificationStatus) -> str:
     symbol, color = {
-        NotificationStatus.SUCCESS: ("✔", typer.colors.BRIGHT_GREEN),
-        NotificationStatus.INFO: ("ℹ", typer.colors.BRIGHT_CYAN),
-        NotificationStatus.WARNING: ("▼", typer.colors.BRIGHT_YELLOW),
-        NotificationStatus.ERROR: ("✘", typer.colors.BRIGHT_RED),
-    }.get(status, (">", typer.colors.BRIGHT_WHITE))
-    prefix = typer.style(f"{symbol}({action})", fg=color)
+        NotificationStatus.SUCCESS: ("✔", "bright_green"),
+        NotificationStatus.INFO: ("ℹ", "bright_cyan"),
+        NotificationStatus.WARNING: ("▼", "bright_yellow"),
+        NotificationStatus.ERROR: ("✘", "bright_red"),
+    }.get(status, (">", "bright_white"))
+    prefix = click.style(f"{symbol}({action})", fg=color)
     return f"{prefix} {text}"

@@ -2,10 +2,7 @@ import pytest
 from peewee import OperationalError
 
 from hyperfocus.database import database
-from hyperfocus.exceptions import (
-    DatabaseError,
-    DatabaseNotinitializedError,
-)
+from hyperfocus.exceptions import DatabaseError, DatabaseNotinitializedError
 from hyperfocus.models import MODELS, db_error_handler, wrap_methods
 
 

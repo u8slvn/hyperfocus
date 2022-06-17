@@ -5,6 +5,7 @@ import pytest
 
 from hyperfocus.database import database
 from hyperfocus.models import MODELS
+from hyperfocus.services import DailyTrackerService, Session
 
 TEST_DIR = Path(__file__).parent.resolve()
 FIXTURES_DIR = TEST_DIR / "fixtures"
@@ -25,6 +26,17 @@ def test_db(tmp_test_dir):
     db_path = tmp_test_dir / "test_config.ini"
     database.connect(db_path=db_path)
     database.init_models(MODELS)
+
+
+@pytest.fixture
+def cli_session(mocker):
+    daily_tracker_service = mocker.create_autospec(spec=DailyTrackerService)
+    session = mocker.create_autospec(spec=Session)
+    session.daily_tracker_service = daily_tracker_service
+    session.is_a_new_day.return_value = False
+    mocker.patch("hyperfocus.cli.Session", return_value=session)
+
+    yield session
 
 
 class pytest_regex:

@@ -1,9 +1,9 @@
-from hyperfocus.cli import hyperfocus_app
+from hyperfocus.cli import cli
 
 
 def main():
     if __name__ == "__main__":
-        hyperfocus_app()
+        cli()
 
 
 main()

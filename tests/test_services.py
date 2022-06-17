@@ -2,7 +2,7 @@ from datetime import datetime
 
 from freezegun import freeze_time
 
-from hyperfocus.models import Task, DailyTracker, Status
+from hyperfocus.models import DailyTracker, Status, Task
 from hyperfocus.services import DailyTrackerService
 
 
