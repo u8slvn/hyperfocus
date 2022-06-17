@@ -34,7 +34,7 @@ def task(task: Task, show_details: bool = False, show_prefix: bool = False) -> s
 
     title = click.style(task.title, **title_style)  # type: ignore
     details = "⊕" if task.details else "◌"
-    prefix = f"Task #{task.id} " if show_prefix else ""
+    prefix = f"Task: #{task.id} " if show_prefix else ""
 
     headline = f"{prefix}{task_status(task)} {title}"
 

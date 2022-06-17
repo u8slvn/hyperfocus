@@ -12,6 +12,7 @@ class Config:
     """Handle application config.
     Default config directory is managed by click.
     """
+
     _filename = "config.ini"
     _dir_path = Path(click.get_app_dir(__app_name__))
     file_path = _dir_path / _filename

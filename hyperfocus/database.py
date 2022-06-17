@@ -8,6 +8,7 @@ from hyperfocus.exceptions import DatabaseDoesNotExists
 
 class _Database:
     """Handle database session."""
+
     def __init__(self):
         self._database = SqliteDatabase(None)
 

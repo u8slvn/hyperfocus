@@ -20,6 +20,7 @@ from hyperfocus.exceptions import DatabaseError, DatabaseNotinitializedError
 
 def wrap_methods(decorator: Callable, methods: List[str]):
     """Wrap class methods with the given decorator."""
+
     def wrapper(cls):
         for method in methods:
             setattr(cls, method, decorator(getattr(cls, method)))
@@ -30,6 +31,7 @@ def wrap_methods(decorator: Callable, methods: List[str]):
 
 def db_error_handler(func):
     """Wrap errors from peewee."""
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         try:
@@ -44,6 +46,7 @@ def db_error_handler(func):
 
 class Status(Enum):
     """Task status."""
+
     TODO = auto()
     BLOCKED = auto()
     DELETED = auto()
@@ -52,6 +55,7 @@ class Status(Enum):
 
 class BaseModel(Model):
     """Base model, every hyperfocus model must inherit from this base."""
+
     class Meta:
         database = database()
 
@@ -59,6 +63,7 @@ class BaseModel(Model):
 @wrap_methods(db_error_handler, ["save", "get_or_create"])
 class DailyTracker(BaseModel):
     """Daily tracker model."""
+
     date = DateField(primary_key=True, default=datetime.now().date())
     task_increment = IntegerField(default=0)
 
@@ -70,6 +75,7 @@ class DailyTracker(BaseModel):
 @wrap_methods(db_error_handler, ["save"])
 class Task(BaseModel):
     """Task model."""
+
     _id = AutoField()
     id = IntegerField()
     title = TextField()

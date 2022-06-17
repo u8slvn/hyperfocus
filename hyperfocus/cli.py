@@ -30,7 +30,7 @@ class _Helper:
         if not task:
             click.secho(
                 printer.notification(
-                    text="Task id does not exist",
+                    text=f"Task {id} does not exist",
                     action="not found",
                     status=printer.NotificationStatus.ERROR,
                 )
@@ -66,9 +66,13 @@ class _Helper:
         )
 
 
-@click.group(invoke_without_command=True)
-@click.version_option(version=__version__, prog_name=__app_name__)
-@click.option("--all", is_flag=True, default=False, help="Show all tasks.")
+@click.group(invoke_without_command=True, help="Show all the tasks for the day.")
+@click.version_option(
+    version=__version__, prog_name=__app_name__, help="Show the version."
+)
+@click.option(
+    "--all", is_flag=True, default=False, help="Show all tasks even the deleted ones."
+)
 @click.pass_context
 def cli(ctx: click.Context, all: bool):
     if ctx.invoked_subcommand in ["init"] or "--help" in sys.argv[1:]:
@@ -80,7 +84,7 @@ def cli(ctx: click.Context, all: bool):
         click.echo("✨ A new day starts, good luck!\n")
 
     ctx.ensure_object(dict)
-    ctx.obj['SESSION'] = session
+    ctx.obj["SESSION"] = session
 
     if not ctx.invoked_subcommand:
         exclude = [] if all else [Status.DELETED]
@@ -88,12 +92,12 @@ def cli(ctx: click.Context, all: bool):
         helper.show_tasks(exclude=exclude)
 
 
-@cli.command()
+@cli.command(help="Initialize hyperfocus config and database.")
 @click.option(
     "--db-path",
     default=DEFAULT_DB_PATH,
     prompt=printer.prompt("Database location"),
-    help='Database file location.'
+    help="Database file location.",
 )
 def init(db_path: str):
     db_path = Path(db_path)
@@ -119,14 +123,14 @@ def init(db_path: str):
     )
 
 
-@cli.command(help="Add a task.")
+@cli.command(help="Add a today task.")
 @click.pass_context
 def add(ctx: click.Context):
     session = ctx.obj["SESSION"]
 
     title = click.prompt(printer.prompt("Task title"))
-    details = click.prompt(printer.prompt(
-        "Task details (optional)"),
+    details = click.prompt(
+        printer.prompt("Task details (optional)"),
         default="",
         show_default=False,
     )
@@ -141,7 +145,7 @@ def add(ctx: click.Context):
     )
 
 
-@cli.command()
+@cli.command(help="Mark a task as done.")
 @click.argument("id", required=False)
 @click.pass_context
 def done(ctx: click.Context, id: int):
@@ -151,7 +155,7 @@ def done(ctx: click.Context, id: int):
     helper.update_task(id=id, status=Status.DONE, prompt_text="Mark task as done")
 
 
-@cli.command()
+@cli.command(help="Restore a task at initial status.")
 @click.argument("id", required=False)
 @click.pass_context
 def reset(ctx: click.Context, id: int):
@@ -161,7 +165,7 @@ def reset(ctx: click.Context, id: int):
     helper.update_task(id=id, status=Status.TODO, prompt_text="Reset task")
 
 
-@cli.command()
+@cli.command(help="Mark a task as block.")
 @click.argument("id", required=False)
 @click.pass_context
 def block(ctx: click.Context, id: int):
@@ -171,7 +175,7 @@ def block(ctx: click.Context, id: int):
     helper.update_task(id=id, status=Status.BLOCKED, prompt_text="Black task")
 
 
-@cli.command()
+@cli.command(help="Mark a task as deleted (Deleted tasks won't appear in the list).")
 @click.argument("id", required=False)
 @click.pass_context
 def delete(ctx: click.Context, id: int):
@@ -181,7 +185,7 @@ def delete(ctx: click.Context, id: int):
     helper.update_task(id=id, status=Status.DELETED, prompt_text="Delete task")
 
 
-@cli.command()
+@cli.command(help="Show the details of a task.")
 @click.argument("id", required=False)
 @click.pass_context
 def show(ctx: click.Context, id: int):
@@ -193,4 +197,4 @@ def show(ctx: click.Context, id: int):
         id = click.prompt(printer.prompt("Show task details"), type=int)
 
     task = helper.get_task(id=id)
-    click.secho(f"Task: #{id} {printer.task(task=task, show_details=True)}")
+    click.secho(printer.task(task=task, show_details=True, show_prefix=True))

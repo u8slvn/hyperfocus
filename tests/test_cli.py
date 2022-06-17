@@ -4,6 +4,7 @@ from click.testing import CliRunner
 
 from hyperfocus import __app_name__, __version__
 from hyperfocus.cli import cli
+from hyperfocus.config import Config
 from hyperfocus.models import Status, Task
 from tests.conftest import pytest_regex
 
@@ -25,10 +26,12 @@ def test_main_cmd_version():
 #     assert result.exit_code == 1
 
 
-def test_init_cmd(tmp_test_dir):
-    db_test_path = tmp_test_dir / "test_db.sqlite"
+def test_init_cmd(mocker, tmp_test_dir):
+    db_path = tmp_test_dir / "test_db.sqlite"
+    config = Config(db_path=db_path, dir_path=tmp_test_dir)
+    mocker.patch("hyperfocus.cli.Config", return_value=config)
 
-    result = runner.invoke(cli, ["init"], input=f"{db_test_path}\n")
+    result = runner.invoke(cli, ["init"], input=f"{db_path}\n")
 
     pattern = pytest_regex(
         r"\? Database location \[(.*)\]: (.*)\n"
@@ -64,7 +67,7 @@ def test_add_task_cmd(cli_session):
     expected = (
         "? Task title: Test\n"
         "? Task details (optional): Test\n"
-        "✔(created) Task #1 ⬢ Test ⊕\n"
+        "✔(created) Task: #1 ⬢ Test ⊕\n"
     )
     assert expected == result.stdout
     assert result.exit_code == 0
@@ -87,7 +90,7 @@ def test_done_task_cmd(cli_session):
 
     result = runner.invoke(cli, ["done", "1"])
 
-    expected = "✔(updated) Task #1 ⬢ Test ⊕\n"
+    expected = "✔(updated) Task: #1 ⬢ Test ⊕\n"
     assert expected == result.stdout
     assert result.exit_code == 0
     cli_session.daily_tracker_service.update_task.assert_called_once_with(
@@ -101,7 +104,7 @@ def test_done_non_existing_task_cmd(cli_session):
 
     result = runner.invoke(cli, ["done", "9"])
 
-    expected = "✘(not found) Task id does not exist\n"
+    expected = "✘(not found) Task 9 does not exist\n"
     assert expected == result.stdout
     assert result.exit_code == 1
     cli_session.daily_tracker_service.update_task.assert_not_called()
@@ -113,7 +116,7 @@ def test_reset_task_cmd(cli_session):
 
     result = runner.invoke(cli, ["reset", "1"])
 
-    expected = "✔(updated) Task #1 ⬢ Test ⊕\n"
+    expected = "✔(updated) Task: #1 ⬢ Test ⊕\n"
     assert expected == result.stdout
     assert result.exit_code == 0
     cli_session.daily_tracker_service.update_task.assert_called_once_with(
@@ -127,7 +130,7 @@ def test_reset_task_cmd_on_already_reset_task(cli_session):
 
     result = runner.invoke(cli, ["reset", "1"])
 
-    expected = "▼(no change) Task #1 ⬢ Test ⊕\n"
+    expected = "▼(no change) Task: #1 ⬢ Test ⊕\n"
     assert expected == result.stdout
     assert result.exit_code == 0
     cli_session.daily_tracker_service.update_task.assert_not_called()
@@ -139,7 +142,7 @@ def test_block_task_cmd(cli_session):
 
     result = runner.invoke(cli, ["block", "1"])
 
-    expected = "✔(updated) Task #1 ⬢ Test ⊕\n"
+    expected = "✔(updated) Task: #1 ⬢ Test ⊕\n"
     assert expected == result.stdout
     assert result.exit_code == 0
     cli_session.daily_tracker_service.update_task.assert_called_once_with(
@@ -153,7 +156,7 @@ def test_delete_task_cmd(cli_session):
 
     result = runner.invoke(cli, ["delete", "1"])
 
-    expected = "✔(updated) Task #1 ⬢ Test ⊕\n"
+    expected = "✔(updated) Task: #1 ⬢ Test ⊕\n"
     assert expected == result.stdout
     assert result.exit_code == 0
     cli_session.daily_tracker_service.update_task.assert_called_once_with(
@@ -183,7 +186,7 @@ def test_update_task_with_no_id_cmd(cli_session):
         "---  --------\n"
         "  1  ⬢ Test ⊕ \n\n"
         "? Reset task: 1\n"
-        "✔(updated) Task #1 ⬢ Test ⊕\n"
+        "✔(updated) Task: #1 ⬢ Test ⊕\n"
     )
     assert expected == result.stdout
     assert result.exit_code == 0

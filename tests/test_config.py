@@ -59,6 +59,6 @@ def test_config_save_fails():
     config = Config(db_path=db_path, dir_path=dir_path)
 
     with pytest.raises(
-            ConfigError, match=r"Saving config to dumb/path/test_config/config.ini failed"
+        ConfigError, match=r"Saving config to dumb/path/test_config/config.ini failed"
     ):
         config.save()
