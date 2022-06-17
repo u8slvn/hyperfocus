@@ -5,7 +5,7 @@ import typer
 from services import DailyTrackerService, Session
 
 from hyperfocus import __app_name__, __version__, app, printer
-from hyperfocus.config import Config, ConfigInitializer
+from hyperfocus.config import Config
 from hyperfocus.database import database
 from hyperfocus.models import MODELS, Status
 
@@ -21,9 +21,7 @@ def init(
     ),
 ):
     config = Config(db_path=Path(db_path))
-    config_initializer = ConfigInitializer(config=config)
-    config_initializer.make_directory()
-    config_initializer.create_database_file()
+    config.make_directory()
     config.save()
     typer.secho(
         printer.notification(
