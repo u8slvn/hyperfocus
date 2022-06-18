@@ -2,7 +2,7 @@ from datetime import datetime
 
 from freezegun import freeze_time
 
-from hyperfocus.models import DailyTracker, Status, Task
+from hyperfocus.models import DailyTracker, Task, TaskStatus
 from hyperfocus.services import DailyTrackerService
 
 
@@ -68,7 +68,7 @@ def test_daily_tracker_service_get_tasks_with_exclude_status_filter():
         title="Test add task 2", details="Test add details 2"
     )
 
-    tasks = daily_tracker_service.get_tasks(exclude=[Status.TODO])
+    tasks = daily_tracker_service.get_tasks(exclude=[TaskStatus.TODO])
 
     assert len(tasks) == 0
 
@@ -81,7 +81,7 @@ def test_daily_tracker_service_get_task():
         title="Test add task", details="Test add details"
     )
 
-    daily_tracker_service.update_task(task=_task, status=Status.DONE)
+    daily_tracker_service.update_task(task=_task, status=TaskStatus.DONE)
 
     updated_task = daily_tracker_service.get_task(id=_task.id)
-    assert updated_task.status == Status.DONE.value
+    assert updated_task.status == TaskStatus.DONE

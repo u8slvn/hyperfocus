@@ -1,6 +1,6 @@
 import functools
 from datetime import datetime
-from enum import Enum, auto
+from enum import Enum, IntEnum, auto
 from typing import Callable, List
 
 from peewee import (
@@ -44,7 +44,7 @@ def db_error_handler(func):
     return wrapper
 
 
-class Status(Enum):
+class TaskStatus(IntEnum):
     """Task status."""
 
     TODO = auto()
@@ -80,7 +80,7 @@ class Task(BaseModel):
     id = IntegerField()
     title = TextField()
     details = TextField(null=True)
-    status = IntegerField(default=Status.TODO.value)
+    status = IntegerField(default=TaskStatus.TODO)
     postponed_at = DateField(null=True)
     updated_at = DateTimeField(default=datetime.now())
     daily_tracker = ForeignKeyField(DailyTracker, backref="tasks", null=True)

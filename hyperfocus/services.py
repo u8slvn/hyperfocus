@@ -1,24 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 
-from hyperfocus.config import Config
-from hyperfocus.database import database
-from hyperfocus.models import DailyTracker, Status, Task
-
-
-class Session:
-    def __init__(self):
-        config = Config.load()
-        database.connect(db_path=config.db_path)
-        now = datetime.now().date()
-        self.daily_tracker_service: DailyTrackerService = DailyTrackerService(date=now)
-
-    def is_a_new_day(self) -> bool:
-        return self.daily_tracker_service.new_day
-
-    @property
-    def date(self):
-        return self.daily_tracker_service.date
+from hyperfocus.models import DailyTracker, Task, TaskStatus
 
 
 class DailyTrackerService:
@@ -35,7 +18,7 @@ class DailyTrackerService:
             id=self._base.next_task_id,
             title=title.strip(),
             details=details,
-            status=Status.TODO.value,
+            status=TaskStatus.TODO,
             daily_tracker=self._base,
         )
         task.save()
@@ -48,13 +31,11 @@ class DailyTrackerService:
     def get_task(self, id: int) -> Optional[Task]:
         return Task.get_or_none(Task.id == id, Task.daily_tracker == self._base)
 
-    def get_tasks(self, exclude: Optional[List[Status]] = None) -> List:
+    def get_tasks(self, exclude: Optional[List[TaskStatus]] = None) -> List:
         exclude = exclude or []
-        tasks = [
-            task for task in self._base.tasks if Status(task.status) not in exclude
-        ]
+        tasks = [task for task in self._base.tasks if task.status not in exclude]
         return tasks
 
-    def update_task(self, task: Task, status: Status) -> None:
-        task.status = status.value
+    def update_task(self, task: Task, status: TaskStatus) -> None:
+        task.status = status
         task.save()

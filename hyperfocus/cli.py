@@ -4,11 +4,12 @@ from typing import List
 
 import click
 
-from hyperfocus import __app_name__, __version__, printer
+from hyperfocus import __app_name__, __version__
 from hyperfocus.config import Config
 from hyperfocus.database import database
-from hyperfocus.models import MODELS, Status, Task
-from hyperfocus.services import Session
+from hyperfocus.display import Formatter, NotificationStatus, Printer
+from hyperfocus.models import MODELS, Task, TaskStatus
+from hyperfocus.session import Session
 
 DEFAULT_DB_PATH = Path.home() / f".{__app_name__}.sqlite"
 
@@ -17,52 +18,46 @@ class _Helper:
     def __init__(self, session: Session):
         self._session = session
 
-    def show_tasks(self, exclude: List[Status] = None, newline=False) -> None:
+    def show_tasks(self, exclude: List[TaskStatus] = None, newline=False) -> None:
         exclude = exclude or []
-        tasks = self._session.daily_tracker_service.get_tasks(exclude=exclude)
+        tasks = self._session.daily_tracker.get_tasks(exclude=exclude)
         if not tasks:
             click.echo("No tasks yet for today...")
             raise click.exceptions.Exit
-        click.secho(printer.tasks(tasks=tasks, newline=newline))
+        Printer.tasks(tasks=tasks, newline=newline)
 
     def get_task(self, id: int) -> Task:
-        task = self._session.daily_tracker_service.get_task(id=id)
+        task = self._session.daily_tracker.get_task(id=id)
         if not task:
-            click.secho(
-                printer.notification(
-                    text=f"Task {id} does not exist",
-                    action="not found",
-                    status=printer.NotificationStatus.ERROR,
-                )
+            Printer.notification(
+                text=f"Task {id} does not exist",
+                action="not found",
+                status=NotificationStatus.ERROR,
             )
             raise click.exceptions.Exit(code=1)
 
         return task
 
-    def update_task(self, id: int, status: Status, prompt_text: str):
+    def update_task(self, id: int, status: TaskStatus, prompt_text: str):
         if not id:
             self.show_tasks(newline=True, exclude=[status])
-            id = click.prompt(printer.prompt(prompt_text), type=int)
+            id = click.prompt(Formatter.prompt(prompt_text), type=int)
 
         task = self.get_task(id=id)
         if task.status == status.value:
-            click.secho(
-                printer.notification(
-                    text=printer.task(task=task, show_prefix=True),
-                    action="no change",
-                    status=printer.NotificationStatus.WARNING,
-                )
+            Printer.notification(
+                text=Formatter.task(task=task, show_prefix=True),
+                action="no change",
+                status=NotificationStatus.WARNING,
             )
             raise click.exceptions.Exit
 
-        task.status = status.value
-        self._session.daily_tracker_service.update_task(task=task, status=status)
-        click.secho(
-            printer.notification(
-                text=printer.task(task=task, show_prefix=True),
-                action="updated",
-                status=printer.NotificationStatus.SUCCESS,
-            )
+        task.status = status
+        self._session.daily_tracker.update_task(task=task, status=status)
+        Printer.notification(
+            text=Formatter.task(task=task, show_prefix=True),
+            action="updated",
+            status=NotificationStatus.SUCCESS,
         )
 
 
@@ -78,17 +73,17 @@ def cli(ctx: click.Context, all: bool):
     if ctx.invoked_subcommand in ["init"] or "--help" in sys.argv[1:]:
         return
 
-    session = Session()
-    if session.is_a_new_day():
-        click.echo(f"✨ {printer.date(date=session.date)}")
-        click.echo("✨ A new day starts, good luck!\n")
-
     ctx.ensure_object(dict)
+    session = Session()
     ctx.obj["SESSION"] = session
 
+    if session.is_a_new_day():
+        Printer.echo(f"✨ {Formatter.date(date=session.date)}")
+        Printer.echo("✨ A new day starts, good luck!\n")
+
     if not ctx.invoked_subcommand:
-        exclude = [] if all else [Status.DELETED]
         helper = _Helper(session=session)
+        exclude = [] if all else [TaskStatus.DELETED]
         helper.show_tasks(exclude=exclude)
 
 
@@ -96,7 +91,7 @@ def cli(ctx: click.Context, all: bool):
 @click.option(
     "--db-path",
     default=DEFAULT_DB_PATH,
-    prompt=printer.prompt("Database location"),
+    prompt=Formatter.prompt("Database location"),
     help="Database file location.",
 )
 def init(db_path: str):
@@ -104,22 +99,18 @@ def init(db_path: str):
     config = Config(db_path=db_path)
     config.make_directory()
     config.save()
-    click.secho(
-        printer.notification(
-            text=f"Config file created successfully in {config.file_path}",
-            action="init",
-            status=printer.NotificationStatus.INFO,
-        )
+    Printer.notification(
+        text=f"Config file created successfully in {config.file_path}",
+        action="init",
+        status=NotificationStatus.INFO,
     )
 
     database.connect(db_path=config.db_path)
     database.init_models(MODELS)
-    click.secho(
-        printer.notification(
-            text=f"Database initialized successfully in {config.db_path}",
-            action="init",
-            status=printer.NotificationStatus.INFO,
-        )
+    Printer.notification(
+        text=f"Database initialized successfully in {config.db_path}",
+        action="init",
+        status=NotificationStatus.INFO,
     )
 
 
@@ -128,20 +119,18 @@ def init(db_path: str):
 def add(ctx: click.Context):
     session = ctx.obj["SESSION"]
 
-    title = click.prompt(printer.prompt("Task title"))
+    title = click.prompt(Formatter.prompt("Task title"))
     details = click.prompt(
-        printer.prompt("Task details (optional)"),
+        Formatter.prompt("Task details (optional)"),
         default="",
         show_default=False,
     )
 
-    task = session.daily_tracker_service.add_task(title=title, details=details)
-    click.secho(
-        printer.notification(
-            text=printer.task(task=task, show_prefix=True),
-            action="created",
-            status=printer.NotificationStatus.SUCCESS,
-        )
+    task = session.daily_tracker.add_task(title=title, details=details)
+    Printer.notification(
+        text=Formatter.task(task=task, show_prefix=True),
+        action="created",
+        status=NotificationStatus.SUCCESS,
     )
 
 
@@ -152,7 +141,7 @@ def done(ctx: click.Context, id: int):
     session = ctx.obj["SESSION"]
     helper = _Helper(session=session)
 
-    helper.update_task(id=id, status=Status.DONE, prompt_text="Mark task as done")
+    helper.update_task(id=id, status=TaskStatus.DONE, prompt_text="Mark task as done")
 
 
 @cli.command(help="Restore a task at initial status.")
@@ -162,7 +151,7 @@ def reset(ctx: click.Context, id: int):
     session = ctx.obj["SESSION"]
     helper = _Helper(session=session)
 
-    helper.update_task(id=id, status=Status.TODO, prompt_text="Reset task")
+    helper.update_task(id=id, status=TaskStatus.TODO, prompt_text="Reset task")
 
 
 @cli.command(help="Mark a task as block.")
@@ -172,7 +161,7 @@ def block(ctx: click.Context, id: int):
     session = ctx.obj["SESSION"]
     helper = _Helper(session=session)
 
-    helper.update_task(id=id, status=Status.BLOCKED, prompt_text="Black task")
+    helper.update_task(id=id, status=TaskStatus.BLOCKED, prompt_text="Black task")
 
 
 @cli.command(help="Mark a task as deleted (Deleted tasks won't appear in the list).")
@@ -182,7 +171,7 @@ def delete(ctx: click.Context, id: int):
     session = ctx.obj["SESSION"]
     helper = _Helper(session=session)
 
-    helper.update_task(id=id, status=Status.DELETED, prompt_text="Delete task")
+    helper.update_task(id=id, status=TaskStatus.DELETED, prompt_text="Delete task")
 
 
 @cli.command(help="Show the details of a task.")
@@ -194,7 +183,7 @@ def show(ctx: click.Context, id: int):
 
     if not id:
         helper.show_tasks(newline=True)
-        id = click.prompt(printer.prompt("Show task details"), type=int)
+        id = click.prompt(Formatter.prompt("Show task details"), type=int)
 
     task = helper.get_task(id=id)
-    click.secho(printer.task(task=task, show_details=True, show_prefix=True))
+    Printer.task(task=task, show_details=True, show_prefix=True)
