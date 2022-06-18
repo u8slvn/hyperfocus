@@ -90,16 +90,21 @@ class Printer:
         formatted_task = Formatter.task(
             task=task, show_details=show_details, show_prefix=show_prefix
         )
-        cls.echo(formatted_task)
+        cls.echo(text=formatted_task)
 
     @classmethod
     def tasks(cls, tasks: List[Task], newline: bool = False):
         formatted_tasks = Formatter.tasks(tasks=tasks, newline=newline)
-        cls.echo(formatted_tasks)
+        cls.echo(text=formatted_tasks)
 
     @classmethod
     def notification(cls, text: str, action: str, status: NotificationStatus):
         formatted_notification = Formatter.notification(
             text=text, action=action, status=status
         )
-        cls.echo(formatted_notification)
+        cls.echo(text=formatted_notification)
+
+    @classmethod
+    def ask(cls, text: str, *args, **kwargs) -> str:
+        formatted_prompt = Formatter.prompt(text=text)
+        return click.prompt(text=formatted_prompt, *args, **kwargs)

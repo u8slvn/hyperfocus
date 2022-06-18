@@ -116,12 +116,8 @@ def init(db_path: str):
 def add():
     session = get_current_session()
 
-    title = click.prompt(Formatter.prompt("Task title"))
-    details = click.prompt(
-        Formatter.prompt("Task details (optional)"),
-        default="",
-        show_default=False,
-    )
+    title = Printer.ask("Task title")
+    details = Printer.ask("Task details (optional)", default="", show_default=False)
 
     task = session.daily_tracker.add_task(title=title, details=details)
     Printer.notification(
@@ -175,7 +171,7 @@ def show(id: int):
 
     if not id:
         helper.show_tasks(newline=True)
-        id = click.prompt(Formatter.prompt("Show task details"), type=int)
+        id = Printer.ask("Show task details", type=int)
 
     task = helper.get_task(id=id)
     Printer.task(task=task, show_details=True, show_prefix=True)
