@@ -1,5 +1,5 @@
 import datetime
-from enum import IntEnum, auto
+from enum import Enum, IntEnum, auto
 from typing import List
 
 import click
@@ -15,6 +15,34 @@ class NotificationStatus(IntEnum):
     ERROR = auto()
 
 
+class NotificationActions(str, Enum):
+    INIT = "init"
+    NO_CHANGE = "no change"
+    UPDATED = "updated"
+    NOT_FOUND = "not found"
+    CREATED = "created"
+
+
+class Colors(str, Enum):
+    BLACK = "black"
+    RED = "red"
+    GREEN = "green"
+    YELLOW = "yellow"
+    BLUE = "blue"
+    MAGENTA = "magenta"
+    CYAN = "cyan"
+    WHITE = "white"
+    RESET = "reset"
+    BRIGHT_BLACK = "bright_black"
+    BRIGHT_RED = "bright_red"
+    BRIGHT_GREEN = "bright_green"
+    BRIGHT_YELLOW = "bright_yellow"
+    BRIGHT_BLUE = "bright_blue"
+    BRIGHT_MAGENTA = "bright_magenta"
+    BRIGHT_CYAN = "bright_cyan"
+    BRIGHT_WHITE = "bright_white"
+
+
 class Formatter:
     @staticmethod
     def date(date: datetime.date) -> str:
@@ -24,17 +52,17 @@ class Formatter:
     def task_status(status: TaskStatus):
         symbol = "⬢"
         color = {
-            TaskStatus.TODO: "white",
-            TaskStatus.BLOCKED: "bright_yellow",
-            TaskStatus.DELETED: "red",
-            TaskStatus.DONE: "green",
-        }.get(status, "black")
+            TaskStatus.TODO: Colors.WHITE,
+            TaskStatus.BLOCKED: Colors.BRIGHT_YELLOW,
+            TaskStatus.DELETED: Colors.RED,
+            TaskStatus.DONE: Colors.GREEN,
+        }.get(status, Colors.BLACK)
 
         return click.style(symbol, fg=color)
 
     @staticmethod
     def prompt(text: str):
-        symbol = click.style("?", fg="bright_green")
+        symbol = click.style("?", fg=Colors.BRIGHT_GREEN)
         return f"{symbol} {text}"
 
     @classmethod
@@ -44,7 +72,7 @@ class Formatter:
         empty_details = "No details provided ..."
 
         title_style = {
-            TaskStatus.DELETED: {"fg": "bright_black"},
+            TaskStatus.DELETED: {"fg": Colors.BRIGHT_BLACK},
             TaskStatus.DONE: {"strikethrough": True},
         }.get(task.status, {})
 
@@ -68,13 +96,15 @@ class Formatter:
         return f"{tabulate(lines, headers)} {suffix}"
 
     @classmethod
-    def notification(cls, text: str, action: str, status: NotificationStatus):
+    def notification(
+        cls, text: str, action: NotificationActions, status: NotificationStatus
+    ):
         symbol, color = {
-            NotificationStatus.SUCCESS: ("✔", "bright_green"),
-            NotificationStatus.INFO: ("ℹ", "bright_cyan"),
-            NotificationStatus.WARNING: ("▼", "bright_yellow"),
-            NotificationStatus.ERROR: ("✘", "bright_red"),
-        }.get(status, (">", "bright_white"))
+            NotificationStatus.SUCCESS: ("✔", Colors.BRIGHT_GREEN),
+            NotificationStatus.INFO: ("ℹ", Colors.BRIGHT_CYAN),
+            NotificationStatus.WARNING: ("▼", Colors.BRIGHT_YELLOW),
+            NotificationStatus.ERROR: ("✘", Colors.BRIGHT_RED),
+        }.get(status, (">", Colors.BRIGHT_WHITE))
         prefix = click.style(f"{symbol}({action})", fg=color)
 
         return f"{prefix} {text}"
@@ -98,7 +128,9 @@ class Printer:
         cls.echo(text=formatted_tasks)
 
     @classmethod
-    def notification(cls, text: str, action: str, status: NotificationStatus):
+    def notification(
+        cls, text: str, action: NotificationActions, status: NotificationStatus
+    ):
         formatted_notification = Formatter.notification(
             text=text, action=action, status=status
         )

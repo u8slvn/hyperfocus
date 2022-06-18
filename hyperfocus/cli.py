@@ -7,7 +7,12 @@ import click
 from hyperfocus import __app_name__, __version__
 from hyperfocus.config import Config
 from hyperfocus.database import database
-from hyperfocus.display import Formatter, NotificationStatus, Printer
+from hyperfocus.display import (
+    Formatter,
+    NotificationActions,
+    NotificationStatus,
+    Printer,
+)
 from hyperfocus.models import MODELS, Task, TaskStatus
 from hyperfocus.session import Session, get_current_session
 
@@ -31,7 +36,7 @@ class _CLIHelper:
         if not task:
             Printer.notification(
                 text=f"Task {id} does not exist",
-                action="not found",
+                action=NotificationActions.NOT_FOUND,
                 status=NotificationStatus.ERROR,
             )
             raise click.exceptions.Exit(code=1)
@@ -47,7 +52,7 @@ class _CLIHelper:
         if task.status == status.value:
             Printer.notification(
                 text=Formatter.task(task=task, show_prefix=True),
-                action="no change",
+                action=NotificationActions.NO_CHANGE,
                 status=NotificationStatus.WARNING,
             )
             raise click.exceptions.Exit
@@ -56,7 +61,7 @@ class _CLIHelper:
         self._session.daily_tracker.update_task(task=task, status=status)
         Printer.notification(
             text=Formatter.task(task=task, show_prefix=True),
-            action="updated",
+            action=NotificationActions.UPDATED,
             status=NotificationStatus.SUCCESS,
         )
 
@@ -99,7 +104,7 @@ def init(db_path: str):
     config.save()
     Printer.notification(
         text=f"Config file created successfully in {config.file_path}",
-        action="init",
+        action=NotificationActions.INIT,
         status=NotificationStatus.INFO,
     )
 
@@ -107,7 +112,7 @@ def init(db_path: str):
     database.init_models(MODELS)
     Printer.notification(
         text=f"Database initialized successfully in {config.db_path}",
-        action="init",
+        action=NotificationActions.INIT,
         status=NotificationStatus.INFO,
     )
 
@@ -122,7 +127,7 @@ def add():
     task = session.daily_tracker.add_task(title=title, details=details)
     Printer.notification(
         text=Formatter.task(task=task, show_prefix=True),
-        action="created",
+        action=NotificationActions.CREATED,
         status=NotificationStatus.SUCCESS,
     )
 
