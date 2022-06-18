@@ -9,12 +9,12 @@ from hyperfocus.config import Config
 from hyperfocus.database import database
 from hyperfocus.display import Formatter, NotificationStatus, Printer
 from hyperfocus.models import MODELS, Task, TaskStatus
-from hyperfocus.session import Session
+from hyperfocus.session import Session, get_current_session
 
 DEFAULT_DB_PATH = Path.home() / f".{__app_name__}.sqlite"
 
 
-class _Helper:
+class _CLIHelper:
     def __init__(self, session: Session):
         self._session = session
 
@@ -22,7 +22,7 @@ class _Helper:
         exclude = exclude or []
         tasks = self._session.daily_tracker.get_tasks(exclude=exclude)
         if not tasks:
-            click.echo("No tasks yet for today...")
+            Printer.echo("No tasks yet for today...")
             raise click.exceptions.Exit
         Printer.tasks(tasks=tasks, newline=newline)
 
@@ -73,16 +73,14 @@ def cli(ctx: click.Context, all: bool):
     if ctx.invoked_subcommand in ["init"] or "--help" in sys.argv[1:]:
         return
 
-    ctx.ensure_object(dict)
-    session = Session()
-    ctx.obj["SESSION"] = session
+    session = Session(ctx=ctx)
 
     if session.is_a_new_day():
         Printer.echo(f"✨ {Formatter.date(date=session.date)}")
         Printer.echo("✨ A new day starts, good luck!\n")
 
     if not ctx.invoked_subcommand:
-        helper = _Helper(session=session)
+        helper = _CLIHelper(session=session)
         exclude = [] if all else [TaskStatus.DELETED]
         helper.show_tasks(exclude=exclude)
 
@@ -115,9 +113,8 @@ def init(db_path: str):
 
 
 @cli.command(help="Add a today task.")
-@click.pass_context
-def add(ctx: click.Context):
-    session = ctx.obj["SESSION"]
+def add():
+    session = get_current_session()
 
     title = click.prompt(Formatter.prompt("Task title"))
     details = click.prompt(
@@ -136,50 +133,45 @@ def add(ctx: click.Context):
 
 @cli.command(help="Mark a task as done.")
 @click.argument("id", required=False)
-@click.pass_context
-def done(ctx: click.Context, id: int):
-    session = ctx.obj["SESSION"]
-    helper = _Helper(session=session)
+def done(id: int):
+    session = get_current_session()
+    helper = _CLIHelper(session=session)
 
     helper.update_task(id=id, status=TaskStatus.DONE, prompt_text="Mark task as done")
 
 
 @cli.command(help="Restore a task at initial status.")
 @click.argument("id", required=False)
-@click.pass_context
-def reset(ctx: click.Context, id: int):
-    session = ctx.obj["SESSION"]
-    helper = _Helper(session=session)
+def reset(id: int):
+    session = get_current_session()
+    helper = _CLIHelper(session=session)
 
     helper.update_task(id=id, status=TaskStatus.TODO, prompt_text="Reset task")
 
 
 @cli.command(help="Mark a task as block.")
 @click.argument("id", required=False)
-@click.pass_context
-def block(ctx: click.Context, id: int):
-    session = ctx.obj["SESSION"]
-    helper = _Helper(session=session)
+def block(id: int):
+    session = get_current_session()
+    helper = _CLIHelper(session=session)
 
     helper.update_task(id=id, status=TaskStatus.BLOCKED, prompt_text="Black task")
 
 
 @cli.command(help="Mark a task as deleted (Deleted tasks won't appear in the list).")
 @click.argument("id", required=False)
-@click.pass_context
-def delete(ctx: click.Context, id: int):
-    session = ctx.obj["SESSION"]
-    helper = _Helper(session=session)
+def delete(id: int):
+    session = get_current_session()
+    helper = _CLIHelper(session=session)
 
     helper.update_task(id=id, status=TaskStatus.DELETED, prompt_text="Delete task")
 
 
 @cli.command(help="Show the details of a task.")
 @click.argument("id", required=False)
-@click.pass_context
-def show(ctx: click.Context, id: int):
-    session = ctx.obj["SESSION"]
-    helper = _Helper(session=session)
+def show(id: int):
+    session = get_current_session()
+    helper = _CLIHelper(session=session)
 
     if not id:
         helper.show_tasks(newline=True)

@@ -35,7 +35,9 @@ def cli_session(mocker):
     session = mocker.create_autospec(spec=Session)
     session.daily_tracker = daily_tracker_service
     session.is_a_new_day.return_value = False
+
     mocker.patch("hyperfocus.cli.Session", return_value=session)
+    mocker.patch("hyperfocus.cli.get_current_session", return_value=session)
 
     yield session
 
