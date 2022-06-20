@@ -52,7 +52,7 @@ def test_main_cmd_with_no_tasks(cli_session):
     expected = (
         "✨ Fri, 21 December 2012\n"
         "✨ A new day starts, good luck!\n\n"
-        "No tasks yet for today...\n"
+        "No tasks for today...\n"
     )
     assert expected == result.stdout
     assert result.exit_code == 0
@@ -99,7 +99,6 @@ def test_done_task_cmd(cli_session):
 
 
 def test_done_non_existing_task_cmd(cli_session):
-    task = Task(id=1, title="Test", details="Test")
     cli_session.daily_tracker.get_task.return_value = None
 
     result = runner.invoke(cli, ["done", "9"])
@@ -169,7 +168,7 @@ def test_main_cmd_with_deleted_task(cli_session):
 
     result = runner.invoke(cli, [])
 
-    expected = "No tasks yet for today...\n"
+    expected = "No tasks for today...\n"
     assert expected == result.stdout
     assert result.exit_code == 0
 

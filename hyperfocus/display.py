@@ -15,7 +15,7 @@ class NotificationStatus(IntEnum):
     ERROR = auto()
 
 
-class NotificationActions(str, Enum):
+class NotificationEvents(str, Enum):
     INIT = "init"
     NO_CHANGE = "no change"
     UPDATED = "updated"
@@ -96,16 +96,14 @@ class Formatter:
         return f"{tabulate(lines, headers)} {suffix}"
 
     @classmethod
-    def notification(
-        cls, text: str, action: NotificationActions, status: NotificationStatus
-    ):
+    def notification(cls, text: str, event: str, status: NotificationStatus):
         symbol, color = {
             NotificationStatus.SUCCESS: ("✔", Colors.BRIGHT_GREEN),
             NotificationStatus.INFO: ("ℹ", Colors.BRIGHT_CYAN),
             NotificationStatus.WARNING: ("▼", Colors.BRIGHT_YELLOW),
             NotificationStatus.ERROR: ("✘", Colors.BRIGHT_RED),
         }.get(status, (">", Colors.BRIGHT_WHITE))
-        prefix = click.style(f"{symbol}({action})", fg=color)
+        prefix = click.style(f"{symbol}({event})", fg=color)
 
         return f"{prefix} {text}"
 
@@ -128,11 +126,9 @@ class Printer:
         cls.echo(text=formatted_tasks)
 
     @classmethod
-    def notification(
-        cls, text: str, action: NotificationActions, status: NotificationStatus
-    ):
+    def notification(cls, text: str, event: str, status: NotificationStatus):
         formatted_notification = Formatter.notification(
-            text=text, action=action, status=status
+            text=text, event=event, status=status
         )
         cls.echo(text=formatted_notification)
 

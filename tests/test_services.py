@@ -74,7 +74,7 @@ def test_daily_tracker_service_get_tasks_with_exclude_status_filter():
 
 
 @freeze_time("2022-01-05")
-def test_daily_tracker_service_get_task():
+def test_daily_tracker_service_update_task():
     date = datetime.now().date()
     daily_tracker_service = DailyTrackerService(date=date)
     _task = daily_tracker_service.add_task(
@@ -85,3 +85,11 @@ def test_daily_tracker_service_get_task():
 
     updated_task = daily_tracker_service.get_task(id=_task.id)
     assert updated_task.status == TaskStatus.DONE
+
+
+@freeze_time("2022-01-06")
+def test_daily_tracker_service_get_date():
+    date = datetime.now().date()
+    daily_tracker_service = DailyTrackerService(date=date)
+
+    assert daily_tracker_service.date == datetime(2022, 1, 6).date()

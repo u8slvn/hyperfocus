@@ -1,9 +1,12 @@
 import re
 from pathlib import Path
 
+import click
 import pytest
 
+from hyperfocus.app import Hyperfocus
 from hyperfocus.database import database
+from hyperfocus.exceptions import HyperfocusException
 from hyperfocus.models import MODELS
 from hyperfocus.services import DailyTrackerService
 from hyperfocus.session import Session
@@ -40,6 +43,21 @@ def cli_session(mocker):
     mocker.patch("hyperfocus.cli.get_current_session", return_value=session)
 
     yield session
+
+
+@pytest.fixture(scope="session")
+def hyperfocus_cli():
+    @click.group(cls=Hyperfocus, invoke_without_command=True)
+    @click.pass_context
+    def dummy_cli(ctx):
+        if not ctx.invoked_subcommand:
+            raise HyperfocusException("Dummy group error")
+
+    @dummy_cli.command()
+    def bar():
+        raise HyperfocusException("Dummy command error", event="foo")
+
+    return dummy_cli
 
 
 class pytest_regex:

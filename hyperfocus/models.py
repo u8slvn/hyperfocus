@@ -1,6 +1,6 @@
 import functools
 from datetime import datetime
-from enum import Enum, IntEnum, auto
+from enum import IntEnum, auto
 from typing import Callable, List
 
 from peewee import (
@@ -15,7 +15,7 @@ from peewee import (
 )
 
 from hyperfocus.database import database
-from hyperfocus.exceptions import DatabaseError, DatabaseNotinitializedError
+from hyperfocus.exceptions import DatabaseError
 
 
 def wrap_methods(decorator: Callable, methods: List[str]):
@@ -38,8 +38,10 @@ def db_error_handler(func):
             return func(*args, **kwargs)
         except OperationalError as error:
             if "no such table" in str(error):
-                raise DatabaseNotinitializedError()
-            raise DatabaseError()
+                raise DatabaseError(
+                    "Database not initialized, please run init command first"
+                )
+            raise DatabaseError("Unexpected database error")
 
     return wrapper
 
@@ -72,7 +74,7 @@ class DailyTracker(BaseModel):
         return self.task_increment + 1
 
 
-@wrap_methods(db_error_handler, ["save"])
+@wrap_methods(db_error_handler, ["save", "get_or_none"])
 class Task(BaseModel):
     """Task model."""
 

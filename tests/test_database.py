@@ -2,7 +2,7 @@ import pytest
 from peewee import OperationalError
 
 from hyperfocus.database import database
-from hyperfocus.exceptions import DatabaseError, DatabaseNotinitializedError
+from hyperfocus.exceptions import DatabaseError
 from hyperfocus.models import MODELS, db_error_handler, wrap_methods
 
 
@@ -20,7 +20,7 @@ def test_database_with_models(tmp_test_dir):
 @pytest.mark.parametrize(
     "exception, expected",
     [
-        (OperationalError("no such table dummy"), DatabaseNotinitializedError),
+        (OperationalError("no such table dummy"), DatabaseError),
         (OperationalError(), DatabaseError),
     ],
 )

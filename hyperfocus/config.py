@@ -5,7 +5,9 @@ from typing import Optional
 import click
 
 from hyperfocus import __app_name__
-from hyperfocus.exceptions import ConfigDoesNotExistError, ConfigError
+from hyperfocus.exceptions import ConfigError
+
+DEFAULT_DB_PATH = Path.home() / f".{__app_name__}.sqlite"
 
 
 class Config:
@@ -35,7 +37,7 @@ class Config:
         """Load config from file."""
         file_path = file_path or cls.file_path
         if not file_path.exists():
-            raise ConfigDoesNotExistError()
+            raise ConfigError("Config does not exist, please run init command first")
         config_parser = configparser.ConfigParser()
         config_parser.read(file_path)
 

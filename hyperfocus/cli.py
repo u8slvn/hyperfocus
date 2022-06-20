@@ -5,18 +5,18 @@ from typing import List
 import click
 
 from hyperfocus import __app_name__, __version__
-from hyperfocus.config import Config
+from hyperfocus.app import Hyperfocus
+from hyperfocus.config import DEFAULT_DB_PATH, Config
 from hyperfocus.database import database
 from hyperfocus.display import (
     Formatter,
-    NotificationActions,
+    NotificationEvents,
     NotificationStatus,
     Printer,
 )
+from hyperfocus.exceptions import TaskError
 from hyperfocus.models import MODELS, Task, TaskStatus
 from hyperfocus.session import Session, get_current_session
-
-DEFAULT_DB_PATH = Path.home() / f".{__app_name__}.sqlite"
 
 
 class _CLIHelper:
@@ -27,32 +27,27 @@ class _CLIHelper:
         exclude = exclude or []
         tasks = self._session.daily_tracker.get_tasks(exclude=exclude)
         if not tasks:
-            Printer.echo("No tasks yet for today...")
+            Printer.echo("No tasks for today...")
             raise click.exceptions.Exit
         Printer.tasks(tasks=tasks, newline=newline)
 
     def get_task(self, id: int) -> Task:
         task = self._session.daily_tracker.get_task(id=id)
         if not task:
-            Printer.notification(
-                text=f"Task {id} does not exist",
-                action=NotificationActions.NOT_FOUND,
-                status=NotificationStatus.ERROR,
-            )
-            raise click.exceptions.Exit(code=1)
+            raise TaskError(f"Task {id} does not exist", event="not found")
 
         return task
 
     def update_task(self, id: int, status: TaskStatus, prompt_text: str):
         if not id:
             self.show_tasks(newline=True, exclude=[status])
-            id = click.prompt(Formatter.prompt(prompt_text), type=int)
+            id = Printer.ask(prompt_text, type=int)
 
         task = self.get_task(id=id)
         if task.status == status.value:
             Printer.notification(
                 text=Formatter.task(task=task, show_prefix=True),
-                action=NotificationActions.NO_CHANGE,
+                event=NotificationEvents.NO_CHANGE,
                 status=NotificationStatus.WARNING,
             )
             raise click.exceptions.Exit
@@ -61,12 +56,14 @@ class _CLIHelper:
         self._session.daily_tracker.update_task(task=task, status=status)
         Printer.notification(
             text=Formatter.task(task=task, show_prefix=True),
-            action=NotificationActions.UPDATED,
+            event=NotificationEvents.UPDATED,
             status=NotificationStatus.SUCCESS,
         )
 
 
-@click.group(invoke_without_command=True, help="Show all the tasks for the day.")
+@click.group(
+    cls=Hyperfocus, invoke_without_command=True, help="Show all the tasks for the day."
+)
 @click.version_option(
     version=__version__, prog_name=__app_name__, help="Show the version."
 )
@@ -78,7 +75,8 @@ def cli(ctx: click.Context, all: bool):
     if ctx.invoked_subcommand in ["init"] or "--help" in sys.argv[1:]:
         return
 
-    session = Session(ctx=ctx)
+    session = Session()
+    session.bind_context(ctx=ctx)
 
     if session.is_a_new_day():
         Printer.echo(f"✨ {Formatter.date(date=session.date)}")
@@ -104,7 +102,7 @@ def init(db_path: str):
     config.save()
     Printer.notification(
         text=f"Config file created successfully in {config.file_path}",
-        action=NotificationActions.INIT,
+        event=NotificationEvents.INIT,
         status=NotificationStatus.INFO,
     )
 
@@ -112,7 +110,7 @@ def init(db_path: str):
     database.init_models(MODELS)
     Printer.notification(
         text=f"Database initialized successfully in {config.db_path}",
-        action=NotificationActions.INIT,
+        event=NotificationEvents.INIT,
         status=NotificationStatus.INFO,
     )
 
@@ -127,7 +125,7 @@ def add():
     task = session.daily_tracker.add_task(title=title, details=details)
     Printer.notification(
         text=Formatter.task(task=task, show_prefix=True),
-        action=NotificationActions.CREATED,
+        event=NotificationEvents.CREATED,
         status=NotificationStatus.SUCCESS,
     )
 

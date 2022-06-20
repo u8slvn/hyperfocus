@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 
 from hyperfocus.config import Config
-from hyperfocus.exceptions import ConfigDoesNotExistError, ConfigError
+from hyperfocus.exceptions import ConfigError
 from tests.conftest import pytest_regex
 
 
@@ -38,7 +38,9 @@ def test_load_config_success(fixtures_dir):
 def test_load_missing_config_fails():
     file_path = Path("dummy/path")
 
-    with pytest.raises(ConfigDoesNotExistError):
+    with pytest.raises(
+        ConfigError, match="Config does not exist, please run init command first"
+    ):
         _ = Config.load(file_path=file_path)
 
 

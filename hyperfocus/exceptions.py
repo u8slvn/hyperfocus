@@ -1,27 +1,26 @@
+from typing import Optional
+
+
 class HyperfocusException(Exception):
     """Hyperfocus base exception."""
 
-    message: str = "Something went wrong"
+    def __init__(self, message: str, event: Optional[str] = None):
+        super().__init__(message)
+        self.message = message
+        self.event = event or "error"
 
-    def __init__(self, message: str = None):
-        super().__init__(message or self.message)
+
+class TaskError(HyperfocusException):
+    pass
 
 
 class ConfigError(HyperfocusException):
-    message = "Config error"
-
-
-class ConfigDoesNotExistError(ConfigError):
-    message = "Config does not exist, please run init command first"
+    pass
 
 
 class DatabaseError(HyperfocusException):
-    message = "Database error"
+    pass
 
 
-class DatabaseDoesNotExists(DatabaseError):
-    message = "Database does not exist, please run init command first"
-
-
-class DatabaseNotinitializedError(DatabaseError):
-    message = "Database not initialized, please run init command first"
+class SessionError(HyperfocusException):
+    pass

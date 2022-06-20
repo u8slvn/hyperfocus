@@ -128,7 +128,7 @@ def test_formatter_notification(status, expected):
     action = "test"
 
     formatted_notification = Formatter.notification(
-        text=text, action=action, status=status
+        text=text, event=action, status=status
     )
 
     assert formatted_notification == expected
