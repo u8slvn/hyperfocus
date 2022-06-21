@@ -2,8 +2,8 @@ import functools
 
 import click
 
-from hyperfocus.exceptions import HyperfocusException
 from hyperfocus import printer
+from hyperfocus.exceptions import HyperfocusException
 
 
 def app_error_handler(func):
@@ -12,9 +12,7 @@ def app_error_handler(func):
         try:
             return func(*args, **kwargs)
         except HyperfocusException as error:
-            printer.error(
-                text=error.message, event=error.event
-            )
+            printer.error(text=error.message, event=error.event)
             raise click.exceptions.Exit(1)
 
     return wrapper

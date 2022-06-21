@@ -18,14 +18,6 @@ def test_main_cmd_version():
     assert expected == result.stdout
 
 
-#
-# def test_call_main_cmd_without_init(cli_config):
-#     result = runner.invoke(cli, [])
-#
-#     assert result.stdout == "Config does not exist, please run init command first\n"
-#     assert result.exit_code == 1
-
-
 def test_init_cmd(mocker, tmp_test_dir):
     db_path = tmp_test_dir / "test_db.sqlite"
     config = Config(db_path=db_path, dir_path=tmp_test_dir)
@@ -43,8 +35,8 @@ def test_init_cmd(mocker, tmp_test_dir):
 
 
 def test_main_cmd_with_no_tasks(cli_session):
-    cli_session.is_a_new_day.return_value = True
-    cli_session.date = datetime(2012, 12, 21, 0, 0)
+    cli_session.daily_tracker.new_day = True
+    cli_session.daily_tracker.date = datetime(2012, 12, 21, 0, 0)
     cli_session.daily_tracker.get_tasks.return_value = []
 
     result = runner.invoke(cli, [])

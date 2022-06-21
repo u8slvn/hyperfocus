@@ -8,7 +8,6 @@ from hyperfocus.app import Hyperfocus
 from hyperfocus.database import database
 from hyperfocus.exceptions import HyperfocusException
 from hyperfocus.models import MODELS
-from hyperfocus.services import DailyTrackerService
 from hyperfocus.session import Session
 
 TEST_DIR = Path(__file__).parent.resolve()
@@ -34,13 +33,16 @@ def test_db(tmp_test_dir):
 
 @pytest.fixture
 def cli_session(mocker):
-    daily_tracker_service = mocker.create_autospec(spec=DailyTrackerService)
-    session = mocker.create_autospec(spec=Session)
-    session.daily_tracker = daily_tracker_service
-    session.is_a_new_day.return_value = False
+    mocker.patch("hyperfocus.session.Config")
+    mocker.patch("hyperfocus.session.database")
+    mocker.patch("hyperfocus.session.DailyTrackerService", auto_spec=True)
+    session = Session()
+    session.daily_tracker.new_day = False
 
     mocker.patch("hyperfocus.cli.Session", return_value=session)
-    mocker.patch("hyperfocus.cli.get_current_session", return_value=session)
+    mocker.patch(
+        "hyperfocus.session.click.get_current_context", **{"return_value.obj": session}
+    )
 
     yield session
 

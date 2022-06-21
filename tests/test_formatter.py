@@ -38,12 +38,12 @@ def test_formatter_task_status(status, expected):
         ({}, "\x1b[37m⬢\x1b[0m Test\x1b[0m ◌"),
         ({"show_prefix": True}, "Task: #1 \x1b[37m⬢\x1b[0m Test\x1b[0m ◌"),
         (
-                {"show_details": True},
-                "\x1b[37m⬢\x1b[0m Test\x1b[0m\nNo details provided ...",
+            {"show_details": True},
+            "\x1b[37m⬢\x1b[0m Test\x1b[0m\nNo details provided ...",
         ),
         (
-                {"show_details": True, "show_prefix": True},
-                "Task: #1 \x1b[37m⬢\x1b[0m Test\x1b[0m\nNo details provided ...",
+            {"show_details": True, "show_prefix": True},
+            "Task: #1 \x1b[37m⬢\x1b[0m Test\x1b[0m\nNo details provided ...",
         ),
     ],
 )
@@ -62,8 +62,8 @@ def test_formatter_task_with_no_details(formatter_args, expected):
         ({"show_prefix": True}, "Task: #1 \x1b[37m⬢\x1b[0m Test\x1b[0m ⊕"),
         ({"show_details": True}, "\x1b[37m⬢\x1b[0m Test\x1b[0m\nHello"),
         (
-                {"show_details": True, "show_prefix": True},
-                "Task: #1 \x1b[37m⬢\x1b[0m Test\x1b[0m\nHello",
+            {"show_details": True, "show_prefix": True},
+            "Task: #1 \x1b[37m⬢\x1b[0m Test\x1b[0m\nHello",
         ),
     ],
 )
