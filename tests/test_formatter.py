@@ -3,7 +3,7 @@ from datetime import datetime
 import pytest
 from freezegun import freeze_time
 
-from hyperfocus.display import Formatter, NotificationStatus
+from hyperfocus import formatter
 from hyperfocus.models import Task, TaskStatus
 
 
@@ -11,7 +11,7 @@ from hyperfocus.models import Task, TaskStatus
 def test_formatter_date(tmp_test_dir):
     date = datetime.now().date()
 
-    pretty_date = Formatter.date(date=date)
+    pretty_date = formatter.date(date=date)
 
     expected = "Sat, 14 January 2012"
     assert pretty_date == expected
@@ -27,7 +27,7 @@ def test_formatter_date(tmp_test_dir):
     ],
 )
 def test_formatter_task_status(status, expected):
-    pretty_status = Formatter.task_status(status)
+    pretty_status = formatter.task_status(status)
 
     assert pretty_status == expected
 
@@ -38,19 +38,19 @@ def test_formatter_task_status(status, expected):
         ({}, "\x1b[37m⬢\x1b[0m Test\x1b[0m ◌"),
         ({"show_prefix": True}, "Task: #1 \x1b[37m⬢\x1b[0m Test\x1b[0m ◌"),
         (
-            {"show_details": True},
-            "\x1b[37m⬢\x1b[0m Test\x1b[0m\nNo details provided ...",
+                {"show_details": True},
+                "\x1b[37m⬢\x1b[0m Test\x1b[0m\nNo details provided ...",
         ),
         (
-            {"show_details": True, "show_prefix": True},
-            "Task: #1 \x1b[37m⬢\x1b[0m Test\x1b[0m\nNo details provided ...",
+                {"show_details": True, "show_prefix": True},
+                "Task: #1 \x1b[37m⬢\x1b[0m Test\x1b[0m\nNo details provided ...",
         ),
     ],
 )
 def test_formatter_task_with_no_details(formatter_args, expected):
     task = Task(id=1, title="Test")
 
-    formatted_task = Formatter.task(task=task, **formatter_args)
+    formatted_task = formatter.task(task=task, **formatter_args)
 
     assert formatted_task == expected
 
@@ -62,15 +62,15 @@ def test_formatter_task_with_no_details(formatter_args, expected):
         ({"show_prefix": True}, "Task: #1 \x1b[37m⬢\x1b[0m Test\x1b[0m ⊕"),
         ({"show_details": True}, "\x1b[37m⬢\x1b[0m Test\x1b[0m\nHello"),
         (
-            {"show_details": True, "show_prefix": True},
-            "Task: #1 \x1b[37m⬢\x1b[0m Test\x1b[0m\nHello",
+                {"show_details": True, "show_prefix": True},
+                "Task: #1 \x1b[37m⬢\x1b[0m Test\x1b[0m\nHello",
         ),
     ],
 )
 def test_formatter_task_with_details(pretty_args, expected):
     task = Task(id=1, title="Test", details="Hello")
 
-    pretty_task = Formatter.task(task=task, **pretty_args)
+    pretty_task = formatter.task(task=task, **pretty_args)
 
     assert pretty_task == expected
 
@@ -82,7 +82,7 @@ def test_formatter_tasks():
         Task(id=3, title="Test", status=TaskStatus.DONE),
     ]
 
-    formatted_tasks = Formatter.tasks(tasks=tasks)
+    formatted_tasks = formatter.tasks(tasks=tasks)
 
     expected = (
         "  #  tasks\n"
@@ -99,7 +99,7 @@ def test_formatter_tasks_with_newline():
         Task(id=1, title="Test"),
     ]
 
-    formatted_tasks = Formatter.tasks(tasks=tasks, newline=True)
+    formatted_tasks = formatter.tasks(tasks=tasks, newline=True)
 
     expected = "  #  tasks\n" "---  --------\n" "  1  \x1b[37m⬢\x1b[0m Test\x1b[0m ◌ \n"
     assert formatted_tasks == expected
@@ -108,7 +108,7 @@ def test_formatter_tasks_with_newline():
 def test_formatter_prompt():
     text = "Test prompt"
 
-    formatter_prompt = Formatter.prompt(text=text)
+    formatter_prompt = formatter.prompt(text=text)
 
     expected = "\x1b[92m?\x1b[0m Test prompt"
     assert formatter_prompt == expected
@@ -117,17 +117,17 @@ def test_formatter_prompt():
 @pytest.mark.parametrize(
     "status, expected",
     [
-        (NotificationStatus.SUCCESS, "\x1b[92m✔(test)\x1b[0m Test"),
-        (NotificationStatus.INFO, "\x1b[96mℹ(test)\x1b[0m Test"),
-        (NotificationStatus.WARNING, "\x1b[93m▼(test)\x1b[0m Test"),
-        (NotificationStatus.ERROR, "\x1b[91m✘(test)\x1b[0m Test"),
+        (formatter.NotificationLevel.SUCCESS, "\x1b[92m✔(test)\x1b[0m Test"),
+        (formatter.NotificationLevel.INFO, "\x1b[96mℹ(test)\x1b[0m Test"),
+        (formatter.NotificationLevel.WARNING, "\x1b[93m▼(test)\x1b[0m Test"),
+        (formatter.NotificationLevel.ERROR, "\x1b[91m✘(test)\x1b[0m Test"),
     ],
 )
 def test_formatter_notification(status, expected):
     text = "Test"
     action = "test"
 
-    formatted_notification = Formatter.notification(
+    formatted_notification = formatter.notification(
         text=text, event=action, status=status
     )
 

@@ -1,6 +1,6 @@
 import functools
 from datetime import datetime
-from enum import IntEnum, auto
+from enum import Enum, IntEnum, auto
 from typing import Callable, List
 
 from peewee import (
@@ -44,6 +44,14 @@ def db_error_handler(func):
             raise DatabaseError("Unexpected database error")
 
     return wrapper
+
+
+class TaskEvents(str, Enum):
+    INIT = "init"
+    NO_CHANGE = "no change"
+    UPDATED = "updated"
+    NOT_FOUND = "not found"
+    CREATED = "created"
 
 
 class TaskStatus(IntEnum):

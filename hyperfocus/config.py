@@ -15,14 +15,13 @@ class Config:
     Default config directory is managed by click.
     """
 
-    _filename = "config.ini"
     _dir_path = Path(click.get_app_dir(__app_name__))
+    _filename = "config.ini"
     file_path = _dir_path / _filename
 
     def __init__(self, db_path: Path, dir_path: Optional[Path] = None):
-        if dir_path:
-            self._dir_path = dir_path or self._dir_path
-            self.file_path = dir_path / self._filename
+        self._dir_path = dir_path or self._dir_path
+        self.file_path = self._dir_path / self._filename
         self.db_path = db_path
 
     def make_directory(self):

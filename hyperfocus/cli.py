@@ -4,18 +4,12 @@ from typing import List
 
 import click
 
-from hyperfocus import __app_name__, __version__
+from hyperfocus import __app_name__, __version__, formatter, printer
 from hyperfocus.app import Hyperfocus
 from hyperfocus.config import DEFAULT_DB_PATH, Config
 from hyperfocus.database import database
-from hyperfocus.display import (
-    Formatter,
-    NotificationEvents,
-    NotificationStatus,
-    Printer,
-)
 from hyperfocus.exceptions import TaskError
-from hyperfocus.models import MODELS, Task, TaskStatus
+from hyperfocus.models import MODELS, Task, TaskEvents, TaskStatus
 from hyperfocus.session import Session, get_current_session
 
 
@@ -27,9 +21,9 @@ class _CLIHelper:
         exclude = exclude or []
         tasks = self._session.daily_tracker.get_tasks(exclude=exclude)
         if not tasks:
-            Printer.echo("No tasks for today...")
+            printer.echo("No tasks for today...")
             raise click.exceptions.Exit
-        Printer.tasks(tasks=tasks, newline=newline)
+        printer.tasks(tasks=tasks, newline=newline)
 
     def get_task(self, id: int) -> Task:
         task = self._session.daily_tracker.get_task(id=id)
@@ -41,23 +35,21 @@ class _CLIHelper:
     def update_task(self, id: int, status: TaskStatus, prompt_text: str):
         if not id:
             self.show_tasks(newline=True, exclude=[status])
-            id = Printer.ask(prompt_text, type=int)
+            id = printer.ask(prompt_text, type=int)
 
         task = self.get_task(id=id)
         if task.status == status.value:
-            Printer.notification(
-                text=Formatter.task(task=task, show_prefix=True),
-                event=NotificationEvents.NO_CHANGE,
-                status=NotificationStatus.WARNING,
+            printer.warning(
+                text=formatter.task(task=task, show_prefix=True),
+                event=TaskEvents.NO_CHANGE,
             )
             raise click.exceptions.Exit
 
         task.status = status
         self._session.daily_tracker.update_task(task=task, status=status)
-        Printer.notification(
-            text=Formatter.task(task=task, show_prefix=True),
-            event=NotificationEvents.UPDATED,
-            status=NotificationStatus.SUCCESS,
+        printer.success(
+            text=formatter.task(task=task, show_prefix=True),
+            event=TaskEvents.UPDATED,
         )
 
 
@@ -79,8 +71,8 @@ def cli(ctx: click.Context, all: bool):
     session.bind_context(ctx=ctx)
 
     if session.is_a_new_day():
-        Printer.echo(f"✨ {Formatter.date(date=session.date)}")
-        Printer.echo("✨ A new day starts, good luck!\n")
+        printer.echo(f"✨ {formatter.date(date=session.date)}")
+        printer.echo("✨ A new day starts, good luck!\n")
 
     if not ctx.invoked_subcommand:
         helper = _CLIHelper(session=session)
@@ -92,7 +84,7 @@ def cli(ctx: click.Context, all: bool):
 @click.option(
     "--db-path",
     default=DEFAULT_DB_PATH,
-    prompt=Formatter.prompt("Database location"),
+    prompt=formatter.prompt("Database location"),
     help="Database file location.",
 )
 def init(db_path: str):
@@ -100,18 +92,16 @@ def init(db_path: str):
     config = Config(db_path=db_path)
     config.make_directory()
     config.save()
-    Printer.notification(
+    printer.info(
         text=f"Config file created successfully in {config.file_path}",
-        event=NotificationEvents.INIT,
-        status=NotificationStatus.INFO,
+        event=TaskEvents.INIT,
     )
 
     database.connect(db_path=config.db_path)
     database.init_models(MODELS)
-    Printer.notification(
+    printer.info(
         text=f"Database initialized successfully in {config.db_path}",
-        event=NotificationEvents.INIT,
-        status=NotificationStatus.INFO,
+        event=TaskEvents.INIT,
     )
 
 
@@ -119,14 +109,13 @@ def init(db_path: str):
 def add():
     session = get_current_session()
 
-    title = Printer.ask("Task title")
-    details = Printer.ask("Task details (optional)", default="", show_default=False)
+    title = printer.ask("Task title")
+    details = printer.ask("Task details (optional)", default="", show_default=False)
 
     task = session.daily_tracker.add_task(title=title, details=details)
-    Printer.notification(
-        text=Formatter.task(task=task, show_prefix=True),
-        event=NotificationEvents.CREATED,
-        status=NotificationStatus.SUCCESS,
+    printer.success(
+        text=formatter.task(task=task, show_prefix=True),
+        event=TaskEvents.CREATED,
     )
 
 
@@ -174,7 +163,7 @@ def show(id: int):
 
     if not id:
         helper.show_tasks(newline=True)
-        id = Printer.ask("Show task details", type=int)
+        id = printer.ask("Show task details", type=int)
 
     task = helper.get_task(id=id)
-    Printer.task(task=task, show_details=True, show_prefix=True)
+    printer.task(task=task, show_details=True, show_prefix=True)
