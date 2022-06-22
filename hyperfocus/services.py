@@ -1,11 +1,11 @@
-from datetime import datetime
+from datetime import date
 from typing import List, Optional
 
 from hyperfocus.models import DailyTracker, Task, TaskStatus
 
 
 class DailyTrackerService:
-    def __init__(self, date: datetime.date):
+    def __init__(self, date: date):
         self._base, self.new_day = DailyTracker.get_or_create(date=date)
 
     @property

@@ -45,6 +45,6 @@ def error(text: str, event: str):
     notification(text=text, event=event, status=formatter.NotificationLevel.ERROR)
 
 
-def ask(text: str, *args, **kwargs) -> Any:
+def ask(text: str, **kwargs) -> Any:
     formatted_prompt = formatter.prompt(text=text)
-    return click.prompt(text=formatted_prompt, *args, **kwargs)
+    return click.prompt(text=formatted_prompt, **kwargs)

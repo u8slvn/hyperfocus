@@ -19,10 +19,10 @@ class Config:
     _filename = "config.ini"
     file_path = _dir_path / _filename
 
-    def __init__(self, db_path: Path, dir_path: Optional[Path] = None):
+    def __init__(self, db_path: str, dir_path: Optional[Path] = None):
         self._dir_path = dir_path or self._dir_path
         self.file_path = self._dir_path / self._filename
-        self.db_path = db_path
+        self.db_path = Path(db_path)
 
     def make_directory(self):
         """Create config directory."""
@@ -41,7 +41,7 @@ class Config:
         config_parser.read(file_path)
 
         return cls(
-            db_path=Path(config_parser["main"]["db_file_path"]),
+            db_path=config_parser["main"]["db_file_path"],
         )
 
     def save(self):

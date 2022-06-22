@@ -1,5 +1,4 @@
 import sys
-from pathlib import Path
 from typing import List
 
 import click
@@ -88,7 +87,6 @@ def cli(ctx: click.Context, all: bool):
     help="Database file location.",
 )
 def init(db_path: str):
-    db_path = Path(db_path)
     config = Config(db_path=db_path)
     config.make_directory()
     config.save()

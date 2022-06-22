@@ -8,6 +8,7 @@ from hyperfocus.app import Hyperfocus
 from hyperfocus.database import database
 from hyperfocus.exceptions import HyperfocusException
 from hyperfocus.models import MODELS
+from hyperfocus.services import DailyTrackerService
 from hyperfocus.session import Session
 
 TEST_DIR = Path(__file__).parent.resolve()
@@ -35,7 +36,7 @@ def test_db(tmp_test_dir):
 def cli_session(mocker):
     mocker.patch("hyperfocus.session.Config")
     mocker.patch("hyperfocus.session.database")
-    mocker.patch("hyperfocus.session.DailyTrackerService", auto_spec=True)
+    mocker.patch("hyperfocus.session.DailyTrackerService", spec=DailyTrackerService)
     session = Session()
     session.daily_tracker.new_day = False
 

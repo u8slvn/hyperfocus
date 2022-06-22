@@ -9,6 +9,9 @@ def test_session_not_in_click_context(mocker):
 
     with pytest.raises(
         SessionError,
-        match="It appears that you are trying to invoke a command outside of the CLI context",
+        match=(
+            "It appears that you are trying to invoke a command outside "
+            "of the CLI context"
+        ),
     ):
         get_current_session()
