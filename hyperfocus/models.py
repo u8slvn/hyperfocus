@@ -19,8 +19,6 @@ from hyperfocus.exceptions import DatabaseError
 
 
 def wrap_methods(decorator: Callable, methods: List[str]):
-    """Wrap class methods with the given decorator."""
-
     def wrapper(cls):
         for method in methods:
             setattr(cls, method, decorator(getattr(cls, method)))
@@ -30,8 +28,6 @@ def wrap_methods(decorator: Callable, methods: List[str]):
 
 
 def db_error_handler(func):
-    """Wrap errors from peewee."""
-
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         try:
@@ -55,8 +51,6 @@ class TaskEvents(str, Enum):
 
 
 class TaskStatus(IntEnum):
-    """Task status."""
-
     TODO = auto()
     BLOCKED = auto()
     DELETED = auto()
@@ -64,16 +58,12 @@ class TaskStatus(IntEnum):
 
 
 class BaseModel(Model):
-    """Base model, every hyperfocus model must inherit from this base."""
-
     class Meta:
         database = database()
 
 
 @wrap_methods(db_error_handler, ["save", "get_or_create"])
 class DailyTracker(BaseModel):
-    """Daily tracker model."""
-
     date = DateField(primary_key=True, default=datetime.now().date())
     task_increment = IntegerField(default=0)
 
@@ -84,8 +74,6 @@ class DailyTracker(BaseModel):
 
 @wrap_methods(db_error_handler, ["save", "get_or_none"])
 class Task(BaseModel):
-    """Task model."""
-
     _id = AutoField()
     id = IntegerField()
     title = TextField()

@@ -11,10 +11,6 @@ DEFAULT_DB_PATH = Path.home() / f".{__app_name__}.sqlite"
 
 
 class Config:
-    """Handle application config.
-    Default config directory is managed by click.
-    """
-
     _dir_path = Path(click.get_app_dir(__app_name__))
     _filename = "config.ini"
     file_path = _dir_path / _filename
@@ -25,7 +21,6 @@ class Config:
         self.db_path = Path(db_path)
 
     def make_directory(self):
-        """Create config directory."""
         try:
             self._dir_path.mkdir(exist_ok=True)
         except OSError:
@@ -33,7 +28,6 @@ class Config:
 
     @classmethod
     def load(cls, file_path: Optional[Path] = None) -> "Config":
-        """Load config from file."""
         file_path = file_path or cls.file_path
         if not file_path.exists():
             raise ConfigError("Config does not exist, please run init command first")
@@ -45,7 +39,6 @@ class Config:
         )
 
     def save(self):
-        """Persist config to file."""
         config_parser = configparser.ConfigParser()
         config_parser["main"] = {
             "db_file_path": str(self.db_path),

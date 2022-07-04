@@ -2,8 +2,6 @@ from typing import Optional
 
 
 class HyperfocusException(Exception):
-    """Hyperfocus base exception."""
-
     def __init__(self, message: str, event: Optional[str] = None):
         super().__init__(message)
         self.message = message
