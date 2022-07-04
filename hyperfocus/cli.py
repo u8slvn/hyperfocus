@@ -24,19 +24,19 @@ class _CLIHelper:
             raise click.exceptions.Exit
         printer.tasks(tasks=tasks, newline=newline)
 
-    def get_task(self, id: int) -> Task:
-        task = self._session.daily_tracker.get_task(id=id)
+    def get_task(self, task_id: int) -> Task:
+        task = self._session.daily_tracker.get_task(task_id=task_id)
         if not task:
-            raise TaskError(f"Task {id} does not exist", event="not found")
+            raise TaskError(f"Task {task_id} does not exist", event="not found")
 
         return task
 
-    def update_task(self, id: int, status: TaskStatus, prompt_text: str):
-        if not id:
+    def update_task(self, task_id: int, status: TaskStatus, prompt_text: str):
+        if not task_id:
             self.show_tasks(newline=True, exclude=[status])
-            id = printer.ask(prompt_text, type=int)
+            task_id = printer.ask(prompt_text, type=int)
 
-        task = self.get_task(id=id)
+        task = self.get_task(task_id=task_id)
         if task.status == status.value:
             printer.warning(
                 text=formatter.task(task=task, show_prefix=True),
@@ -118,50 +118,58 @@ def add():
 
 
 @cli.command(help="Mark a task as done.")
-@click.argument("id", required=False)
-def done(id: int):
+@click.argument("task_id", required=False)
+def done(task_id: int):
     session = get_current_session()
     helper = _CLIHelper(session=session)
 
-    helper.update_task(id=id, status=TaskStatus.DONE, prompt_text="Mark task as done")
+    helper.update_task(
+        task_id=task_id, status=TaskStatus.DONE, prompt_text="Mark task as done"
+    )
 
 
 @cli.command(help="Restore a task at initial status.")
-@click.argument("id", required=False)
-def reset(id: int):
+@click.argument("task_id", required=False)
+def reset(task_id: int):
     session = get_current_session()
     helper = _CLIHelper(session=session)
 
-    helper.update_task(id=id, status=TaskStatus.TODO, prompt_text="Reset task")
+    helper.update_task(
+        task_id=task_id, status=TaskStatus.TODO, prompt_text="Reset task"
+    )
 
 
 @cli.command(help="Mark a task as block.")
-@click.argument("id", required=False)
-def block(id: int):
+@click.argument("task_id", required=False)
+def block(task_id: int):
     session = get_current_session()
     helper = _CLIHelper(session=session)
 
-    helper.update_task(id=id, status=TaskStatus.BLOCKED, prompt_text="Black task")
+    helper.update_task(
+        task_id=task_id, status=TaskStatus.BLOCKED, prompt_text="Black task"
+    )
 
 
 @cli.command(help="Mark a task as deleted (Deleted tasks won't appear in the list).")
-@click.argument("id", required=False)
-def delete(id: int):
+@click.argument("task_id", required=False)
+def delete(task_id: int):
     session = get_current_session()
     helper = _CLIHelper(session=session)
 
-    helper.update_task(id=id, status=TaskStatus.DELETED, prompt_text="Delete task")
+    helper.update_task(
+        task_id=task_id, status=TaskStatus.DELETED, prompt_text="Delete task"
+    )
 
 
 @cli.command(help="Show the details of a task.")
-@click.argument("id", required=False)
-def show(id: int):
+@click.argument("task_id", required=False)
+def show(task_id: int):
     session = get_current_session()
     helper = _CLIHelper(session=session)
 
-    if not id:
+    if not task_id:
         helper.show_tasks(newline=True)
-        id = printer.ask("Show task details", type=int)
+        task_id = printer.ask("Show task details", type=int)
 
-    task = helper.get_task(id=id)
+    task = helper.get_task(task_id=task_id)
     printer.task(task=task, show_details=True, show_prefix=True)

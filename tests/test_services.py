@@ -34,7 +34,7 @@ def test_daily_tracker_service_get_task():
         title="Test add task", details="Test add details"
     )
 
-    task = daily_tracker_service.get_task(id=_task.id)
+    task = daily_tracker_service.get_task(task_id=_task.id)
 
     assert task.id == _task.id
     assert task.title == _task.title
@@ -83,7 +83,7 @@ def test_daily_tracker_service_update_task():
 
     daily_tracker_service.update_task(task=_task, status=TaskStatus.DONE)
 
-    updated_task = daily_tracker_service.get_task(id=_task.id)
+    updated_task = daily_tracker_service.get_task(task_id=_task.id)
     assert updated_task.status == TaskStatus.DONE
 
 

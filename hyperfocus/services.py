@@ -1,11 +1,10 @@
-from datetime import date
 from typing import List, Optional
 
 from hyperfocus.models import DailyTracker, Task, TaskStatus
 
 
 class DailyTrackerService:
-    def __init__(self, date: date):
+    def __init__(self, date):
         self._base, self.new_day = DailyTracker.get_or_create(date=date)
 
     @property
@@ -28,14 +27,15 @@ class DailyTrackerService:
 
         return task
 
-    def get_task(self, id: int) -> Optional[Task]:
-        return Task.get_or_none(Task.id == id, Task.daily_tracker == self._base)
+    def get_task(self, task_id: int) -> Optional[Task]:
+        return Task.get_or_none(Task.id == task_id, Task.daily_tracker == self._base)
 
     def get_tasks(self, exclude: Optional[List[TaskStatus]] = None) -> List:
         exclude = exclude or []
         tasks = [task for task in self._base.tasks if task.status not in exclude]
         return tasks
 
-    def update_task(self, task: Task, status: TaskStatus) -> None:
+    @staticmethod
+    def update_task(task: Task, status: TaskStatus) -> None:
         task.status = status
         task.save()
