@@ -1,17 +1,5 @@
 from click.testing import CliRunner
 
-
-def test_hyperfocus_main(mocker):
-    test_cli = mocker.patch("hyperfocus.cli.cli")
-    from hyperfocus import __main__ as hyperfocus
-
-    mocker.patch.object(hyperfocus, "__name__", "__main__")
-
-    hyperfocus.main()
-
-    test_cli.assert_called_once()
-
-
 runner = CliRunner()
 
 
