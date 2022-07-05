@@ -1,4 +1,5 @@
 import functools
+import re
 
 import click
 
@@ -14,6 +15,11 @@ def app_error_handler(func):
         except HyperfocusException as error:
             printer.error(text=error.message, event=error.event)
             raise click.exceptions.Exit(1)
+        except click.ClickException as error:
+            message = error.message.rstrip(".")
+            split_error_name = re.findall(r"[A-Z][^A-Z]*", type(error).__name__)
+            event = " ".join(split_error_name).lower()
+            printer.error(text=message, event=event)
 
     return wrapper
 
