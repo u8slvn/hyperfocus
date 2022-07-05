@@ -116,7 +116,7 @@ def status():
     helper.show_tasks(newline=True)
 
 
-@cli.command(help="Add a today task.")
+@cli.command(help="add task to current working day")
 @click.argument("title", metavar="<title>", type=click.STRING)
 @click.option("-d", "--details", "add_details", is_flag=True, help="add task details")
 def add(title: str, add_details: bool):
@@ -131,7 +131,7 @@ def add(title: str, add_details: bool):
     )
 
 
-@cli.command(help="Mark a task as done.")
+@cli.command(help="mark task as done")
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
 def done(task_id: int):
     session = get_current_session()
@@ -142,7 +142,7 @@ def done(task_id: int):
     )
 
 
-@cli.command(help="Restore a task at initial status.")
+@cli.command(help="reset task as todo")
 @click.argument("task_id", metavar="<id>", required=False, type=int)
 def reset(task_id: int):
     session = get_current_session()
@@ -151,7 +151,7 @@ def reset(task_id: int):
     helper.update_task(task_id=task_id, status=TaskStatus.TODO, text="Reset task")
 
 
-@cli.command(help="Mark a task as block.")
+@cli.command(help="mark task as blocked")
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
 def block(task_id: int):
     session = get_current_session()
@@ -160,7 +160,7 @@ def block(task_id: int):
     helper.update_task(task_id=task_id, status=TaskStatus.BLOCKED, text="Block task")
 
 
-@cli.command(help="Mark a task as deleted (Deleted tasks won't appear in the list).")
+@cli.command(help="delete given task")
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
 def delete(task_id: int):
     session = get_current_session()
@@ -169,7 +169,7 @@ def delete(task_id: int):
     helper.update_task(task_id=task_id, status=TaskStatus.DELETED, text="Delete task")
 
 
-@cli.command(help="Show task details.")
+@cli.command(help="show task details")
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
 def show(task_id: int):
     session = get_current_session()
@@ -181,7 +181,7 @@ def show(task_id: int):
     printer.task(task=task, show_details=True, show_prefix=True)
 
 
-@cli.command(help="Copy task details into clipboard.")
+@cli.command(help="copy task details into clipboard")
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
 def copy(task_id: int):
     session = get_current_session()
