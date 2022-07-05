@@ -1,7 +1,8 @@
 import sys
-from typing import List
+from typing import List, Optional
 
 import click
+import pyperclip
 
 from hyperfocus import __app_name__, __version__, formatter, printer
 from hyperfocus.app import Hyperfocus
@@ -16,7 +17,19 @@ class _CLIHelper:
     def __init__(self, session: Session):
         self._session = session
 
-    def show_tasks(self, exclude: List[TaskStatus] = None, newline=False) -> None:
+    def check_task_id_or_ask(
+        self, task_id: int, text: str, exclude: Optional[List[TaskStatus]] = None
+    ) -> int:
+        if task_id:
+            return task_id
+
+        exclude = exclude or []
+        self.show_tasks(newline=True, exclude=exclude)
+        return printer.ask(text, type=int)
+
+    def show_tasks(
+        self, exclude: Optional[List[TaskStatus]] = None, newline=False
+    ) -> None:
         exclude = exclude or []
         tasks = self._session.daily_tracker.get_tasks(exclude=exclude)
         if not tasks:
@@ -27,14 +40,14 @@ class _CLIHelper:
     def get_task(self, task_id: int) -> Task:
         task = self._session.daily_tracker.get_task(task_id=task_id)
         if not task:
-            raise TaskError(f"Task {task_id} does not exist", event="not found")
+            raise TaskError(
+                f"Task {task_id} does not exist", event=TaskEvents.NOT_FOUND
+            )
 
         return task
 
-    def update_task(self, task_id: int, status: TaskStatus, prompt_text: str):
-        if not task_id:
-            self.show_tasks(newline=True, exclude=[status])
-            task_id = printer.ask(prompt_text, type=int)
+    def update_task(self, task_id: int, status: TaskStatus, text: str):
+        self.check_task_id_or_ask(task_id=task_id, text=text, exclude=[status])
 
         task = self.get_task(task_id=task_id)
         if task.status == status.value:
@@ -124,7 +137,7 @@ def done(task_id: int):
     helper = _CLIHelper(session=session)
 
     helper.update_task(
-        task_id=task_id, status=TaskStatus.DONE, prompt_text="Mark task as done"
+        task_id=task_id, status=TaskStatus.DONE, text="Mark task as done"
     )
 
 
@@ -134,9 +147,7 @@ def reset(task_id: int):
     session = get_current_session()
     helper = _CLIHelper(session=session)
 
-    helper.update_task(
-        task_id=task_id, status=TaskStatus.TODO, prompt_text="Reset task"
-    )
+    helper.update_task(task_id=task_id, status=TaskStatus.TODO, text="Reset task")
 
 
 @cli.command(help="Mark a task as block.")
@@ -145,9 +156,7 @@ def block(task_id: int):
     session = get_current_session()
     helper = _CLIHelper(session=session)
 
-    helper.update_task(
-        task_id=task_id, status=TaskStatus.BLOCKED, prompt_text="Black task"
-    )
+    helper.update_task(task_id=task_id, status=TaskStatus.BLOCKED, text="Block task")
 
 
 @cli.command(help="Mark a task as deleted (Deleted tasks won't appear in the list).")
@@ -156,20 +165,34 @@ def delete(task_id: int):
     session = get_current_session()
     helper = _CLIHelper(session=session)
 
-    helper.update_task(
-        task_id=task_id, status=TaskStatus.DELETED, prompt_text="Delete task"
-    )
+    helper.update_task(task_id=task_id, status=TaskStatus.DELETED, text="Delete task")
 
 
-@cli.command(help="Show the details of a task.")
+@cli.command(help="Show task details.")
 @click.argument("task_id", required=False)
 def show(task_id: int):
     session = get_current_session()
     helper = _CLIHelper(session=session)
 
-    if not task_id:
-        helper.show_tasks(newline=True)
-        task_id = printer.ask("Show task details", type=int)
+    task_id = helper.check_task_id_or_ask(task_id=task_id, text="Show task details")
 
     task = helper.get_task(task_id=task_id)
     printer.task(task=task, show_details=True, show_prefix=True)
+
+
+@cli.command(help="Copy task details into clipboard.")
+@click.argument("task_id", required=False)
+def copy(task_id: int):
+    session = get_current_session()
+    helper = _CLIHelper(session=session)
+
+    task_id = helper.check_task_id_or_ask(task_id=task_id, text="Copy task details")
+
+    task = helper.get_task(task_id=task_id)
+    if not task.details:
+        raise TaskError(
+            f"Task {task_id} does not have details", event=TaskEvents.NOT_FOUND
+        )
+
+    pyperclip.copy(task.details)
+    printer.success(text=f"Task {task_id} details copied to clipboard", event="copied")

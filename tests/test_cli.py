@@ -214,3 +214,48 @@ def test_show_task_with_no_id_cmd(cli_session):
     )
     assert expected == result.stdout
     assert result.exit_code == 0
+
+
+def test_copy_non_existing_task_cmd(mocker, cli_session):
+    cli_session.daily_tracker.get_task.return_value = None
+    pyperclip = mocker.patch("hyperfocus.cli.pyperclip")
+
+    result = runner.invoke(cli, ["copy", "9"])
+
+    expected = "✘(not found) Task 9 does not exist\n"
+    assert expected == result.stdout
+    assert result.exit_code == 1
+    pyperclip.assert_not_called()
+
+
+def test_copy_task_without_details_cmd(mocker, cli_session):
+    task = Task(id=1, title="Test", details="")
+    cli_session.daily_tracker.get_task.return_value = task
+    pyperclip = mocker.patch("hyperfocus.cli.pyperclip")
+
+    result = runner.invoke(cli, ["copy", "1"])
+
+    expected = "✘(not found) Task 1 does not have details\n"
+    assert expected == result.stdout
+    assert result.exit_code == 1
+    pyperclip.assert_not_called()
+
+
+def test_copy_task_with_details_cmd(mocker, cli_session):
+    task = Task(id=1, title="Test", details=mocker.sentinel.details)
+    cli_session.daily_tracker.get_tasks.return_value = [task]
+    cli_session.daily_tracker.get_task.return_value = task
+    pyperclip = mocker.patch("hyperfocus.cli.pyperclip")
+
+    result = runner.invoke(cli, ["copy"], input="1\n")
+
+    expected = (
+        "  #  tasks\n"
+        "---  --------\n"
+        "  1  ⬢ Test ⊕ \n\n"
+        "? Copy task details: 1\n"
+        "✔(copied) Task 1 details copied to clipboard\n"
+    )
+    assert expected == result.stdout
+    assert result.exit_code == 0
+    pyperclip.copy.assert_called_once_with(mocker.sentinel.details)
