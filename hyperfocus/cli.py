@@ -47,7 +47,9 @@ class _CLIHelper:
         return task
 
     def update_task(self, task_id: int, status: TaskStatus, text: str):
-        self.check_task_id_or_ask(task_id=task_id, text=text, exclude=[status])
+        task_id = self.check_task_id_or_ask(
+            task_id=task_id, text=text, exclude=[status]
+        )
 
         task = self.get_task(task_id=task_id)
         if task.status == status.value:
@@ -131,7 +133,7 @@ def add():
 
 
 @cli.command(help="Mark a task as done.")
-@click.argument("task_id", required=False)
+@click.argument("task_id", required=False, type=int)
 def done(task_id: int):
     session = get_current_session()
     helper = _CLIHelper(session=session)
@@ -142,7 +144,7 @@ def done(task_id: int):
 
 
 @cli.command(help="Restore a task at initial status.")
-@click.argument("task_id", required=False)
+@click.argument("task_id", required=False, type=int)
 def reset(task_id: int):
     session = get_current_session()
     helper = _CLIHelper(session=session)
@@ -151,7 +153,7 @@ def reset(task_id: int):
 
 
 @cli.command(help="Mark a task as block.")
-@click.argument("task_id", required=False)
+@click.argument("task_id", required=False, type=int)
 def block(task_id: int):
     session = get_current_session()
     helper = _CLIHelper(session=session)
@@ -160,7 +162,7 @@ def block(task_id: int):
 
 
 @cli.command(help="Mark a task as deleted (Deleted tasks won't appear in the list).")
-@click.argument("task_id", required=False)
+@click.argument("task_id", required=False, type=int)
 def delete(task_id: int):
     session = get_current_session()
     helper = _CLIHelper(session=session)
@@ -169,7 +171,7 @@ def delete(task_id: int):
 
 
 @cli.command(help="Show task details.")
-@click.argument("task_id", required=False)
+@click.argument("task_id", required=False, type=int)
 def show(task_id: int):
     session = get_current_session()
     helper = _CLIHelper(session=session)
@@ -181,7 +183,7 @@ def show(task_id: int):
 
 
 @cli.command(help="Copy task details into clipboard.")
-@click.argument("task_id", required=False)
+@click.argument("task_id", required=False, type=int)
 def copy(task_id: int):
     session = get_current_session()
     helper = _CLIHelper(session=session)
