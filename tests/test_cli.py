@@ -85,6 +85,7 @@ def test_done_task_cmd(cli_session):
     expected = "✔(updated) Task: #1 ⬢ Test ⊕\n"
     assert expected == result.stdout
     assert result.exit_code == 0
+    cli_session.daily_tracker.get_task.assert_called_once_with(task_id=1)
     cli_session.daily_tracker.update_task.assert_called_once_with(
         status=TaskStatus.DONE, task=task
     )
@@ -110,6 +111,7 @@ def test_reset_task_cmd(cli_session):
     expected = "✔(updated) Task: #1 ⬢ Test ⊕\n"
     assert expected == result.stdout
     assert result.exit_code == 0
+    cli_session.daily_tracker.get_task.assert_called_once_with(task_id=1)
     cli_session.daily_tracker.update_task.assert_called_once_with(
         status=TaskStatus.TODO, task=task
     )
@@ -124,6 +126,7 @@ def test_reset_task_cmd_on_already_reset_task(cli_session):
     expected = "▼(no change) Task: #1 ⬢ Test ⊕\n"
     assert expected == result.stdout
     assert result.exit_code == 0
+    cli_session.daily_tracker.get_task.assert_called_once_with(task_id=1)
     cli_session.daily_tracker.update_task.assert_not_called()
 
 
@@ -136,6 +139,7 @@ def test_block_task_cmd(cli_session):
     expected = "✔(updated) Task: #1 ⬢ Test ⊕\n"
     assert expected == result.stdout
     assert result.exit_code == 0
+    cli_session.daily_tracker.get_task.assert_called_once_with(task_id=1)
     cli_session.daily_tracker.update_task.assert_called_once_with(
         status=TaskStatus.BLOCKED, task=task
     )
@@ -150,6 +154,7 @@ def test_delete_task_cmd(cli_session):
     expected = "✔(updated) Task: #1 ⬢ Test ⊕\n"
     assert expected == result.stdout
     assert result.exit_code == 0
+    cli_session.daily_tracker.get_task.assert_called_once_with(task_id=1)
     cli_session.daily_tracker.update_task.assert_called_once_with(
         status=TaskStatus.DELETED, task=task
     )
@@ -181,6 +186,7 @@ def test_update_task_with_no_id_cmd(cli_session):
     )
     assert expected == result.stdout
     assert result.exit_code == 0
+    cli_session.daily_tracker.get_task.assert_called_once_with(task_id=1)
     cli_session.daily_tracker.update_task.assert_called_once_with(
         status=TaskStatus.TODO, task=task
     )
@@ -195,6 +201,7 @@ def test_show_task_cmd(cli_session):
     expected = "Task: #1 ⬢ Test\n" "Test\n"
     assert expected == result.stdout
     assert result.exit_code == 0
+    cli_session.daily_tracker.get_task.assert_called_once_with(task_id=1)
 
 
 def test_show_task_with_no_id_cmd(cli_session):
@@ -214,6 +221,7 @@ def test_show_task_with_no_id_cmd(cli_session):
     )
     assert expected == result.stdout
     assert result.exit_code == 0
+    cli_session.daily_tracker.get_task.assert_called_once_with(task_id=1)
 
 
 def test_copy_non_existing_task_cmd(mocker, cli_session):
@@ -225,6 +233,7 @@ def test_copy_non_existing_task_cmd(mocker, cli_session):
     expected = "✘(not found) Task 9 does not exist\n"
     assert expected == result.stdout
     assert result.exit_code == 1
+    cli_session.daily_tracker.get_task.assert_called_once_with(task_id=9)
     pyperclip.assert_not_called()
 
 
@@ -238,6 +247,7 @@ def test_copy_task_without_details_cmd(mocker, cli_session):
     expected = "✘(not found) Task 1 does not have details\n"
     assert expected == result.stdout
     assert result.exit_code == 1
+    cli_session.daily_tracker.get_task.assert_called_once_with(task_id=1)
     pyperclip.assert_not_called()
 
 
@@ -258,4 +268,5 @@ def test_copy_task_with_details_cmd(mocker, cli_session):
     )
     assert expected == result.stdout
     assert result.exit_code == 0
+    cli_session.daily_tracker.get_task.assert_called_once_with(task_id=1)
     pyperclip.copy.assert_called_once_with(mocker.sentinel.details)
