@@ -9,7 +9,7 @@ from hyperfocus.app import Hyperfocus
 from hyperfocus.config import DEFAULT_DB_PATH, Config
 from hyperfocus.database import database
 from hyperfocus.exceptions import TaskError
-from hyperfocus.models import MODELS, Task, TaskEvents, TaskStatus
+from hyperfocus.models import MODELS, Task, TaskStatus
 from hyperfocus.session import Session, get_current_session
 
 
@@ -40,9 +40,7 @@ class _CLIHelper:
     def get_task(self, task_id: int) -> Task:
         task = self._session.daily_tracker.get_task(task_id=task_id)
         if not task:
-            raise TaskError(
-                f"Task {task_id} does not exist", event=TaskEvents.NOT_FOUND
-            )
+            raise TaskError(f"Task {task_id} does not exist", event="not found")
 
         return task
 
@@ -55,7 +53,7 @@ class _CLIHelper:
         if task.status == status.value:
             printer.warning(
                 text=formatter.task(task=task, show_prefix=True),
-                event=TaskEvents.NO_CHANGE,
+                event="no change",
             )
             raise click.exceptions.Exit
 
@@ -63,7 +61,7 @@ class _CLIHelper:
         self._session.daily_tracker.update_task(task=task, status=status)
         printer.success(
             text=formatter.task(task=task, show_prefix=True),
-            event=TaskEvents.UPDATED,
+            event="updated",
         )
 
 
@@ -97,14 +95,14 @@ def init(db_path: str):
     config.save()
     printer.info(
         text=f"Config file created successfully in {config.file_path}",
-        event=TaskEvents.INIT,
+        event="init",
     )
 
     database.connect(db_path=config.db_path)
     database.init_models(MODELS)
     printer.info(
         text=f"Database initialized successfully in {config.db_path}",
-        event=TaskEvents.INIT,
+        event="init",
     )
 
 
@@ -127,7 +125,7 @@ def add(title: str, add_details: bool):
     task = session.daily_tracker.add_task(title=title, details=details)
     printer.success(
         text=formatter.task(task=task, show_prefix=True),
-        event=TaskEvents.CREATED,
+        event="created",
     )
 
 
@@ -191,9 +189,7 @@ def copy(task_id: int):
 
     task = helper.get_task(task_id=task_id)
     if not task.details:
-        raise TaskError(
-            f"Task {task_id} does not have details", event=TaskEvents.NOT_FOUND
-        )
+        raise TaskError(f"Task {task_id} does not have details", event="not found")
 
     pyperclip.copy(task.details)
     printer.success(text=f"Task {task_id} details copied to clipboard", event="copied")
