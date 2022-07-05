@@ -67,17 +67,12 @@ class _CLIHelper:
         )
 
 
-@click.group(
-    cls=Hyperfocus, invoke_without_command=True, help="Show all the tasks for the day."
-)
+@click.group(cls=Hyperfocus, help="Minimalist task manager")
 @click.version_option(
-    version=__version__, prog_name=__app_name__, help="Show the version."
-)
-@click.option(
-    "--all", is_flag=True, default=False, help="Show all tasks even the deleted ones."
+    version=__version__, prog_name=__app_name__, help="show the version"
 )
 @click.pass_context
-def cli(ctx: click.Context, all: bool):
+def cli(ctx: click.Context):
     if ctx.invoked_subcommand in ["init"] or "--help" in sys.argv[1:]:
         return
 
@@ -88,18 +83,13 @@ def cli(ctx: click.Context, all: bool):
         printer.echo(f"✨ {formatter.date(date=session.date)}")
         printer.echo("✨ A new day starts, good luck!\n")
 
-    if not ctx.invoked_subcommand:
-        helper = _CLIHelper(session=session)
-        exclude = [] if all else [TaskStatus.DELETED]
-        helper.show_tasks(exclude=exclude)
 
-
-@cli.command(help="Initialize hyperfocus config and database.")
+@cli.command(help="initialize hyperfocus config and database")
 @click.option(
     "--db-path",
     default=DEFAULT_DB_PATH,
     prompt=formatter.prompt("Database location"),
-    help="Database file location.",
+    help="database file location",
 )
 def init(db_path: str):
     config = Config(db_path=db_path)
@@ -118,12 +108,21 @@ def init(db_path: str):
     )
 
 
+@cli.command(help="show current working day status")
+def status():
+    session = get_current_session()
+    helper = _CLIHelper(session=session)
+
+    helper.show_tasks(newline=True)
+
+
 @cli.command(help="Add a today task.")
-def add():
+@click.argument("title", metavar="<title>", type=click.STRING)
+@click.option("-d", "--details", "add_details", is_flag=True, help="add task details")
+def add(title: str, add_details: bool):
     session = get_current_session()
 
-    title = printer.ask("Task title")
-    details = printer.ask("Task details (optional)", default="", show_default=False)
+    details = printer.ask("Task details") if add_details else ""
 
     task = session.daily_tracker.add_task(title=title, details=details)
     printer.success(
@@ -133,7 +132,7 @@ def add():
 
 
 @cli.command(help="Mark a task as done.")
-@click.argument("task_id", required=False, type=int)
+@click.argument("task_id", metavar="<id>", required=False, type=click.INT)
 def done(task_id: int):
     session = get_current_session()
     helper = _CLIHelper(session=session)
@@ -144,7 +143,7 @@ def done(task_id: int):
 
 
 @cli.command(help="Restore a task at initial status.")
-@click.argument("task_id", required=False, type=int)
+@click.argument("task_id", metavar="<id>", required=False, type=int)
 def reset(task_id: int):
     session = get_current_session()
     helper = _CLIHelper(session=session)
@@ -153,7 +152,7 @@ def reset(task_id: int):
 
 
 @cli.command(help="Mark a task as block.")
-@click.argument("task_id", required=False, type=int)
+@click.argument("task_id", metavar="<id>", required=False, type=click.INT)
 def block(task_id: int):
     session = get_current_session()
     helper = _CLIHelper(session=session)
@@ -162,7 +161,7 @@ def block(task_id: int):
 
 
 @cli.command(help="Mark a task as deleted (Deleted tasks won't appear in the list).")
-@click.argument("task_id", required=False, type=int)
+@click.argument("task_id", metavar="<id>", required=False, type=click.INT)
 def delete(task_id: int):
     session = get_current_session()
     helper = _CLIHelper(session=session)
@@ -171,7 +170,7 @@ def delete(task_id: int):
 
 
 @cli.command(help="Show task details.")
-@click.argument("task_id", required=False, type=int)
+@click.argument("task_id", metavar="<id>", required=False, type=click.INT)
 def show(task_id: int):
     session = get_current_session()
     helper = _CLIHelper(session=session)
@@ -183,7 +182,7 @@ def show(task_id: int):
 
 
 @cli.command(help="Copy task details into clipboard.")
-@click.argument("task_id", required=False, type=int)
+@click.argument("task_id", metavar="<id>", required=False, type=click.INT)
 def copy(task_id: int):
     session = get_current_session()
     helper = _CLIHelper(session=session)
