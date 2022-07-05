@@ -1,9 +1,25 @@
 [tool.poetry]
 name = "hyperfocus"
 version = "0.1.0"
-description = ""
+description = "Minimalist task manager."
 authors = ["u8slvn <u8slvn@gmail.com>"]
 license = "MIT"
+readme = "README.md"
+repository = "https://github.com/u8slvn/hyperfocus"
+homepage = "https://github.com/u8slvn/hyperfocus"
+keywords = [
+    "cli",
+    "todo",
+    "todolist",
+    "todo-list",
+    "task-list",
+    "productivity",
+]
+include = [
+    "LICENSE",
+    "CHANGELOG.md",
+    "README.md",
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"
