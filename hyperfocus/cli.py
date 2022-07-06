@@ -1,68 +1,15 @@
 import sys
-from typing import List, Optional
 
 import click
 import pyperclip
 
-from hyperfocus import __app_name__, __version__, formatter, printer
+from hyperfocus import __app_name__, __version__, cli_helper, formatter, printer
 from hyperfocus.app import Hyperfocus
 from hyperfocus.config import DEFAULT_DB_PATH, Config
 from hyperfocus.database import database
 from hyperfocus.exceptions import TaskError
-from hyperfocus.models import MODELS, Task, TaskStatus
+from hyperfocus.models import MODELS, TaskStatus
 from hyperfocus.session import Session, get_current_session
-
-
-class _CLIHelper:
-    def __init__(self, session: Session):
-        self._session = session
-
-    def check_task_id_or_ask(
-        self, task_id: int, text: str, exclude: Optional[List[TaskStatus]] = None
-    ) -> int:
-        if task_id:
-            return task_id
-
-        exclude = exclude or []
-        self.show_tasks(newline=True, exclude=exclude)
-        return printer.ask(text, type=int)
-
-    def show_tasks(
-        self, exclude: Optional[List[TaskStatus]] = None, newline=False
-    ) -> None:
-        exclude = exclude or []
-        tasks = self._session.daily_tracker.get_tasks(exclude=exclude)
-        if not tasks:
-            printer.echo("No tasks for today...")
-            raise click.exceptions.Exit
-        printer.tasks(tasks=tasks, newline=newline)
-
-    def get_task(self, task_id: int) -> Task:
-        task = self._session.daily_tracker.get_task(task_id=task_id)
-        if not task:
-            raise TaskError(f"Task {task_id} does not exist", event="not found")
-
-        return task
-
-    def update_task(self, task_id: int, status: TaskStatus, text: str):
-        task_id = self.check_task_id_or_ask(
-            task_id=task_id, text=text, exclude=[status]
-        )
-
-        task = self.get_task(task_id=task_id)
-        if task.status == status.value:
-            printer.warning(
-                text=formatter.task(task=task, show_prefix=True),
-                event="no change",
-            )
-            raise click.exceptions.Exit
-
-        task.status = status
-        self._session.daily_tracker.update_task(task=task, status=status)
-        printer.success(
-            text=formatter.task(task=task, show_prefix=True),
-            event="updated",
-        )
 
 
 @click.group(cls=Hyperfocus, help="Minimalist task manager")
@@ -77,9 +24,8 @@ def cli(ctx: click.Context):
     session = Session()
     session.bind_context(ctx=ctx)
 
-    if session.is_a_new_day():
-        printer.echo(f"✨ {formatter.date(date=session.date)}")
-        printer.echo("✨ A new day starts, good luck!\n")
+    helper = cli_helper.NewDay(session=session)
+    helper.manage_new_day()
 
 
 @cli.command(help="initialize hyperfocus config and database")
@@ -109,7 +55,7 @@ def init(db_path: str):
 @cli.command(help="show current working day status")
 def status():
     session = get_current_session()
-    helper = _CLIHelper(session=session)
+    helper = cli_helper.Task(session=session)
 
     helper.show_tasks(newline=True)
 
@@ -133,7 +79,7 @@ def add(title: str, add_details: bool):
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
 def done(task_id: int):
     session = get_current_session()
-    helper = _CLIHelper(session=session)
+    helper = cli_helper.Task(session=session)
 
     helper.update_task(
         task_id=task_id, status=TaskStatus.DONE, text="Mark task as done"
@@ -144,7 +90,7 @@ def done(task_id: int):
 @click.argument("task_id", metavar="<id>", required=False, type=int)
 def reset(task_id: int):
     session = get_current_session()
-    helper = _CLIHelper(session=session)
+    helper = cli_helper.Task(session=session)
 
     helper.update_task(task_id=task_id, status=TaskStatus.TODO, text="Reset task")
 
@@ -153,7 +99,7 @@ def reset(task_id: int):
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
 def block(task_id: int):
     session = get_current_session()
-    helper = _CLIHelper(session=session)
+    helper = cli_helper.Task(session=session)
 
     helper.update_task(task_id=task_id, status=TaskStatus.BLOCKED, text="Block task")
 
@@ -162,7 +108,7 @@ def block(task_id: int):
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
 def delete(task_id: int):
     session = get_current_session()
-    helper = _CLIHelper(session=session)
+    helper = cli_helper.Task(session=session)
 
     helper.update_task(task_id=task_id, status=TaskStatus.DELETED, text="Delete task")
 
@@ -171,7 +117,7 @@ def delete(task_id: int):
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
 def show(task_id: int):
     session = get_current_session()
-    helper = _CLIHelper(session=session)
+    helper = cli_helper.Task(session=session)
 
     task_id = helper.check_task_id_or_ask(task_id=task_id, text="Show task details")
 
@@ -183,7 +129,7 @@ def show(task_id: int):
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
 def copy(task_id: int):
     session = get_current_session()
-    helper = _CLIHelper(session=session)
+    helper = cli_helper.Task(session=session)
 
     task_id = helper.check_task_id_or_ask(task_id=task_id, text="Copy task details")
 

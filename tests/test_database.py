@@ -1,20 +1,28 @@
 import pytest
-from peewee import OperationalError
+from peewee import Model, OperationalError
 
-from hyperfocus.database import database
+from hyperfocus.database import _Database
 from hyperfocus.exceptions import DatabaseError
-from hyperfocus.models import MODELS, db_error_handler, wrap_methods
+from hyperfocus.models import db_error_handler, wrap_methods
 
 
 def test_database_with_models(tmp_test_dir):
-    test_db_path = tmp_test_dir / "test_db.sqlite"
+    test_db_path = tmp_test_dir / "testw_db.sqlite"
     test_db_path.touch()
+    db_test = _Database()
 
-    database.connect(db_path=test_db_path)
-    database.init_models(MODELS)
+    class TestModel(Model):
+        class Meta:
+            database = db_test()
 
-    core_test_db = database()
-    assert core_test_db.get_tables() == ["dailytracker", "tasks"]
+    models = [TestModel]
+    db_test.connect(db_path=test_db_path)
+    db_test.init_models(models)
+
+    core_db_test = db_test()
+    assert core_db_test.get_tables() == ["testmodel"]
+    db_test.close()
+    assert core_db_test.close() is False
 
 
 @pytest.mark.parametrize(

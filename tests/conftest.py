@@ -8,7 +8,7 @@ from hyperfocus.app import Hyperfocus
 from hyperfocus.database import database
 from hyperfocus.exceptions import HyperfocusException
 from hyperfocus.models import MODELS
-from hyperfocus.services import DailyTrackerService
+from hyperfocus.services import DailyTrackerService, PastTrackerService
 from hyperfocus.session import Session
 
 TEST_DIR = Path(__file__).parent.resolve()
@@ -25,18 +25,25 @@ def tmp_test_dir(tmpdir_factory):
     return Path(tmpdir_factory.mktemp("hyperfocus"))
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture
 def test_db(tmp_test_dir):
-    db_path = tmp_test_dir / "test_config.ini"
+    db_path = tmp_test_dir / "test_db.sqlite"
     database.connect(db_path=db_path)
     database.init_models(MODELS)
+    yield
+    database.close()
+    db_path.unlink()
 
 
 @pytest.fixture
 def cli_session(mocker):
     mocker.patch("hyperfocus.session.Config")
     mocker.patch("hyperfocus.session.database")
-    mocker.patch("hyperfocus.session.DailyTrackerService", spec=DailyTrackerService)
+    daily_tracker = mocker.Mock(spec=DailyTrackerService)
+    mocker.patch(
+        "hyperfocus.session.DailyTrackerService.today", return_value=daily_tracker
+    )
+    mocker.patch("hyperfocus.session.PastTrackerService", spec=PastTrackerService)
     session = Session()
     session.daily_tracker.new_day = False
 
@@ -63,7 +70,7 @@ def hyperfocus_cli():
     return dummy_cli
 
 
-class pytest_regex:
+class PytestRegex:
     def __init__(self, pattern, flags=0):
         self._regex = re.compile(pattern, flags)
 
@@ -72,3 +79,6 @@ class pytest_regex:
 
     def __repr__(self):
         return self._regex.pattern
+
+
+pytest_regex = PytestRegex

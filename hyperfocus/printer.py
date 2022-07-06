@@ -48,3 +48,8 @@ def error(text: str, event: str):
 def ask(text: str, **kwargs) -> Any:
     formatted_prompt = formatter.prompt(text=text)
     return click.prompt(text=formatted_prompt, **kwargs)
+
+
+def confirm(text: str, **kwargs) -> Any:
+    formatted_prompt = formatter.prompt(text=text)
+    return click.confirm(text=formatted_prompt, **kwargs)

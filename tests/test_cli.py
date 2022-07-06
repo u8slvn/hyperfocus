@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 
 import pytest
 from click.testing import CliRunner
@@ -7,6 +7,7 @@ from hyperfocus import __app_name__, __version__
 from hyperfocus.cli import cli
 from hyperfocus.config import Config
 from hyperfocus.models import Task, TaskStatus
+from hyperfocus.services import DailyTrackerService, NullDailyTrackerService
 from tests.conftest import pytest_regex
 
 runner = CliRunner()
@@ -35,10 +36,11 @@ def test_init_cmd(mocker, tmp_test_dir):
     assert result.exit_code == 0
 
 
-def test_status_cmd_without_tasks(cli_session):
+def test_new_day_without_previous_tasks_review(cli_session):
     cli_session.daily_tracker.new_day = True
-    cli_session.daily_tracker.date = datetime(2012, 12, 21, 0, 0)
+    cli_session.daily_tracker.date = date(2012, 12, 21)
     cli_session.daily_tracker.get_tasks.return_value = []
+    cli_session.past_tracker.get_previous_day.return_value = NullDailyTrackerService()
 
     result = runner.invoke(cli, ["status"])
 
@@ -49,6 +51,68 @@ def test_status_cmd_without_tasks(cli_session):
     )
     assert expected == result.stdout
     assert result.exit_code == 0
+
+
+def test_status_cmd_with_previous_tasks_review(mocker, cli_session):
+    task1 = Task(id=1, title="Test1", details="Test1")
+    task2 = Task(id=2, title="Test2", details="Test2")
+    cli_session.daily_tracker.new_day = True
+    cli_session.daily_tracker.date = date(2012, 12, 21)
+    cli_session.daily_tracker.get_tasks.return_value = [task1]
+    previous_day = mocker.Mock(spec=DailyTrackerService)
+    previous_day.date = date(2012, 12, 15)
+    previous_day.get_tasks.return_value = [task1, task2]
+    cli_session.past_tracker.get_previous_day.return_value = previous_day
+
+    result = runner.invoke(cli, ["status"], input="y\ny\nn\n")
+
+    expected = (
+        "✨ Fri, 21 December 2012\n"
+        "✨ A new day starts, good luck!\n\n"
+        "Unfinished task(s) from Sat, 15 December 2012:\n"
+        "  #  tasks\n"
+        "---  ---------\n"
+        "  1  ⬢ Test1 ⊕\n"
+        "  2  ⬢ Test2 ⊕ \n\n"
+        "? Review 2 unfinished task(s) [Y/n]: y\n"
+        '? Take back task "Test1" for today [y/N]: y\n'
+        '? Take back task "Test2" for today [y/N]: n\n\n'
+        "  #  tasks\n"
+        "---  ---------\n"
+        "  1  ⬢ Test1 ⊕ \n\n"
+    )
+    assert expected == result.stdout
+    assert result.exit_code == 0
+    cli_session.daily_tracker.add_task.assert_called_once_with(
+        title="Test1", details="Test1"
+    )
+
+
+def test_status_cmd_with_previous_tasks_review_dismiss(mocker, cli_session):
+    task1 = Task(id=1, title="Test1", details="Test1")
+    cli_session.daily_tracker.new_day = True
+    cli_session.daily_tracker.date = date(2012, 12, 21)
+    cli_session.daily_tracker.get_tasks.return_value = []
+    previous_day = mocker.Mock(spec=DailyTrackerService)
+    previous_day.date = date(2012, 12, 15)
+    previous_day.get_tasks.return_value = [task1]
+    cli_session.past_tracker.get_previous_day.return_value = previous_day
+
+    result = runner.invoke(cli, ["status"], input="n\n")
+
+    expected = (
+        "✨ Fri, 21 December 2012\n"
+        "✨ A new day starts, good luck!\n\n"
+        "Unfinished task(s) from Sat, 15 December 2012:\n"
+        "  #  tasks\n"
+        "---  ---------\n"
+        "  1  ⬢ Test1 ⊕ \n\n"
+        "? Review 1 unfinished task(s) [Y/n]: n\n"
+        "No tasks for today...\n"
+    )
+    assert expected == result.stdout
+    assert result.exit_code == 0
+    cli_session.daily_tracker.add_task.assert_not_called()
 
 
 def test_status_cmd_without_task(cli_session):

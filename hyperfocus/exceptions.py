@@ -22,3 +22,7 @@ class DatabaseError(HyperfocusException):
 
 class SessionError(HyperfocusException):
     pass
+
+
+class ServiceError(HyperfocusException):
+    pass
