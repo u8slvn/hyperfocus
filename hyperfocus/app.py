@@ -16,7 +16,7 @@ def app_error_handler(func):
             printer.error(text=error.message, event=error.event)
             raise click.exceptions.Exit(1)
         except click.ClickException as error:
-            message = error.message.rstrip(".")
+            message = error.format_message().rstrip(".")
             split_error_name = re.findall(r"[A-Z][^A-Z]*", type(error).__name__)
             event = " ".join(split_error_name).lower()
             printer.error(text=message, event=event)
