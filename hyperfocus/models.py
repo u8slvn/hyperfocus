@@ -1,7 +1,6 @@
 import functools
 from datetime import datetime
 from enum import IntEnum, auto
-from typing import Callable, List
 
 from peewee import (
     AutoField,
@@ -16,15 +15,7 @@ from peewee import (
 
 from hyperfocus.database import database
 from hyperfocus.exceptions import DatabaseError
-
-
-def wrap_methods(decorator: Callable, methods: List[str]):
-    def wrapper(cls):
-        for method in methods:
-            setattr(cls, method, decorator(getattr(cls, method)))
-        return cls
-
-    return wrapper
+from hyperfocus.utils import wrap_methods
 
 
 def db_error_handler(func):

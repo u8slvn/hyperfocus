@@ -5,6 +5,7 @@ import click
 
 from hyperfocus import printer
 from hyperfocus.exceptions import HyperfocusException
+from hyperfocus.utils import wrap_methods
 
 
 def app_error_handler(func):
@@ -24,11 +25,6 @@ def app_error_handler(func):
     return wrapper
 
 
+@wrap_methods(app_error_handler, ["make_context", "invoke"])
 class Hyperfocus(click.Group):
-    @app_error_handler
-    def make_context(self, *args, **kwargs):
-        return super().make_context(*args, **kwargs)
-
-    @app_error_handler
-    def invoke(self, *args, **kwargs):
-        return super().invoke(*args, **kwargs)
+    pass
