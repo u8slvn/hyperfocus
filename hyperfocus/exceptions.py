@@ -8,11 +8,11 @@ class HyperfocusException(Exception):
         self.event = event or "error"
 
 
-class TaskError(HyperfocusException):
+class AliasError(HyperfocusException):
     pass
 
 
-class ConfigError(HyperfocusException):
+class TaskError(HyperfocusException):
     pass
 
 

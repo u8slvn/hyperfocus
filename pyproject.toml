@@ -41,7 +41,7 @@ types-tabulate = "^0.8.5"
 pytest-cov = "^3.0.0"
 
 [tool.poetry.scripts]
-hyf = "hyperfocus.cli:cli"
+hyf = "hyperfocus.cli:hyf"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -49,6 +49,8 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.isort]
 profile = "black"
+combine_as_imports = true
+lines_after_imports = 2
 known_third_party = ["peewee"]
 
 [[tool.mypy.overrides]]

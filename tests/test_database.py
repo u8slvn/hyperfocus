@@ -6,8 +6,8 @@ from hyperfocus.exceptions import DatabaseError
 from hyperfocus.models import db_error_handler, wrap_methods
 
 
-def test_database_with_models(tmp_test_dir):
-    test_db_path = tmp_test_dir / "testw_db.sqlite"
+def test_database_with_models(test_dir):
+    test_db_path = test_dir / "test_db.sqlite"
     test_db_path.touch()
     db_test = _Database()
 
@@ -16,7 +16,8 @@ def test_database_with_models(tmp_test_dir):
             database = db_test()
 
     models = [TestModel]
-    db_test.connect(db_path=test_db_path)
+    db_test.connect(test_db_path)
+
     db_test.init_models(models)
 
     core_db_test = db_test()

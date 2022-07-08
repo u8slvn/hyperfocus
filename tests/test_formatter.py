@@ -8,7 +8,7 @@ from hyperfocus.models import Task, TaskStatus
 
 
 @freeze_time("2012-01-14")
-def test_formatter_date(tmp_test_dir):
+def test_formatter_date():
     date = datetime.now().date()
 
     pretty_date = formatter.date(date=date)

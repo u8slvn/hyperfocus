@@ -4,8 +4,7 @@ import click
 
 from hyperfocus import formatter, printer
 from hyperfocus.exceptions import TaskError
-from hyperfocus.models import Task as TaskModel
-from hyperfocus.models import TaskStatus
+from hyperfocus.models import Task as TaskModel, TaskStatus
 from hyperfocus.session import Session
 
 

@@ -1,4 +1,5 @@
 import re
+import shutil
 from pathlib import Path
 
 import click
@@ -11,6 +12,7 @@ from hyperfocus.models import MODELS
 from hyperfocus.services import DailyTrackerService, PastTrackerService
 from hyperfocus.session import Session
 
+
 TEST_DIR = Path(__file__).parent.resolve()
 FIXTURES_DIR = TEST_DIR / "fixtures"
 
@@ -21,14 +23,20 @@ def fixtures_dir():
 
 
 @pytest.fixture(scope="session")
-def tmp_test_dir(tmpdir_factory):
+def test_dir(tmpdir_factory):
     return Path(tmpdir_factory.mktemp("hyperfocus"))
 
 
+@pytest.fixture(autouse=True)
+def clean_test_dir(test_dir):
+    shutil.rmtree(test_dir)
+    test_dir.mkdir()
+
+
 @pytest.fixture
-def test_db(tmp_test_dir):
-    db_path = tmp_test_dir / "test_db.sqlite"
-    database.connect(db_path=db_path)
+def test_db(test_dir):
+    db_path = test_dir / "test_db.sqlite"
+    database.connect(db_path)
     database.init_models(MODELS)
     yield
     database.close()
