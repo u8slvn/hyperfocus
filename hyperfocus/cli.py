@@ -6,21 +6,21 @@ import click
 import pyperclip
 
 from hyperfocus import __app_name__, __version__, cli_helper, formatter, printer
-from hyperfocus.app import Hyperfocus
 from hyperfocus.config import Config
 from hyperfocus.database import database
 from hyperfocus.exceptions import TaskError
+from hyperfocus.hyf_click import HyfGroup, NotRequired, NotRequiredIf
 from hyperfocus.locations import DEFAULT_DB_PATH
 from hyperfocus.models import MODELS, TaskStatus
 from hyperfocus.session import Session, get_current_session
 
 
-@click.group(cls=Hyperfocus, help="Minimalist task manager")
+@click.group(cls=HyfGroup, help="Minimalist task manager")
 @click.version_option(
     version=__version__, prog_name=__app_name__, help="Show the version"
 )
 @click.pass_context
-def hyf(ctx: click.Context):
+def hyf(ctx: click.Context) -> None:
     if ctx.invoked_subcommand in ["init"] or "--help" in sys.argv[1:]:
         return
 
@@ -38,7 +38,7 @@ def hyf(ctx: click.Context):
     prompt=formatter.prompt("Database location"),
     help="Database file location",
 )
-def init(db_path: str):
+def init(db_path: str) -> None:
     Config.make_directory()
     config = Config()
     config["core.database"] = db_path
@@ -67,7 +67,7 @@ def status():
 @hyf.command(help="Add task to current working day")
 @click.argument("title", metavar="<title>", type=click.STRING)
 @click.option("-d", "--details", "add_details", is_flag=True, help="add task details")
-def add(title: str, add_details: bool):
+def add(title: str, add_details: bool) -> None:
     session = get_current_session()
 
     details = printer.ask("Task details") if add_details else ""
@@ -81,7 +81,7 @@ def add(title: str, add_details: bool):
 
 @hyf.command(help="Mark task as done")
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
-def done(task_id: int):
+def done(task_id: int) -> None:
     session = get_current_session()
     helper = cli_helper.Task(session=session)
 
@@ -92,7 +92,7 @@ def done(task_id: int):
 
 @hyf.command(help="Reset task as todo")
 @click.argument("task_id", metavar="<id>", required=False, type=int)
-def reset(task_id: int):
+def reset(task_id: int) -> None:
     session = get_current_session()
     helper = cli_helper.Task(session=session)
 
@@ -101,7 +101,7 @@ def reset(task_id: int):
 
 @hyf.command(help="Mark task as blocked")
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
-def block(task_id: int):
+def block(task_id: int) -> None:
     session = get_current_session()
     helper = cli_helper.Task(session=session)
 
@@ -110,7 +110,7 @@ def block(task_id: int):
 
 @hyf.command(help="Delete given task")
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
-def delete(task_id: int):
+def delete(task_id: int) -> None:
     session = get_current_session()
     helper = cli_helper.Task(session=session)
 
@@ -119,7 +119,7 @@ def delete(task_id: int):
 
 @hyf.command(help="Show task details")
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
-def show(task_id: int):
+def show(task_id: int) -> None:
     session = get_current_session()
     helper = cli_helper.Task(session=session)
 
@@ -131,7 +131,7 @@ def show(task_id: int):
 
 @hyf.command(help="Copy task details into clipboard")
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
-def copy(task_id: int):
+def copy(task_id: int) -> None:
     session = get_current_session()
     helper = cli_helper.Task(session=session)
 
@@ -145,13 +145,44 @@ def copy(task_id: int):
     printer.success(text=f"Task {task_id} details copied to clipboard", event="copied")
 
 
-# @hyf.command(help="Get and set options")
-# @click.argument("variable", metavar="<variable>", type=click.STRING)
-# @click.argument("value", metavar="<value>", type=click.STRING)
-# # @click.option("--show", is_flag=True, help="Show the whole config")
-# # @click.option("--unset", is_flag=True, help="Unset a variable")
-# def config(variable: str, value: str):
-#     session = get_current_session()
-#
-#     session.config[variable] = value
-#     session.config.save()
+@hyf.command(help="Get and set options")
+@click.option(
+    "--unset",
+    cls=NotRequired,
+    not_required=["value", "list"],
+    is_flag=True,
+    help="Unset a variable",
+)
+@click.option(
+    "--list",
+    cls=NotRequired,
+    not_required=["variable", "value", "unset"],
+    is_flag=True,
+    help="Show the whole config",
+)
+@click.argument(
+    "variable",
+    cls=NotRequiredIf,
+    not_required_if=["list"],
+    metavar="<variable>",
+    type=click.STRING,
+)
+@click.argument(
+    "value",
+    cls=NotRequiredIf,
+    not_required_if=["list", "unset"],
+    metavar="<value>",
+    type=click.STRING,
+)
+def config(variable: str, value: str, list: bool, unset: bool) -> None:
+    session = get_current_session()
+    helper = cli_helper.Config(session=session)
+
+    if list:
+        helper.show_full_config()
+    elif unset:
+        helper.delete_variable(variable=variable)
+    elif not value:
+        helper.show_config(variable=variable)
+    else:
+        helper.edit_variable(variable=variable, value=value)

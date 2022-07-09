@@ -4,7 +4,7 @@ import contextlib
 from copy import deepcopy
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Any
+from typing import Any, Generator
 
 from hyperfocus.config.exceptions import ConfigError
 from hyperfocus.config.file import ConfigFile
@@ -68,6 +68,7 @@ class Config:
     def save(self):
         self._config_file.write(self._config)
 
+    @property
     def variables(self) -> dict[str, str]:
         variables = {}
         for section, settings in self._config.items():
@@ -96,13 +97,15 @@ class Config:
         self.delete_variable(variable=variable)
 
     def __contains__(self, variable: str) -> bool:
-        return variable in self.variables()
+        return variable in self.variables
 
 
 @contextlib.contextmanager
-def check_variable(variable: str):
-    section, index = variable.split(".")
+def check_variable(variable: str) -> Generator:
     try:
+        section, index = variable.split(".")
         yield SimpleNamespace(**{"section": section, "index": index})
+    except ValueError:
+        raise ConfigError(f"Bad format config variable '{variable}'")
     except KeyError:
-        raise ConfigError(f"Variable {variable} does not exist")
+        raise ConfigError(f"Variable '{variable}' does not exist")

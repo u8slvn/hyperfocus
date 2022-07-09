@@ -28,7 +28,7 @@ def db_error_handler(func):
                 raise DatabaseError(
                     "Database not initialized, please run init command first"
                 )
-            raise DatabaseError("Unexpected database error")
+            raise DatabaseError(f"Unexpected database error: {error}")
 
     return wrapper
 

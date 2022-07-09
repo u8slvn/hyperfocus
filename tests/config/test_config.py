@@ -85,12 +85,20 @@ def test_update_config_variables(fixtures_dir):
     assert config.config == expected_config
 
 
-def test_update_config_variables_fails(fixtures_dir):
+def test_update_config_variables_does_not_exist_fails(fixtures_dir):
     config_path = fixtures_dir / "config.ini"
     config = Config.load(config_path, reload=True)
 
     with pytest.raises(ConfigError, match=r"Variable (.*) does not exist"):
         config["dummy.database"] = "/test"
+
+
+def test_update_config_variables_bad_format_fails(fixtures_dir):
+    config_path = fixtures_dir / "config.ini"
+    config = Config.load(config_path, reload=True)
+
+    with pytest.raises(ConfigError, match=r"Bad format config variable (.*)"):
+        config["core.dummy.foo"] = "/test"
 
 
 def test_get_config_variables(fixtures_dir):
@@ -104,12 +112,20 @@ def test_get_config_variables(fixtures_dir):
     assert alias_st == "status"
 
 
-def test_get_config_variables_fails(fixtures_dir):
+def test_get_config_variables_does_not_exist_fails(fixtures_dir):
     config_path = fixtures_dir / "config.ini"
     config = Config.load(config_path, reload=True)
 
-    with pytest.raises(ConfigError, match=r"Variable (.*) does not exist"):
+    with pytest.raises(ConfigError, match=r"Variable '(.*)' does not exist"):
         _ = config["core.dummy"]
+
+
+def test_get_config_variables_bad_format_fails(fixtures_dir):
+    config_path = fixtures_dir / "config.ini"
+    config = Config.load(config_path, reload=True)
+
+    with pytest.raises(ConfigError, match=r"Bad format config variable (.*)"):
+        _ = config["core.dummy.foo"]
 
 
 def test_delete_config_variables(fixtures_dir):
@@ -134,6 +150,14 @@ def test_delete_config_variables_fails(fixtures_dir):
 
     with pytest.raises(ConfigError, match=r"Variable (.*) does not exist"):
         del config["core.dummy"]
+
+
+def test_delete_config_variables_bad_format_fails(fixtures_dir):
+    config_path = fixtures_dir / "config.ini"
+    config = Config.load(config_path, reload=True)
+
+    with pytest.raises(ConfigError, match=r"Bad format config variable (.*)"):
+        del config["core.dummy.foo"]
 
 
 def test_config_contains_variable(fixtures_dir):

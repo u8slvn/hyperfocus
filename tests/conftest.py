@@ -5,9 +5,9 @@ from pathlib import Path
 import click
 import pytest
 
-from hyperfocus.app import Hyperfocus
 from hyperfocus.database import database
 from hyperfocus.exceptions import HyperfocusException
+from hyperfocus.hyf_click import HyfGroup
 from hyperfocus.models import MODELS
 from hyperfocus.services import DailyTrackerService, PastTrackerService
 from hyperfocus.session import Session
@@ -65,17 +65,21 @@ def cli_session(mocker):
 
 @pytest.fixture(scope="session")
 def hyperfocus_cli():
-    @click.group(cls=Hyperfocus, invoke_without_command=True)
+    @click.group(cls=HyfGroup, invoke_without_command=True)
     @click.pass_context
-    def dummy_cli(ctx):
+    def hyperfocus_cli(ctx):
         if not ctx.invoked_subcommand:
             raise HyperfocusException("Dummy group error")
 
-    @dummy_cli.command()
+    @hyperfocus_cli.command()
     def bar():
         raise HyperfocusException("Dummy command error", event="foo")
 
-    return dummy_cli
+    @hyperfocus_cli.command()
+    def alias():
+        click.echo("alias")
+
+    return hyperfocus_cli
 
 
 class PytestRegex:
@@ -83,7 +87,7 @@ class PytestRegex:
         self._regex = re.compile(pattern, flags)
 
     def __eq__(self, actual):
-        return bool(self._regex.match(actual))
+        return bool(self._regex.findall(actual))
 
     def __repr__(self):
         return self._regex.pattern

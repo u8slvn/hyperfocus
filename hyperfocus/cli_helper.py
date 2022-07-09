@@ -1,11 +1,16 @@
-from typing import List, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 import click
 
 from hyperfocus import formatter, printer
 from hyperfocus.exceptions import TaskError
 from hyperfocus.models import Task as TaskModel, TaskStatus
-from hyperfocus.session import Session
+
+
+if TYPE_CHECKING:
+    from hyperfocus.session import Session
 
 
 class CLIHelper:
@@ -15,7 +20,7 @@ class CLIHelper:
 
 class Task(CLIHelper):
     def check_task_id_or_ask(
-        self, task_id: int, text: str, exclude: Optional[List[TaskStatus]] = None
+        self, task_id: int, text: str, exclude: list[TaskStatus] | None = None
     ) -> int:
         if task_id:
             return task_id
@@ -26,7 +31,7 @@ class Task(CLIHelper):
         return printer.ask(text, type=int)
 
     def show_tasks(
-        self, exclude: Optional[List[TaskStatus]] = None, newline=False
+        self, exclude: list[TaskStatus] | None = None, newline=False
     ) -> None:
         exclude = exclude or []
         tasks = self._session.daily_tracker.get_tasks(exclude=exclude)
@@ -93,3 +98,26 @@ class NewDay(CLIHelper):
                     title=task.title, details=task.details
                 )
         printer.echo("")  # Empty line for design
+
+
+class Config(CLIHelper):
+    def show_config(self, variable: str, value: str | None = None) -> None:
+        if value is None:
+            value = self._session.config[variable]
+        printer.echo(f"{variable} = {value}")
+
+    def show_full_config(self) -> None:
+        for variable, value in self._session.config.variables.items():
+            printer.echo(f"{variable} = {value}")
+
+    def _save_config(self):
+        self._session.config.save()
+        printer.success("Config updated", event="success")
+
+    def delete_variable(self, variable: str) -> None:
+        del self._session.config[variable]
+        self._save_config()
+
+    def edit_variable(self, variable: str, value) -> None:
+        self._session.config[variable] = value
+        self._save_config()
