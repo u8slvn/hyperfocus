@@ -2,10 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import click
-
 from hyperfocus import formatter, printer
-from hyperfocus.exceptions import TaskError
+from hyperfocus.exceptions import HyperfocusExit, TaskError
 from hyperfocus.models import Task as TaskModel, TaskStatus
 
 
@@ -37,13 +35,13 @@ class Task(CLIHelper):
         tasks = self._session.daily_tracker.get_tasks(exclude=exclude)
         if not tasks:
             printer.echo("No tasks for today...")
-            raise click.exceptions.Exit
+            raise HyperfocusExit()
         printer.tasks(tasks=tasks, newline=newline)
 
     def get_task(self, task_id: int) -> TaskModel:
         task = self._session.daily_tracker.get_task(task_id=task_id)
         if not task:
-            raise TaskError(f"Task {task_id} does not exist", event="not found")
+            raise TaskError(f"Task {task_id} does not exist.")
 
         return task
 
@@ -58,7 +56,7 @@ class Task(CLIHelper):
                 text=formatter.task(task=task, show_prefix=True),
                 event="no change",
             )
-            raise click.exceptions.Exit
+            raise HyperfocusExit()
 
         task.status = status
         self._session.daily_tracker.update_task(task=task, status=status)

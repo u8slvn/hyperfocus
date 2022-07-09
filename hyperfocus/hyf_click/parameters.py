@@ -36,7 +36,7 @@ class NotRequired(click.Option):
                 raise click.exceptions.UsageError(
                     f"Unnecessary {param.param_type_name} "
                     f"'{param.human_readable_name}' provided",
-                    ctx,
+                    ctx=ctx,
                 )
 
         return super().handle_parse_result(ctx, opts, args)

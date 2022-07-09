@@ -31,12 +31,13 @@ pyperclip = "^1.8.2"
 [tool.poetry.dev-dependencies]
 pytest = "^7.0.0"
 pytest-mock = "^3.7.0"
-pytest-coverage = "^0.0"
+pytest-cov = "^3.0.0"
 mypy = "^0.931"
 freezegun = "^1.1.0"
 types-tabulate = "^0.8.5"
-pytest-cov = "^3.0.0"
 pre-commit = "^2.19.0"
+coverage = {extras = ["toml"], version = "^6.4.1"}
+
 
 [tool.poetry.scripts]
 hyf = "hyperfocus.cli:hyf"
@@ -55,10 +56,3 @@ src_paths = ["hyperfocus", "tests"]
 module=["peewee", "pyperclip"]
 warn_unused_ignores = false
 ignore_missing_imports = true
-
-[tool.coverage.report]
-exclude_lines = [
-    "raise NotImplementedError",
-    "pass",
-    "if TYPE_CHECKING:",
-]

@@ -6,7 +6,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Any, Generator
 
-from hyperfocus.config.exceptions import ConfigError
+from hyperfocus.config.exceptions import ConfigError, ConfigFileError
 from hyperfocus.config.file import ConfigFile
 from hyperfocus.locations import CONFIG_DIR, CONFIG_PATH
 
@@ -56,7 +56,7 @@ class Config:
             config_file = ConfigFile(config_path)
             if not config_file.exists():
                 raise ConfigError(
-                    "Config does not exist, please run init command first"
+                    "Config does not exist, please run init command first."
                 )
 
             _loaded_config = cls()
@@ -66,7 +66,12 @@ class Config:
         return _loaded_config
 
     def save(self):
-        self._config_file.write(self._config)
+        try:
+            self._config_file.write(self._config)
+        except ConfigFileError as error:
+            raise ConfigError(
+                f"Saving config to {self._config_file.path} failed: {error}."
+            )
 
     @property
     def variables(self) -> dict[str, str]:
@@ -106,6 +111,6 @@ def check_variable(variable: str) -> Generator:
         section, index = variable.split(".")
         yield SimpleNamespace(**{"section": section, "index": index})
     except ValueError:
-        raise ConfigError(f"Bad format config variable '{variable}'")
+        raise ConfigError(f"Bad format config variable '{variable}'.")
     except KeyError:
-        raise ConfigError(f"Variable '{variable}' does not exist")
+        raise ConfigError(f"Variable '{variable}' does not exist.")

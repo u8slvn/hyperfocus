@@ -267,29 +267,6 @@ pytest = ">=4.6"
 testing = ["fields", "hunter", "process-tests", "six", "pytest-xdist", "virtualenv"]
 
 [[package]]
-name = "pytest-cover"
-version = "2.0.2"
-description = "Pytest plugin for measuring coverage. Forked from `pytest-cov`."
-category = "dev"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-coverage = ">=3.7.1"
-pytest = ">=2.6.0"
-
-[[package]]
-name = "pytest-coverage"
-version = "0.0"
-description = "Pytest plugin for measuring coverage. Forked from `pytest-cov`."
-category = "dev"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-pytest-cover = "*"
-
-[[package]]
 name = "pytest-mock"
 version = "3.7.0"
 description = "Thin-wrapper around the mock package for easier use with pytest"
@@ -394,7 +371,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "f22210671bdf60ac9763203cb065cdab2655f64bd49547a62f37bc96b98db9f9"
+content-hash = "3c73a722c5ec74d04909cf77e0c88f2cbb401a594b30418d118aba0fd5645dae"
 
 [metadata.files]
 atomicwrites = [
@@ -529,14 +506,6 @@ pytest = [
 pytest-cov = [
     {file = "pytest-cov-3.0.0.tar.gz", hash = "sha256:e7f0f5b1617d2210a2cabc266dfe2f4c75a8d32fb89eafb7ad9d06f6d076d470"},
     {file = "pytest_cov-3.0.0-py3-none-any.whl", hash = "sha256:578d5d15ac4a25e5f961c938b85a05b09fdaae9deef3bb6de9a6e766622ca7a6"},
-]
-pytest-cover = [
-    {file = "pytest-cover-2.0.2.tar.gz", hash = "sha256:5b0f0c2cc143397ebb8f4064689e157908aa18d659095de7fbe4276ee3a787ce"},
-    {file = "pytest_cover-2.0.2-py2.py3-none-any.whl", hash = "sha256:f14434ef80cc1817df1de8f1bb1568d6fe90fd28de31a45234f9a50505d7f293"},
-]
-pytest-coverage = [
-    {file = "pytest-coverage-0.0.tar.gz", hash = "sha256:db6af2cbd7e458c7c9fd2b4207cee75258243c8a81cad31a7ee8cfad5be93c05"},
-    {file = "pytest_coverage-0.0-py2.py3-none-any.whl", hash = "sha256:dedd084c5e74d8e669355325916dc011539b190355021b037242514dee546368"},
 ]
 pytest-mock = [
     {file = "pytest-mock-3.7.0.tar.gz", hash = "sha256:5112bd92cc9f186ee96e1a92efc84969ea494939c3aead39c50f421c4cc69534"},

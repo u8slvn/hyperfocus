@@ -140,10 +140,12 @@ def copy(task_id: int) -> None:
 
     task = helper.get_task(task_id=task_id)
     if not task.details:
-        raise TaskError(f"Task {task_id} does not have details", event="not found")
+        raise TaskError(f"Task {task_id} does not have details.")
 
     pyperclip.copy(task.details)
-    printer.success(text=f"Task {task_id} details copied to clipboard", event="copied")
+    printer.success(
+        text=f"Task {task_id} details copied to clipboard.", event="success"
+    )
 
 
 @hyf.command(help="Get and set options")

@@ -173,7 +173,7 @@ def test_done_cmd_non_existing_task(cli_session, command):
 
     result = runner.invoke(hyf, [command, "9"])
 
-    expected = "✘(not found) Task 9 does not exist\n"
+    expected = "✘(task error) Task 9 does not exist.\n"
     assert expected == result.stdout
     assert result.exit_code == 1
     cli_session.daily_tracker.update_task.assert_not_called()
@@ -290,7 +290,7 @@ def test_copy_non_existing_task_cmd(mocker, cli_session):
 
     result = runner.invoke(hyf, ["copy", "9"])
 
-    expected = "✘(not found) Task 9 does not exist\n"
+    expected = "✘(task error) Task 9 does not exist.\n"
     assert expected == result.stdout
     assert result.exit_code == 1
     cli_session.daily_tracker.get_task.assert_called_once_with(task_id=9)
@@ -304,7 +304,7 @@ def test_copy_task_without_details_cmd(mocker, cli_session):
 
     result = runner.invoke(hyf, ["copy", "1"])
 
-    expected = "✘(not found) Task 1 does not have details\n"
+    expected = "✘(task error) Task 1 does not have details.\n"
     assert expected == result.stdout
     assert result.exit_code == 1
     cli_session.daily_tracker.get_task.assert_called_once_with(task_id=1)
@@ -324,7 +324,7 @@ def test_copy_task_with_details_cmd(mocker, cli_session):
         "---  --------\n"
         "  1  ⬢ Test ⊕ \n\n"
         "? Copy task details: 1\n"
-        "✔(copied) Task 1 details copied to clipboard\n"
+        "✔(success) Task 1 details copied to clipboard.\n"
     )
     assert expected == result.stdout
     assert result.exit_code == 0

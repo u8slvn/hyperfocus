@@ -35,4 +35,4 @@ class ConfigFile:
             with self._path.open("w") as file:
                 self._parser.write(file)
         except OSError as error:
-            raise ConfigFileError(f"Saving config to {self._path} failed: {error}")
+            raise ConfigFileError(str(error)) from error

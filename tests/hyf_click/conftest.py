@@ -5,7 +5,7 @@ from hyperfocus.exceptions import HyperfocusException
 from hyperfocus.hyf_click.core import HyfGroup
 
 
-@pytest.fixture(scope="package")
+@pytest.fixture(scope="session")
 def hyf_group():
     @click.group(cls=HyfGroup, invoke_without_command=True)
     @click.pass_context

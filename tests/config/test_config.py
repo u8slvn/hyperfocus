@@ -55,7 +55,7 @@ def test_config_save_fails(mocker, dummy_dir):
     mocker.patch("hyperfocus.config.config.CONFIG_PATH", config_path)
     config = Config()
 
-    with pytest.raises(ConfigError, match=r"Saving config to (.*) failed:(.*)"):
+    with pytest.raises(ConfigError, match=r"Saving config to (.*) failed: (.*)"):
         config.save()
 
 
