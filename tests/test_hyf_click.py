@@ -24,7 +24,8 @@ def test_hyperfocus_command_handle_errors(hyperfocus_cli):
     assert expected == result.output
 
 
-def test_hyperfocus_command_handle_errors_with_click_error(hyperfocus_cli):
+def test_hyperfocus_command_handle_errors_with_click_error(mocker, hyperfocus_cli):
+    mocker.patch("hyperfocus.cli.Config.load", return_value={})
     result = runner.invoke(hyperfocus_cli, ["hello"])
 
     expected = "✘(usage error) No such command 'hello'\n"
