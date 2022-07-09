@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import click
 
-from hyperfocus.config import Config
+from hyperfocus.config.config import Config
 from hyperfocus.database import database
 from hyperfocus.exceptions import SessionError
 from hyperfocus.services import DailyTrackerService, PastTrackerService

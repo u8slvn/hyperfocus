@@ -6,10 +6,11 @@ import click
 import pyperclip
 
 from hyperfocus import __app_name__, __version__, cli_helper, formatter, printer
-from hyperfocus.config import Config
+from hyperfocus.config.config import Config
 from hyperfocus.database import database
 from hyperfocus.exceptions import TaskError
-from hyperfocus.hyf_click import HyfGroup, NotRequired, NotRequiredIf
+from hyperfocus.hyf_click.core import HyfGroup
+from hyperfocus.hyf_click.parameters import NotRequired, NotRequiredIf
 from hyperfocus.locations import DEFAULT_DB_PATH
 from hyperfocus.models import MODELS, TaskStatus
 from hyperfocus.session import Session, get_current_session

@@ -3,7 +3,7 @@ from __future__ import annotations
 from configparser import ConfigParser
 from pathlib import Path
 
-from hyperfocus.config.exceptions import ConfigError
+from hyperfocus.config.exceptions import ConfigFileError
 
 
 class ConfigFile:
@@ -35,4 +35,4 @@ class ConfigFile:
             with self._path.open("w") as file:
                 self._parser.write(file)
         except OSError as error:
-            raise ConfigError(f"Saving config to {self._path} failed: {error}")
+            raise ConfigFileError(f"Saving config to {self._path} failed: {error}")

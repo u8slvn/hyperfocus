@@ -3,42 +3,11 @@ import re
 import click
 from click.testing import CliRunner
 
-from hyperfocus.hyf_click import NotRequired, NotRequiredIf
+from hyperfocus.hyf_click.parameters import NotRequired, NotRequiredIf
 from tests.conftest import pytest_regex
 
 
 runner = CliRunner()
-
-
-def test_hyperfocus_handle_errors(hyperfocus_cli):
-    result = runner.invoke(hyperfocus_cli, [])
-
-    expected = "✘(error) Dummy group error\n"
-    assert expected == result.output
-
-
-def test_hyperfocus_command_handle_errors(hyperfocus_cli):
-    result = runner.invoke(hyperfocus_cli, ["bar"])
-
-    expected = "✘(foo) Dummy command error\n"
-    assert expected == result.output
-
-
-def test_hyperfocus_command_handle_errors_with_click_error(mocker, hyperfocus_cli):
-    mocker.patch("hyperfocus.cli.Config.load", return_value={})
-    result = runner.invoke(hyperfocus_cli, ["hello"])
-
-    expected = "✘(usage error) No such command 'hello'\n"
-    assert expected == result.output
-
-
-def test_hyperfocus_command_handle_alias(mocker, hyperfocus_cli):
-    config = {"alias.sailas": "alias"}
-    mocker.patch("hyperfocus.cli.Config.load", return_value=config)
-
-    result = runner.invoke(hyperfocus_cli, ["sailas"])
-
-    assert result.output == "alias\n"
 
 
 def test_click_option_not_required_params():

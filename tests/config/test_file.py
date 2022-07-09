@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from hyperfocus.config import ConfigError
+from hyperfocus.config.exceptions import ConfigFileError
 from hyperfocus.config.file import ConfigFile
 from tests.conftest import pytest_regex
 
@@ -70,5 +70,5 @@ def test_config_file_write_fails(dummy_dir):
     config_path = dummy_dir / "config.ini"
     config_file = ConfigFile(config_path)
 
-    with pytest.raises(ConfigError, match=r"Saving config to (.*) failed: (.*)"):
+    with pytest.raises(ConfigFileError, match=r"Saving config to (.*) failed: (.*)"):
         config_file.write(config={})
