@@ -7,16 +7,10 @@ help: ## List all the command helps.
 
 tests: ## Run tests.
 	@poetry run pytest tests/ -x -vv
-
-quality: ## Check quality.
-	@poetry run flake8 hyperfocus tests
-	@poetry run isort --check hyperfocus tests
-	@poetry run black --check hyperfocus tests
 	@poetry run mypy hyperfocus
 
-format: ## Format files.
-	@poetry run isort hyperfocus tests
-	@poetry run black hyperfocus tests
+lint: ## Check linter.
+	@poetry run pre-commit run --all-files
 
 coverage: ## Run tests with coverage.
 	@poetry run pytest tests/ --cov=hyperfocus
@@ -24,4 +18,4 @@ coverage: ## Run tests with coverage.
 coverage-html: ## Run tests with html output coverage.
 	@poetry run pytest tests/ --cov=hyperfocus --cov-report html
 
-ci: quality coverage ## Run CI.
+ci: lint coverage ## Run CI.
