@@ -146,20 +146,6 @@ def copy(task_id: int) -> None:
 
 
 @hyf.command(help="Get and set options")
-@click.option(
-    "--unset",
-    cls=NotRequired,
-    not_required=["value", "list"],
-    is_flag=True,
-    help="Unset a variable",
-)
-@click.option(
-    "--list",
-    cls=NotRequired,
-    not_required=["variable", "value", "unset"],
-    is_flag=True,
-    help="Show the whole config",
-)
 @click.argument(
     "variable",
     cls=NotRequiredIf,
@@ -174,11 +160,26 @@ def copy(task_id: int) -> None:
     metavar="<value>",
     type=click.STRING,
 )
-def config(variable: str, value: str, list: bool, unset: bool) -> None:
+@click.option(
+    "--unset",
+    cls=NotRequired,
+    not_required=["value", "list"],
+    is_flag=True,
+    help="Unset a variable",
+)
+@click.option(
+    "--list",
+    "list_",
+    cls=NotRequired,
+    not_required=["variable", "value", "unset"],
+    is_flag=True,
+    help="Show the whole config",
+)
+def config(variable: str, value: str, list_: bool, unset: bool) -> None:
     session = get_current_session()
     helper = cli_helper.Config(session=session)
 
-    if list:
+    if list_:
         helper.show_full_config()
     elif unset:
         helper.delete_variable(variable=variable)
