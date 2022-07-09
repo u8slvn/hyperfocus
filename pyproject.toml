@@ -49,9 +49,16 @@ build-backend = "poetry.core.masonry.api"
 profile = "black"
 combine_as_imports = true
 lines_after_imports = 2
-known_third_party = ["peewee"]
+src_paths = ["hyperfocus", "tests"]
 
 [[tool.mypy.overrides]]
 module=["peewee", "pyperclip"]
 warn_unused_ignores = false
 ignore_missing_imports = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "raise NotImplementedError",
+    "pass",
+    "if TYPE_CHECKING:",
+]

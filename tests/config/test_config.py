@@ -1,23 +1,17 @@
-from pathlib import Path
-
 import pytest
 
 from hyperfocus.config import Config, ConfigError
 from tests.conftest import pytest_regex
 
 
-def test_config_make_directory(mocker, test_dir):
-    config_dir = test_dir / "test_config_dir"
-    mocker.patch("hyperfocus.config.config.CONFIG_DIR", config_dir)
-
+def test_config_make_directory(locations):
     Config.make_directory()
 
-    assert config_dir.exists()
+    assert locations.CONFIG_DIR.exists()
 
 
-def test_config_make_directory_fails(mocker):
-    config_dir = Path("/dummy/test_config_dir")
-    mocker.patch("hyperfocus.config.config.CONFIG_DIR", config_dir)
+def test_config_make_directory_fails(mocker, dummy_dir):
+    mocker.patch("hyperfocus.config.config.CONFIG_DIR", dummy_dir)
 
     with pytest.raises(ConfigError, match=r"Configuration folder creation failed"):
         Config.make_directory()
@@ -29,14 +23,14 @@ def test_load_config(fixtures_dir):
     loaded_config1 = Config.load(config_path, reload=True)
     loaded_config2 = Config.load()
 
-    expected_database = "/dummy/database.sqlite"
+    expected_database = "/test/database.sqlite"
     assert loaded_config1["core.database"] == expected_database
     assert loaded_config2["core.database"] == expected_database
     assert id(loaded_config1) == id(loaded_config2)
 
 
-def test_load_missing_config_fails():
-    config_path = Path("/dummy/test_config")
+def test_load_missing_config_fails(dummy_dir):
+    config_path = dummy_dir / "config.ini"
 
     with pytest.raises(
         ConfigError, match="Config does not exist, please run init command first"
@@ -44,21 +38,19 @@ def test_load_missing_config_fails():
         _ = Config.load(config_path, reload=True)
 
 
-def test_save_config(mocker, test_dir):
-    config_path = test_dir / "test_config.ini"
-    mocker.patch("hyperfocus.config.config.CONFIG_PATH", config_path)
+def test_save_config(locations):
     config = Config()
 
     config.save()
 
-    assert config_path.exists()
-    with open(config_path) as f:
+    assert locations.CONFIG_PATH.exists()
+    with open(locations.CONFIG_PATH) as f:
         expected = pytest_regex(r"\[core\]\ndatabase = (.*)")
         assert expected == f.read()
 
 
-def test_config_save_fails(mocker):
-    config_path = Path("/dummy/config.test")
+def test_config_save_fails(mocker, dummy_dir):
+    config_path = dummy_dir / "config.ini"
     mocker.patch("hyperfocus.config.config.CONFIG_PATH", config_path)
     config = Config()
 
@@ -70,12 +62,12 @@ def test_update_config_variables(fixtures_dir):
     config_path = fixtures_dir / "config.ini"
     config = Config.load(config_path, reload=True)
 
-    config["core.database"] = "/test"
+    config["core.database"] = "/test/new_config.ini"
     config.update_variable("alias.st", "test")
 
     expected_config = {
         "core": {
-            "database": "/test",
+            "database": "/test/new_config.ini",
         },
         "alias": {
             "st": "test",
@@ -108,7 +100,7 @@ def test_get_config_variables(fixtures_dir):
     database = config["core.database"]
     alias_st = config.get_variable("alias.st")
 
-    assert database == "/dummy/database.sqlite"
+    assert database == "/test/database.sqlite"
     assert alias_st == "status"
 
 

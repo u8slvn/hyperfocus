@@ -24,7 +24,7 @@ def fixtures_dir():
 
 @pytest.fixture(scope="session")
 def test_dir(tmpdir_factory):
-    return Path(tmpdir_factory.mktemp("hyperfocus"))
+    yield Path(tmpdir_factory.mktemp("hyperfocus"))
 
 
 @pytest.fixture(autouse=True)
