@@ -15,9 +15,9 @@ class HyfGroup(click.Group):
             return cmd
 
         config = Config.load()
-        variable = f"alias.{cmd_name}"
-        if variable in config:
-            cmd_name = config[variable]
+        option = f"alias.{cmd_name}"
+        if option in config:
+            cmd_name = config[option]
 
         return click.Group.get_command(self, ctx, cmd_name)
 

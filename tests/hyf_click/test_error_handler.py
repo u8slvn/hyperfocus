@@ -44,7 +44,7 @@ def test_hyf_error_handler_catch_click_usage_error_exec(mocker):
 
     @hyf_error_handler
     def foobar():
-        raise click.exceptions.UsageError("Test usage error", ctx=click_ctx)
+        raise click.exceptions.UsageError("Test usage error.", ctx=click_ctx)
 
     with pytest.raises(HyperfocusExit):
         foobar()

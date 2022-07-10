@@ -99,23 +99,23 @@ class NewDay(CLIHelper):
 
 
 class Config(CLIHelper):
-    def show_config(self, variable: str, value: str | None = None) -> None:
+    def show_config(self, option: str, value: str | None = None) -> None:
         if value is None:
-            value = self._session.config[variable]
-        printer.echo(f"{variable} = {value}")
+            value = self._session.config[option]
+        printer.echo(f"{option} = {value}")
 
     def show_full_config(self) -> None:
-        for variable, value in self._session.config.variables.items():
-            printer.echo(f"{variable} = {value}")
+        for option, value in self._session.config.options.items():
+            printer.echo(f"{option} = {value}")
 
     def _save_config(self):
         self._session.config.save()
         printer.success("Config updated", event="success")
 
-    def delete_variable(self, variable: str) -> None:
-        del self._session.config[variable]
+    def delete_option(self, option: str) -> None:
+        del self._session.config[option]
         self._save_config()
 
-    def edit_variable(self, variable: str, value) -> None:
-        self._session.config[variable] = value
+    def edit_option(self, option: str, value) -> None:
+        self._session.config[option] = value
         self._save_config()

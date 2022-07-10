@@ -45,7 +45,7 @@ class HyfClickExceptionAdapter(HyperfocusException):
             usage = f"{exception.ctx.get_usage()}\n"
 
         return cls(
-            message=f"{exception.format_message()}.",
+            message=exception.format_message(),
             event=un_camel_case(type(exception).__name__),
             exit_code=exception.exit_code,
             msg_prefix=f"{usage}{hint}",

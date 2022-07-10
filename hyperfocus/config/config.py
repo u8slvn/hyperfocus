@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import contextlib
+import re
 from copy import deepcopy
 from pathlib import Path
 from types import SimpleNamespace
@@ -8,6 +9,7 @@ from typing import Any, Generator
 
 from hyperfocus.config.exceptions import ConfigError, ConfigFileError
 from hyperfocus.config.file import ConfigFile
+from hyperfocus.config.policy import AliasPolicy, CorePolicy, OptionPolicies
 from hyperfocus.locations import CONFIG_DIR, CONFIG_PATH
 
 
@@ -21,6 +23,12 @@ class Config:
         },
         "alias": {},
     }
+    _option_policies = OptionPolicies(
+        {
+            "core": CorePolicy,
+            "alias": AliasPolicy,
+        }
+    )
 
     def __init__(self) -> None:
         self._config = deepcopy(self.default_config)
@@ -74,43 +82,47 @@ class Config:
             )
 
     @property
-    def variables(self) -> dict[str, str]:
-        variables = {}
+    def options(self) -> dict[str, str]:
+        options = {}
         for section, settings in self._config.items():
-            variables.update({f"{section}.{i}": v for i, v in settings.items()})
-        return variables
+            options.update({f"{section}.{i}": v for i, v in settings.items()})
+        return options
 
-    def get_variable(self, variable: str) -> str:
-        with check_variable(variable) as config_variable:
-            return self._config[config_variable.section][config_variable.index]
+    def get_option(self, option: str) -> str:
+        with secured_option(option=option) as option:
+            return self._config[option.section][option.key]
 
-    def update_variable(self, variable: str, value: str) -> None:
-        with check_variable(variable) as config_variable:
-            self._config[config_variable.section][config_variable.index] = value
+    def update_option(self, option: str, value: str) -> None:
+        with secured_option(option=option) as option:
+            self._option_policies.check(
+                section=option.section, key=option.key, value=value
+            )
+            self._config[option.section][option.key] = value
 
-    def delete_variable(self, variable: str) -> None:
-        with check_variable(variable) as config_variable:
-            del self._config[config_variable.section][config_variable.index]
+    def delete_option(self, option: str) -> None:
+        with secured_option(option=option) as option:
+            del self._config[option.section][option.key]
 
-    def __getitem__(self, variable: str) -> str:
-        return self.get_variable(variable=variable)
+    def __getitem__(self, option: str) -> str:
+        return self.get_option(option=option)
 
-    def __setitem__(self, variable: str, value: str) -> None:
-        self.update_variable(variable=variable, value=value)
+    def __setitem__(self, option: str, value: str) -> None:
+        self.update_option(option=option, value=value)
 
-    def __delitem__(self, variable: str) -> None:
-        self.delete_variable(variable=variable)
+    def __delitem__(self, option: str) -> None:
+        self.delete_option(option=option)
 
-    def __contains__(self, variable: str) -> bool:
-        return variable in self.variables
+    def __contains__(self, option: str) -> bool:
+        return option in self.options
 
 
 @contextlib.contextmanager
-def check_variable(variable: str) -> Generator:
+def secured_option(option: str) -> Generator:
+    match = re.match(r"^(?P<section>[A-Za-z0-9]+).(?P<key>[A-Za-z0-9]+)$", option)
+    if match is None:
+        raise ConfigError(f"Bad format config option '{option}'.")
+
     try:
-        section, index = variable.split(".")
-        yield SimpleNamespace(**{"section": section, "index": index})
-    except ValueError:
-        raise ConfigError(f"Bad format config variable '{variable}'.")
+        yield SimpleNamespace(**match.groupdict())
     except KeyError:
-        raise ConfigError(f"Variable '{variable}' does not exist.")
+        raise ConfigError(f"Variable '{option}' does not exist.")

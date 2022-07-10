@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+from pathlib import Path
 
 import click
 import pyperclip
@@ -42,7 +43,7 @@ def hyf(ctx: click.Context) -> None:
 def init(db_path: str) -> None:
     Config.make_directory()
     config = Config()
-    config["core.database"] = db_path
+    config["core.database"] = str(Path(db_path).resolve())
     config.save()
     printer.info(
         text=f"Config file created successfully in {config.config_file.path}",
@@ -150,10 +151,10 @@ def copy(task_id: int) -> None:
 
 @hyf.command(help="Get and set options")
 @click.argument(
-    "variable",
+    "option",
     cls=NotRequiredIf,
     not_required_if=["list"],
-    metavar="<variable>",
+    metavar="<option>",
     type=click.STRING,
 )
 @click.argument(
@@ -168,25 +169,29 @@ def copy(task_id: int) -> None:
     cls=NotRequired,
     not_required=["value", "list"],
     is_flag=True,
-    help="Unset a variable",
+    help="Unset an option",
 )
 @click.option(
     "--list",
     "list_",
     cls=NotRequired,
-    not_required=["variable", "value", "unset"],
+    not_required=["option", "value", "unset"],
     is_flag=True,
     help="Show the whole config",
 )
-def config(variable: str, value: str, list_: bool, unset: bool) -> None:
+def config(option: str, value: str, list_: bool, unset: bool) -> None:
     session = get_current_session()
     helper = cli_helper.Config(session=session)
 
     if list_:
         helper.show_full_config()
     elif unset:
-        helper.delete_variable(variable=variable)
+        helper.delete_option(option=option)
     elif not value:
-        helper.show_config(variable=variable)
+        helper.show_config(option=option)
     else:
-        helper.edit_variable(variable=variable, value=value)
+        helper.edit_option(option=option, value=value)
+
+
+def get_commands() -> list[str]:
+    return [command for command in hyf.commands.keys()]

@@ -59,16 +59,17 @@ def test_config_save_fails(mocker, dummy_dir):
         config.save()
 
 
-def test_update_config_variables(fixtures_dir):
+def test_update_config_options(mocker, fixtures_dir, test_dir):
+    mocker.patch("hyperfocus.cli.get_commands", return_value=["test", "delete"])
     config_path = fixtures_dir / "config.ini"
     config = Config.load(config_path, reload=True)
 
-    config["core.database"] = "/test/new_config.ini"
-    config.update_variable("alias.st", "test")
+    config["core.database"] = str(test_dir / "new_config.ini")
+    config.update_option("alias.st", "test")
 
     expected_config = {
         "core": {
-            "database": "/test/new_config.ini",
+            "database": str(test_dir / "new_config.ini"),
         },
         "alias": {
             "st": "test",
@@ -78,7 +79,7 @@ def test_update_config_variables(fixtures_dir):
     assert config.config == expected_config
 
 
-def test_update_config_variables_does_not_exist_fails(fixtures_dir):
+def test_update_config_options_does_not_exist_fails(fixtures_dir):
     config_path = fixtures_dir / "config.ini"
     config = Config.load(config_path, reload=True)
 
@@ -86,26 +87,26 @@ def test_update_config_variables_does_not_exist_fails(fixtures_dir):
         config["dummy.database"] = "/test"
 
 
-def test_update_config_variables_bad_format_fails(fixtures_dir):
+def test_update_config_options_bad_format_fails(fixtures_dir):
     config_path = fixtures_dir / "config.ini"
     config = Config.load(config_path, reload=True)
 
-    with pytest.raises(ConfigError, match=r"Bad format config variable (.*)"):
+    with pytest.raises(ConfigError, match=r"Bad format config option (.*)"):
         config["core.dummy.foo"] = "/test"
 
 
-def test_get_config_variables(fixtures_dir):
+def test_get_config_options(fixtures_dir):
     config_path = fixtures_dir / "config.ini"
     config = Config.load(config_path, reload=True)
 
     database = config["core.database"]
-    alias_st = config.get_variable("alias.st")
+    alias_st = config.get_option("alias.st")
 
     assert database == "/test/database.sqlite"
     assert alias_st == "status"
 
 
-def test_get_config_variables_does_not_exist_fails(fixtures_dir):
+def test_get_config_options_does_not_exist_fails(fixtures_dir):
     config_path = fixtures_dir / "config.ini"
     config = Config.load(config_path, reload=True)
 
@@ -113,20 +114,20 @@ def test_get_config_variables_does_not_exist_fails(fixtures_dir):
         _ = config["core.dummy"]
 
 
-def test_get_config_variables_bad_format_fails(fixtures_dir):
+def test_get_config_options_bad_format_fails(fixtures_dir):
     config_path = fixtures_dir / "config.ini"
     config = Config.load(config_path, reload=True)
 
-    with pytest.raises(ConfigError, match=r"Bad format config variable (.*)"):
+    with pytest.raises(ConfigError, match=r"Bad format config option (.*)"):
         _ = config["core.dummy.foo"]
 
 
-def test_delete_config_variables(fixtures_dir):
+def test_delete_config_options(fixtures_dir):
     config_path = fixtures_dir / "config.ini"
     config = Config.load(config_path, reload=True)
 
     del config["core.database"]
-    config.delete_variable("alias.st")
+    config.delete_option("alias.st")
 
     expected_config = {
         "core": {},
@@ -137,7 +138,7 @@ def test_delete_config_variables(fixtures_dir):
     assert config.config == expected_config
 
 
-def test_delete_config_variables_fails(fixtures_dir):
+def test_delete_config_options_fails(fixtures_dir):
     config_path = fixtures_dir / "config.ini"
     config = Config.load(config_path, reload=True)
 
@@ -145,15 +146,15 @@ def test_delete_config_variables_fails(fixtures_dir):
         del config["core.dummy"]
 
 
-def test_delete_config_variables_bad_format_fails(fixtures_dir):
+def test_delete_config_options_bad_format_fails(fixtures_dir):
     config_path = fixtures_dir / "config.ini"
     config = Config.load(config_path, reload=True)
 
-    with pytest.raises(ConfigError, match=r"Bad format config variable (.*)"):
+    with pytest.raises(ConfigError, match=r"Bad format config option (.*)"):
         del config["core.dummy.foo"]
 
 
-def test_config_contains_variable(fixtures_dir):
+def test_config_contains_option(fixtures_dir):
     config_path = fixtures_dir / "config.ini"
     config = Config.load(config_path, reload=True)
 
