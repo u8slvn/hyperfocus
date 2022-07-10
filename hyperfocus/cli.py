@@ -7,7 +7,12 @@ import click
 
 from hyperfocus import __app_name__, __version__, cli_helper, formatter, printer
 from hyperfocus.commands.cmd_config import ConfigCommand
-from hyperfocus.commands.cmd_task import CopyCommand, ShowTaskCommand, UpdateTaskCommand
+from hyperfocus.commands.cmd_task import (
+    AddTaskCommand,
+    CopyCommand,
+    ShowTaskCommand,
+    UpdateTaskCommand,
+)
 from hyperfocus.config.config import Config
 from hyperfocus.database import database
 from hyperfocus.database.models import MODELS, TaskStatus
@@ -71,14 +76,7 @@ def status():
 @click.option("-d", "--details", "add_details", is_flag=True, help="add task details")
 def add(title: str, add_details: bool) -> None:
     session = get_current_session()
-
-    details = printer.ask("Task details") if add_details else ""
-
-    task = session.daily_tracker.add_task(title=title, details=details)
-    printer.success(
-        text=formatter.task(task=task, show_prefix=True),
-        event="created",
-    )
+    AddTaskCommand(session=session).execute(title=title, add_details=add_details)
 
 
 @hyf.command(help="Mark task as done")

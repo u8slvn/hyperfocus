@@ -133,25 +133,3 @@ def test_status_cmd_with_tasks(cli_session):
     expected = "  #  tasks\n---  --------\n  1  ⬢ Test ⊕ \n\n"
     assert result.stdout == expected
     assert result.exit_code == 0
-
-
-def test_add_cmd_task_without_details(cli_session):
-    task = Task(id=1, title="Test")
-    cli_session.daily_tracker.add_task.return_value = task
-
-    result = runner.invoke(hyf, ["add", "Test"])
-
-    expected = "✔(created) Task: #1 ⬢ Test ◌\n"
-    assert expected == result.stdout
-    assert result.exit_code == 0
-
-
-def test_add_cmd_task_with_details(cli_session):
-    task = Task(id=1, title="Test", details="Test")
-    cli_session.daily_tracker.add_task.return_value = task
-
-    result = runner.invoke(hyf, ["add", "Test", "-d"], input="Test\n")
-
-    expected = "? Task details: Test\n" "✔(created) Task: #1 ⬢ Test ⊕\n"
-    assert expected == result.stdout
-    assert result.exit_code == 0

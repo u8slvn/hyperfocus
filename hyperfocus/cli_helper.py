@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from hyperfocus import formatter, printer
-from hyperfocus.database.models import Task as TaskModel, TaskStatus
-from hyperfocus.exceptions import HyperfocusExit, TaskError
+from hyperfocus.database.models import TaskStatus
+from hyperfocus.exceptions import HyperfocusExit
 
 
 if TYPE_CHECKING:
@@ -17,33 +17,16 @@ class CLIHelper:
 
 
 class Task(CLIHelper):
-    def check_task_id_or_ask(
-        self, task_id: int, text: str, exclude: list[TaskStatus] | None = None
-    ) -> int:
-        if task_id:
-            return task_id
-
-        exclude = exclude or []
-        self.show_tasks(newline=True, exclude=exclude)
-
-        return printer.ask(text, type=int)
-
     def show_tasks(
         self, exclude: list[TaskStatus] | None = None, newline=False
     ) -> None:
         exclude = exclude or []
         tasks = self._session.daily_tracker.get_tasks(exclude=exclude)
+
         if not tasks:
             printer.echo("No tasks for today...")
             raise HyperfocusExit()
         printer.tasks(tasks=tasks, newline=newline)
-
-    def get_task(self, task_id: int) -> TaskModel:
-        task = self._session.daily_tracker.get_task(task_id=task_id)
-        if not task:
-            raise TaskError(f"Task {task_id} does not exist.")
-
-        return task
 
 
 class NewDay(CLIHelper):

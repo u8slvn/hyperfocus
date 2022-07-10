@@ -1,6 +1,7 @@
 import pytest
 
 from hyperfocus.commands.cmd_task import (
+    AddTaskCommand,
     CopyCommand,
     ShowTaskCommand,
     TaskCommand,
@@ -86,6 +87,11 @@ class TestTackCommand:
         with pytest.raises(TaskError, match=r"Task \d does not exist."):
             _ = TaskCommand(test_session).get_task(task_id=1)
 
+    def test_task_command_add_task(self, test_session, daily_tracker):
+        TaskCommand(test_session).add_task(title="Test", details="foobar")
+
+        daily_tracker.add_task.assert_called_once_with(title="Test", details="foobar")
+
     def test_task_command_update_task(self, test_session, daily_tracker):
         task = Task(id=1, title="foo", details="bar")
 
@@ -111,6 +117,28 @@ def task_command(mocker):
 @pytest.fixture
 def formatter(mocker):
     yield mocker.patch("hyperfocus.commands.cmd_task.formatter")
+
+
+class TestAddTaskCommand:
+    def test_update_task_command(self, test_session, task_command, printer, formatter):
+        task_command.add_task.return_value = Task(id=1, title="foo", details="bar")
+
+        AddTaskCommand(test_session).execute(title="Test", add_details=False)
+
+        printer.ask.assert_not_called()
+        formatter.task.assert_called_once()
+        printer.success.assert_called_once()
+
+    def test_update_task_command_with_details(
+        self, test_session, task_command, printer, formatter
+    ):
+        task_command.add_task.return_value = Task(id=1, title="foo", details="bar")
+
+        AddTaskCommand(test_session).execute(title="Test", add_details=True)
+
+        printer.ask.assert_called_once_with("Task details")
+        formatter.task.assert_called_once()
+        printer.success.assert_called_once()
 
 
 class TestUpdateTaskCommand:

@@ -45,8 +45,26 @@ class TaskCommand(HyperfocusCommand):
 
         return task
 
+    def add_task(self, title: str, details: str) -> Task:
+        return self._daily_tracker.add_task(title=title, details=details)
+
     def update_task(self, task: Task, status: TaskStatus) -> None:
         self._daily_tracker.update_task(task=task, status=status)
+
+
+class AddTaskCommand(HyperfocusCommand):
+    def __init__(self, session: Session):
+        super().__init__(session=session)
+        self._task_command = TaskCommand(session)
+
+    def execute(self, title: str, add_details: bool) -> None:
+        details = printer.ask("Task details") if add_details else ""
+
+        task = self._task_command.add_task(title=title, details=details)
+        printer.success(
+            text=formatter.task(task=task, show_prefix=True),
+            event="created",
+        )
 
 
 class UpdateTaskCommand(HyperfocusCommand):
