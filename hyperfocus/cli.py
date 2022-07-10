@@ -7,6 +7,7 @@ import click
 
 from hyperfocus import __app_name__, __version__, cli_helper, formatter, printer
 from hyperfocus.commands.cmd_config import ConfigCommand
+from hyperfocus.commands.cmd_status import StatusCommand
 from hyperfocus.commands.cmd_task import (
     AddTaskCommand,
     CopyCommand,
@@ -66,9 +67,7 @@ def init(db_path: str) -> None:
 @hyf.command(help="Show current working day status")
 def status():
     session = get_current_session()
-    helper = cli_helper.Task(session=session)
-
-    helper.show_tasks(newline=True)
+    StatusCommand(session).execute()
 
 
 @hyf.command(help="Add task to current working day")
@@ -81,7 +80,7 @@ def add(title: str, add_details: bool) -> None:
 
 @hyf.command(help="Mark task as done")
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
-def done(task_id: int) -> None:
+def done(task_id: int | None) -> None:
     session = get_current_session()
     UpdateTaskCommand(session).execute(
         task_id=task_id, status=TaskStatus.DONE, text="Validate task"
@@ -90,7 +89,7 @@ def done(task_id: int) -> None:
 
 @hyf.command(help="Reset task as todo")
 @click.argument("task_id", metavar="<id>", required=False, type=int)
-def reset(task_id: int) -> None:
+def reset(task_id: int | None) -> None:
     session = get_current_session()
     UpdateTaskCommand(session).execute(
         task_id=task_id, status=TaskStatus.TODO, text="Reset task"
@@ -99,7 +98,7 @@ def reset(task_id: int) -> None:
 
 @hyf.command(help="Mark task as blocked")
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
-def block(task_id: int) -> None:
+def block(task_id: int | None) -> None:
     session = get_current_session()
     UpdateTaskCommand(session).execute(
         task_id=task_id, status=TaskStatus.BLOCKED, text="Block task"
@@ -108,7 +107,7 @@ def block(task_id: int) -> None:
 
 @hyf.command(help="Delete given task")
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
-def delete(task_id: int) -> None:
+def delete(task_id: int | None) -> None:
     session = get_current_session()
     UpdateTaskCommand(session).execute(
         task_id=task_id, status=TaskStatus.DELETED, text="Delete task"

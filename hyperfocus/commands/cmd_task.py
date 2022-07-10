@@ -1,13 +1,18 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import pyperclip
 
 from hyperfocus import formatter, printer
-from hyperfocus.commands.core import HyperfocusCommand
-from hyperfocus.database.models import Task, TaskStatus
+from hyperfocus.commands import HyperfocusCommand
 from hyperfocus.exceptions import HyperfocusExit, TaskError
 from hyperfocus.services import DailyTrackerService
-from hyperfocus.session import Session
+
+
+if TYPE_CHECKING:
+    from hyperfocus.database.models import Task, TaskStatus
+    from hyperfocus.session import Session
 
 
 class TaskCommand(HyperfocusCommand):

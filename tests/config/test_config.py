@@ -44,7 +44,7 @@ def test_save_config(locations):
 
     config.save()
 
-    assert locations.CONFIG_PATH.exists()
+    assert config.config_file.exists()
     with open(locations.CONFIG_PATH) as f:
         expected = pytest_regex(r"\[core\]\ndatabase = (.*)")
         assert expected == f.read()

@@ -103,15 +103,15 @@ class TestTackCommand:
 
 
 @pytest.fixture
-def pyperclip(mocker):
-    yield mocker.patch("hyperfocus.commands.cmd_task.pyperclip")
-
-
-@pytest.fixture
 def task_command(mocker):
     task_command = mocker.Mock(spec=TaskCommand, instance=True)
     mocker.patch("hyperfocus.commands.cmd_task.TaskCommand", return_value=task_command)
     return task_command
+
+
+@pytest.fixture
+def pyperclip(mocker):
+    yield mocker.patch("hyperfocus.commands.cmd_task.pyperclip")
 
 
 @pytest.fixture

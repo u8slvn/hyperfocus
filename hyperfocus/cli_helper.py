@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from hyperfocus import formatter, printer
 from hyperfocus.database.models import TaskStatus
-from hyperfocus.exceptions import HyperfocusExit
 
 
 if TYPE_CHECKING:
@@ -14,19 +13,6 @@ if TYPE_CHECKING:
 class CLIHelper:
     def __init__(self, session: Session):
         self._session = session
-
-
-class Task(CLIHelper):
-    def show_tasks(
-        self, exclude: list[TaskStatus] | None = None, newline=False
-    ) -> None:
-        exclude = exclude or []
-        tasks = self._session.daily_tracker.get_tasks(exclude=exclude)
-
-        if not tasks:
-            printer.echo("No tasks for today...")
-            raise HyperfocusExit()
-        printer.tasks(tasks=tasks, newline=newline)
 
 
 class NewDay(CLIHelper):

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from hyperfocus import printer
-from hyperfocus.commands.core import HyperfocusCommand
+from hyperfocus.commands import HyperfocusCommand
 
 
 class ConfigCommand(HyperfocusCommand):
