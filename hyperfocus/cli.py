@@ -4,14 +4,13 @@ import sys
 from pathlib import Path
 
 import click
-import pyperclip
 
 from hyperfocus import __app_name__, __version__, cli_helper, formatter, printer
 from hyperfocus.commands.config import ConfigCommand
+from hyperfocus.commands.task import CopyCommand
 from hyperfocus.config.config import Config
 from hyperfocus.database import database
 from hyperfocus.database.models import MODELS, TaskStatus
-from hyperfocus.exceptions import TaskError
 from hyperfocus.hyf_click.core import HyfGroup
 from hyperfocus.hyf_click.parameters import NotRequired, NotRequiredIf
 from hyperfocus.locations import DEFAULT_DB_PATH
@@ -134,20 +133,9 @@ def show(task_id: int) -> None:
 
 @hyf.command(help="Copy task details into clipboard")
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
-def copy(task_id: int) -> None:
+def copy(task_id: int | None) -> None:
     session = get_current_session()
-    helper = cli_helper.Task(session=session)
-
-    task_id = helper.check_task_id_or_ask(task_id=task_id, text="Copy task details")
-
-    task = helper.get_task(task_id=task_id)
-    if not task.details:
-        raise TaskError(f"Task {task_id} does not have details.")
-
-    pyperclip.copy(task.details)
-    printer.success(
-        text=f"Task {task_id} details copied to clipboard.", event="success"
-    )
+    CopyCommand(session).execute(task_id=task_id)
 
 
 @hyf.command(help="Get and set options")

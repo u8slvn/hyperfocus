@@ -17,4 +17,8 @@ def test_session(mocker):
             self._database.connect(self._config)
             self._date = datetime.datetime(2022, 1, 1)
 
+            # TODO: remove this after refactor
+            self.daily_tracker = mocker.Mock()
+            self.past_tracker = mocker.Mock()
+
     return MockSession()

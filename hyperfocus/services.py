@@ -35,6 +35,11 @@ class DailyTrackerService(DailyTrackerServiceBase):
         self.new_day = new_day
 
     @classmethod
+    def from_date(cls, date: datetime.date):
+        daily_tracker, new_day = DailyTracker.get_or_create(date=date)
+        return cls(daily_tracker=daily_tracker, new_day=new_day)
+
+    @classmethod
     def today(cls) -> "DailyTrackerService":
         now = datetime.datetime.now().date()
         daily_tracker, new_day = DailyTracker.get_or_create(date=now)
