@@ -7,6 +7,7 @@ import click
 import pyperclip
 
 from hyperfocus import __app_name__, __version__, cli_helper, formatter, printer
+from hyperfocus.commands.config import ConfigCommand
 from hyperfocus.config.config import Config
 from hyperfocus.database import database
 from hyperfocus.database.models import MODELS, TaskStatus
@@ -179,18 +180,9 @@ def copy(task_id: int) -> None:
     is_flag=True,
     help="Show the whole config",
 )
-def config(option: str, value: str, list_: bool, unset: bool) -> None:
+def config(option: str | None, value: str | None, list_: bool, unset: bool) -> None:
     session = get_current_session()
-    helper = cli_helper.Config(session=session)
-
-    if list_:
-        helper.show_full_config()
-    elif unset:
-        helper.delete_option(option=option)
-    elif not value:
-        helper.show_config(option=option)
-    else:
-        helper.edit_option(option=option, value=value)
+    ConfigCommand(session).execute(option=option, value=value, list_=list_, unset=unset)
 
 
 def get_commands() -> list[str]:

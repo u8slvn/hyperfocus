@@ -89,19 +89,17 @@ class Config:
         return options
 
     def get_option(self, option: str) -> str:
-        with secured_option(option=option) as option:
-            return self._config[option.section][option.key]
+        with secured_option(option=option) as opt:
+            return self._config[opt.section][opt.key]
 
     def update_option(self, option: str, value: str) -> None:
-        with secured_option(option=option) as option:
-            self._option_policies.check(
-                section=option.section, key=option.key, value=value
-            )
-            self._config[option.section][option.key] = value
+        with secured_option(option=option) as opt:
+            self._option_policies.check(section=opt.section, key=opt.key, value=value)
+            self._config[opt.section][opt.key] = value
 
     def delete_option(self, option: str) -> None:
-        with secured_option(option=option) as option:
-            del self._config[option.section][option.key]
+        with secured_option(option=option) as opt:
+            del self._config[opt.section][opt.key]
 
     def __getitem__(self, option: str) -> str:
         return self.get_option(option=option)

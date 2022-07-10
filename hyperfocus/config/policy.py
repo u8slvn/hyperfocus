@@ -9,7 +9,7 @@ from hyperfocus.config.exceptions import ConfigError
 
 class OptionPolicies:
     def __init__(self, policies: dict[str, Type[OptionPolicy]] | None = None):
-        self._policies = policies
+        self._policies = policies or {}
 
     def check(self, section: str, key: str, value: str) -> None:
         policy = self._policies.get(section)
@@ -18,7 +18,7 @@ class OptionPolicies:
 
 
 class OptionPolicy(ABC):
-    section = None
+    section: str | None = None
 
     def __init__(self, key: str, value: str):
         self.key = key

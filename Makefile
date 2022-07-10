@@ -9,6 +9,9 @@ tests: ## Run tests.
 	@poetry run pytest tests/ -x -vv
 	@poetry run mypy hyperfocus
 
+tests-coverage: coverage ## Run tests.
+	@poetry run mypy hyperfocus
+
 lint: ## Check linter.
 	@poetry run pre-commit run --all-files
 
@@ -18,4 +21,4 @@ coverage: ## Run tests with coverage.
 coverage-html: ## Run tests with html output coverage.
 	@poetry run pytest tests/ --cov=hyperfocus --cov-report html
 
-ci: lint coverage ## Run CI.
+ci: lint tests-coverage ## Run CI.
