@@ -1,6 +1,5 @@
+import datetime
 from datetime import date
-
-from freezegun import freeze_time
 
 from hyperfocus.database.models import DailyTracker, Task, TaskStatus
 from hyperfocus.services import (
@@ -10,9 +9,8 @@ from hyperfocus.services import (
 )
 
 
-@freeze_time("2022-01-01")
 def test_daily_tracker_service_add_task(test_database):
-    daily_tracker = DailyTrackerService.today()
+    daily_tracker = DailyTrackerService.from_date(datetime.date(2022, 1, 1))
 
     task = daily_tracker.add_task(title="Test add task", details="Test add details")
 
@@ -27,9 +25,8 @@ def test_daily_tracker_service_add_task(test_database):
     assert created_daily_tracker.task_increment == 1
 
 
-@freeze_time("2022-01-02")
 def test_daily_tracker_service_get_task(test_database):
-    daily_tracker = DailyTrackerService.today()
+    daily_tracker = DailyTrackerService.from_date(datetime.date(2022, 1, 2))
     _task = daily_tracker.add_task(title="Test add task", details="Test add details")
 
     task = daily_tracker.get_task(task_id=_task.id)
@@ -39,9 +36,8 @@ def test_daily_tracker_service_get_task(test_database):
     assert task.details == _task.details
 
 
-@freeze_time("2022-01-03")
 def test_daily_tracker_service_get_tasks(test_database):
-    daily_tracker = DailyTrackerService.today()
+    daily_tracker = DailyTrackerService.from_date(datetime.date(2022, 1, 3))
     daily_tracker.add_task(title="Test add task 1", details="Test add details 1")
     daily_tracker.add_task(title="Test add task 2", details="Test add details 2")
 
@@ -50,9 +46,8 @@ def test_daily_tracker_service_get_tasks(test_database):
     assert len(tasks) == 2
 
 
-@freeze_time("2022-01-04")
 def test_daily_tracker_service_get_tasks_with_exclude_status_filter(test_database):
-    daily_tracker = DailyTrackerService.today()
+    daily_tracker = DailyTrackerService.from_date(datetime.date(2022, 1, 4))
     daily_tracker.add_task(title="Test add task 1", details="Test add details 1")
     daily_tracker.add_task(title="Test add task 2", details="Test add details 2")
 
@@ -61,9 +56,8 @@ def test_daily_tracker_service_get_tasks_with_exclude_status_filter(test_databas
     assert len(tasks) == 0
 
 
-@freeze_time("2022-01-05")
 def test_daily_tracker_service_update_task(test_database):
-    daily_tracker = DailyTrackerService.today()
+    daily_tracker = DailyTrackerService.from_date(datetime.date(2022, 1, 5))
     _task = daily_tracker.add_task(title="Test add task", details="Test add details")
 
     daily_tracker.update_task(task=_task, status=TaskStatus.DONE)
@@ -72,23 +66,20 @@ def test_daily_tracker_service_update_task(test_database):
     assert updated_task.status == TaskStatus.DONE
 
 
-@freeze_time("2022-01-06")
 def test_daily_tracker_service_get_date(test_database):
-    daily_tracker_service = DailyTrackerService.today()
+    daily_tracker = DailyTrackerService.from_date(datetime.date(2022, 1, 6))
 
-    assert daily_tracker_service.date == date(2022, 1, 6)
+    assert daily_tracker.date == date(2022, 1, 6)
 
 
 def test_past_tracker_get_past_tracker(test_database):
-    with freeze_time("2022-01-10"):
-        daily_tracker = DailyTrackerService.today()
-        task1 = daily_tracker.add_task(title="test 1")
-        task2 = daily_tracker.add_task(title="test 2")
-        daily_tracker.update_task(task=task1, status=TaskStatus.DONE)
-        daily_tracker.update_task(task=task2, status=TaskStatus.BLOCKED)
-    with freeze_time("2022-01-11"):
-        daily_tracker = DailyTrackerService.today()
-        past_tracker = PastTrackerService(current_day=daily_tracker)
+    daily_tracker = DailyTrackerService.from_date(datetime.date(2022, 1, 10))
+    task1 = daily_tracker.add_task(title="test 1")
+    task2 = daily_tracker.add_task(title="test 2")
+    daily_tracker.update_task(task=task1, status=TaskStatus.DONE)
+    daily_tracker.update_task(task=task2, status=TaskStatus.BLOCKED)
+    daily_tracker = DailyTrackerService.from_date(datetime.date(2022, 1, 11))
+    past_tracker = PastTrackerService(current_day=daily_tracker)
 
     previous_day = past_tracker.get_previous_day()
 
@@ -101,9 +92,8 @@ def test_past_tracker_get_past_tracker(test_database):
 
 
 def test_past_tracker_get_past_tracker_return_null_daily_tracker(test_database):
-    with freeze_time("2022-01-18"):
-        daily_tracker = DailyTrackerService.today()
-        past_tracker = PastTrackerService(current_day=daily_tracker)
+    daily_tracker = DailyTrackerService.from_date(datetime.date(2022, 1, 18))
+    past_tracker = PastTrackerService(current_day=daily_tracker)
 
     previous_day = past_tracker.get_previous_day()
 

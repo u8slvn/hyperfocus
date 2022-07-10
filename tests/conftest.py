@@ -1,10 +1,12 @@
+import datetime
 import re
 import shutil
 from pathlib import Path
 
 import pytest
 
-from hyperfocus.database import database
+from hyperfocus.config.config import Config
+from hyperfocus.database import _Database, database
 from hyperfocus.database.models import MODELS
 from hyperfocus.services import DailyTrackerService, PastTrackerService
 from hyperfocus.session import Session
@@ -72,3 +74,17 @@ def test_database(test_dir):
     yield
     database.close()
     db_path.unlink()
+
+
+@pytest.fixture
+def test_session(mocker):
+    class MockSession(Session):
+        _database = mocker.Mock(spec=_Database, instance=True)
+
+        def __init__(self):
+            self._config = mocker.MagicMock(spec=Config, instance=True)
+            self._database.connect(self._config)
+            self._date = datetime.datetime(2022, 1, 1)
+            self._callback_commands = []
+
+    return MockSession()

@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import datetime
+from typing import Callable
 
 import click
 
 from hyperfocus.config.config import Config
 from hyperfocus.database import database
 from hyperfocus.exceptions import SessionError
-from hyperfocus.services import DailyTrackerService, PastTrackerService
 
 
 class Session:
@@ -17,16 +17,7 @@ class Session:
         self._config = Config.load()
         self._database.connect(self._config["core.database"])
         self._date = datetime.datetime.now()
-
-        # TODO: remove services from session after commands refactor
-        self.daily_tracker: DailyTrackerService = DailyTrackerService.today()
-        self.past_tracker: PastTrackerService = PastTrackerService(
-            current_day=self.daily_tracker
-        )
-
-    # TODO: remove with services in __init__
-    def is_a_new_day(self) -> bool:
-        return self.daily_tracker.new_day
+        self._callback_commands: list[Callable] = []
 
     @property
     def config(self) -> Config:
@@ -34,8 +25,14 @@ class Session:
 
     @property
     def date(self) -> datetime.date:
-        # TODO: replace with self._date.date() after above refactor
-        return self.daily_tracker.date
+        return self._date.date()
+
+    @property
+    def callback_commands(self) -> list[Callable]:
+        return self._callback_commands
+
+    def register_callback(self, callback: Callable) -> None:
+        self._callback_commands.append(callback)
 
     def bind_context(self, ctx: click.Context) -> None:
         ctx.obj = self

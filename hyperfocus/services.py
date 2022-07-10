@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 from abc import ABC, abstractmethod
 from typing import List, Optional
@@ -12,15 +14,15 @@ class DailyTrackerServiceBase(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def add_task(self, title: str, details: Optional[str] = None) -> Task:
+    def add_task(self, title: str, details: str | None = None) -> Task:
         raise NotImplementedError
 
     @abstractmethod
-    def get_task(self, task_id: int) -> Optional[Task]:
+    def get_task(self, task_id: int) -> Task | None:
         raise NotImplementedError
 
     @abstractmethod
-    def get_tasks(self, exclude: Optional[List[TaskStatus]] = None) -> List[Task]:
+    def get_tasks(self, exclude: list[TaskStatus] | None = None) -> list[Task]:
         raise NotImplementedError
 
     @staticmethod
@@ -30,21 +32,14 @@ class DailyTrackerServiceBase(ABC):
 
 
 class DailyTrackerService(DailyTrackerServiceBase):
-    def __init__(self, daily_tracker: DailyTracker, new_day: bool = False):
+    def __init__(self, daily_tracker: DailyTracker, is_a_new_day: bool = False) -> None:
         self._base = daily_tracker
-        self.new_day = new_day
+        self.is_a_new_day = is_a_new_day
 
     @classmethod
-    def from_date(cls, date: datetime.date):
-        daily_tracker, new_day = DailyTracker.get_or_create(date=date)
-        return cls(daily_tracker=daily_tracker, new_day=new_day)
-
-    @classmethod
-    def today(cls) -> "DailyTrackerService":
-        now = datetime.datetime.now().date()
-        daily_tracker, new_day = DailyTracker.get_or_create(date=now)
-
-        return cls(daily_tracker=daily_tracker, new_day=new_day)
+    def from_date(cls, date: datetime.date) -> DailyTrackerService:
+        daily_tracker, is_a_new_day = DailyTracker.get_or_create(date=date)
+        return cls(daily_tracker=daily_tracker, is_a_new_day=is_a_new_day)
 
     @property
     def date(self) -> datetime.date:
@@ -66,10 +61,10 @@ class DailyTrackerService(DailyTrackerServiceBase):
 
         return task
 
-    def get_task(self, task_id: int) -> Optional[Task]:
+    def get_task(self, task_id: int) -> Task | None:
         return Task.get_or_none(Task.id == task_id, Task.daily_tracker == self._base)
 
-    def get_tasks(self, exclude: Optional[List[TaskStatus]] = None) -> List[Task]:
+    def get_tasks(self, exclude: list[TaskStatus] | None = None) -> List[Task]:
         exclude = exclude or []
         tasks = [task for task in self._base.tasks if task.status not in exclude]
         return tasks
@@ -83,7 +78,7 @@ class DailyTrackerService(DailyTrackerServiceBase):
 class NullDailyTrackerService(DailyTrackerServiceBase):
     null_date = datetime.datetime(1970, 1, 1).date()
 
-    def __init__(self, date: Optional[datetime.date] = None):
+    def __init__(self, date: datetime.date | None = None) -> None:
         self._date = date or self.null_date
         self.daily_tracker = None
         self.new_day = None
@@ -92,13 +87,13 @@ class NullDailyTrackerService(DailyTrackerServiceBase):
     def date(self) -> datetime.date:
         return self._date
 
-    def add_task(self, title: str, details: Optional[str] = None) -> Task:
+    def add_task(self, title: str, details: str | None = None) -> Task:
         pass
 
-    def get_task(self, task_id: int) -> Optional[Task]:
+    def get_task(self, task_id: int) -> Task | None:
         pass
 
-    def get_tasks(self, exclude: Optional[List[TaskStatus]] = None) -> List[Task]:
+    def get_tasks(self, exclude: list[TaskStatus] | None = None) -> list[Task]:
         return []
 
     @staticmethod
@@ -107,10 +102,10 @@ class NullDailyTrackerService(DailyTrackerServiceBase):
 
 
 class PastTrackerService:
-    def __init__(self, current_day: DailyTrackerService):
+    def __init__(self, current_day: DailyTrackerService) -> None:
         self._current_day = current_day
 
-    def get_previous_day(self) -> Optional["DailyTrackerServiceBase"]:
+    def get_previous_day(self) -> DailyTrackerServiceBase:
         date = self._current_day.date
         previous_daily_tracker = (
             DailyTracker.select()

@@ -4,9 +4,10 @@ import sys
 
 import click
 
-from hyperfocus import __app_name__, __version__, cli_helper, formatter
+from hyperfocus import __app_name__, __version__, formatter
 from hyperfocus.commands.cmd_config import ConfigCommand
 from hyperfocus.commands.cmd_init import InitCommand
+from hyperfocus.commands.cmd_new_day import NewDayCommand
 from hyperfocus.commands.cmd_status import StatusCommand
 from hyperfocus.commands.cmd_task import (
     AddTaskCommand,
@@ -33,8 +34,16 @@ def hyf(ctx: click.Context) -> None:
     session = Session()
     session.bind_context(ctx=ctx)
 
-    helper = cli_helper.NewDay(session=session)
-    helper.manage_new_day()
+    NewDayCommand(session).execute()
+
+
+@hyf.result_callback()
+def process_session(session: Session | None, **_):
+    if session is None:
+        return
+
+    for callback_commands in session.callback_commands:
+        callback_commands()
 
 
 @hyf.command(help="Initialize hyperfocus config and database")
@@ -49,67 +58,83 @@ def init(db_path: str) -> None:
 
 
 @hyf.command(help="Show current working day status")
-def status():
+def status() -> Session:
     session = get_current_session()
     StatusCommand(session).execute()
+
+    return session
 
 
 @hyf.command(help="Add task to current working day")
 @click.argument("title", metavar="<title>", type=click.STRING)
 @click.option("-d", "--details", "add_details", is_flag=True, help="add task details")
-def add(title: str, add_details: bool) -> None:
+def add(title: str, add_details: bool) -> Session:
     session = get_current_session()
-    AddTaskCommand(session=session).execute(title=title, add_details=add_details)
+    AddTaskCommand(session).execute(title=title, add_details=add_details)
+
+    return session
 
 
 @hyf.command(help="Mark task as done")
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
-def done(task_id: int | None) -> None:
+def done(task_id: int | None) -> Session:
     session = get_current_session()
     UpdateTaskCommand(session).execute(
         task_id=task_id, status=TaskStatus.DONE, text="Validate task"
     )
 
+    return session
+
 
 @hyf.command(help="Reset task as todo")
 @click.argument("task_id", metavar="<id>", required=False, type=int)
-def reset(task_id: int | None) -> None:
+def reset(task_id: int | None) -> Session:
     session = get_current_session()
     UpdateTaskCommand(session).execute(
         task_id=task_id, status=TaskStatus.TODO, text="Reset task"
     )
 
+    return session
+
 
 @hyf.command(help="Mark task as blocked")
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
-def block(task_id: int | None) -> None:
+def block(task_id: int | None) -> Session:
     session = get_current_session()
     UpdateTaskCommand(session).execute(
         task_id=task_id, status=TaskStatus.BLOCKED, text="Block task"
     )
 
+    return session
+
 
 @hyf.command(help="Delete given task")
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
-def delete(task_id: int | None) -> None:
+def delete(task_id: int | None) -> Session:
     session = get_current_session()
     UpdateTaskCommand(session).execute(
         task_id=task_id, status=TaskStatus.DELETED, text="Delete task"
     )
 
+    return session
+
 
 @hyf.command(help="Show task details")
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
-def show(task_id: int | None) -> None:
+def show(task_id: int | None) -> Session:
     session = get_current_session()
     ShowTaskCommand(session).execute(task_id=task_id)
+
+    return session
 
 
 @hyf.command(help="Copy task details into clipboard")
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
-def copy(task_id: int | None) -> None:
+def copy(task_id: int | None) -> Session:
     session = get_current_session()
     CopyCommand(session).execute(task_id=task_id)
+
+    return session
 
 
 @hyf.command(help="Get and set options")
@@ -142,9 +167,11 @@ def copy(task_id: int | None) -> None:
     is_flag=True,
     help="Show the whole config",
 )
-def config(option: str | None, value: str | None, list_: bool, unset: bool) -> None:
+def config(option: str | None, value: str | None, list_: bool, unset: bool) -> Session:
     session = get_current_session()
     ConfigCommand(session).execute(option=option, value=value, list_=list_, unset=unset)
+
+    return session
 
 
 def get_commands() -> list[str]:
