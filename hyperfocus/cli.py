@@ -7,7 +7,7 @@ import click
 
 from hyperfocus import __app_name__, __version__, cli_helper, formatter, printer
 from hyperfocus.commands.config import ConfigCommand
-from hyperfocus.commands.task import CopyCommand
+from hyperfocus.commands.task import CopyCommand, ShowTaskCommand
 from hyperfocus.config.config import Config
 from hyperfocus.database import database
 from hyperfocus.database.models import MODELS, TaskStatus
@@ -121,14 +121,9 @@ def delete(task_id: int) -> None:
 
 @hyf.command(help="Show task details")
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
-def show(task_id: int) -> None:
+def show(task_id: int | None) -> None:
     session = get_current_session()
-    helper = cli_helper.Task(session=session)
-
-    task_id = helper.check_task_id_or_ask(task_id=task_id, text="Show task details")
-
-    task = helper.get_task(task_id=task_id)
-    printer.task(task=task, show_details=True, show_prefix=True)
+    ShowTaskCommand(session).execute(task_id=task_id)
 
 
 @hyf.command(help="Copy task details into clipboard")

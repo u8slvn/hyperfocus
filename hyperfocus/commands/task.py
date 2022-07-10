@@ -43,6 +43,20 @@ class TaskCommand(HyperfocusCommand):
         return task
 
 
+class ShowTaskCommand(HyperfocusCommand):
+    def __init__(self, session: Session):
+        super().__init__(session=session)
+        self._task_command = TaskCommand(session)
+
+    def execute(self, task_id: int | None) -> None:
+        task_id = self._task_command.check_task_id_or_ask(
+            task_id=task_id, text="Show task details"
+        )
+
+        task = self._task_command.get_task(task_id=task_id)
+        printer.task(task=task, show_details=True, show_prefix=True)
+
+
 class CopyCommand(HyperfocusCommand):
     def __init__(self, session: Session):
         super().__init__(session=session)
