@@ -1,9 +1,18 @@
-from tests.hyf_click.test_parameters import runner
+from click.testing import CliRunner
+
+
+runner = CliRunner()
+
+
+def test_hyperfocus_command_return_command_without_checking_for_alias(hyf_group):
+    result = runner.invoke(hyf_group, ["alias"])
+
+    assert result.output == "alias\n"
 
 
 def test_hyperfocus_command_handle_alias(mocker, hyf_group):
     config = {"alias.sailas": "alias"}
-    mocker.patch("hyperfocus.cli.Config.load", return_value=config)
+    mocker.patch("hyperfocus.hyf_click.core.Config.load", return_value=config)
 
     result = runner.invoke(hyf_group, ["sailas"])
 

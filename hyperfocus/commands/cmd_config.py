@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from hyperfocus import printer
-from hyperfocus.commands import HyperfocusCommand
+from hyperfocus.commands import SessionHyperfocusCommand, printer
 
 
-class ConfigCommand(HyperfocusCommand):
+class ConfigCommand(SessionHyperfocusCommand):
     def execute(
         self, option: str | None, value: str | None, list_: bool, unset: bool
     ) -> None:

@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hyperfocus import formatter, printer
+from hyperfocus import formatter
+from hyperfocus.commands import printer
 from hyperfocus.database.models import TaskStatus
 
 

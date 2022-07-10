@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import sys
-from pathlib import Path
 
 import click
 
-from hyperfocus import __app_name__, __version__, cli_helper, formatter, printer
+from hyperfocus import __app_name__, __version__, cli_helper, formatter
 from hyperfocus.commands.cmd_config import ConfigCommand
+from hyperfocus.commands.cmd_init import InitCommand
 from hyperfocus.commands.cmd_status import StatusCommand
 from hyperfocus.commands.cmd_task import (
     AddTaskCommand,
@@ -14,9 +14,7 @@ from hyperfocus.commands.cmd_task import (
     ShowTaskCommand,
     UpdateTaskCommand,
 )
-from hyperfocus.config.config import Config
-from hyperfocus.database import database
-from hyperfocus.database.models import MODELS, TaskStatus
+from hyperfocus.database.models import TaskStatus
 from hyperfocus.hyf_click.core import HyfGroup
 from hyperfocus.hyf_click.parameters import NotRequired, NotRequiredIf
 from hyperfocus.locations import DEFAULT_DB_PATH
@@ -47,21 +45,7 @@ def hyf(ctx: click.Context) -> None:
     help="Database file location",
 )
 def init(db_path: str) -> None:
-    Config.make_directory()
-    config = Config()
-    config["core.database"] = str(Path(db_path).resolve())
-    config.save()
-    printer.info(
-        text=f"Config file created successfully in {config.config_file.path}",
-        event="init",
-    )
-
-    database.connect(config["core.database"])
-    database.init_models(MODELS)
-    printer.info(
-        text=f"Database initialized successfully in {config['core.database']}",
-        event="init",
-    )
+    InitCommand().execute(db_path=db_path)
 
 
 @hyf.command(help="Show current working day status")

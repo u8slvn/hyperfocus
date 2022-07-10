@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 import pyperclip
 
-from hyperfocus import formatter, printer
-from hyperfocus.commands import HyperfocusCommand
+from hyperfocus import formatter
+from hyperfocus.commands import SessionHyperfocusCommand, printer
 from hyperfocus.exceptions import HyperfocusExit, TaskError
 from hyperfocus.services import DailyTrackerService
 
@@ -15,8 +15,8 @@ if TYPE_CHECKING:
     from hyperfocus.session import Session
 
 
-class TaskCommand(HyperfocusCommand):
-    def __init__(self, session: Session):
+class TaskCommand(SessionHyperfocusCommand):
+    def __init__(self, session: Session) -> None:
         super().__init__(session=session)
         self._daily_tracker = DailyTrackerService.from_date(session.date)
 
@@ -57,8 +57,8 @@ class TaskCommand(HyperfocusCommand):
         self._daily_tracker.update_task(task=task, status=status)
 
 
-class AddTaskCommand(HyperfocusCommand):
-    def __init__(self, session: Session):
+class AddTaskCommand(SessionHyperfocusCommand):
+    def __init__(self, session: Session) -> None:
         super().__init__(session=session)
         self._task_command = TaskCommand(session)
 
@@ -72,8 +72,8 @@ class AddTaskCommand(HyperfocusCommand):
         )
 
 
-class UpdateTaskCommand(HyperfocusCommand):
-    def __init__(self, session: Session):
+class UpdateTaskCommand(SessionHyperfocusCommand):
+    def __init__(self, session: Session) -> None:
         super().__init__(session=session)
         self._task_command = TaskCommand(session)
 
@@ -97,8 +97,8 @@ class UpdateTaskCommand(HyperfocusCommand):
         )
 
 
-class ShowTaskCommand(HyperfocusCommand):
-    def __init__(self, session: Session):
+class ShowTaskCommand(SessionHyperfocusCommand):
+    def __init__(self, session: Session) -> None:
         super().__init__(session=session)
         self._task_command = TaskCommand(session)
 
@@ -111,8 +111,8 @@ class ShowTaskCommand(HyperfocusCommand):
         printer.task(task=task, show_details=True, show_prefix=True)
 
 
-class CopyCommand(HyperfocusCommand):
-    def __init__(self, session: Session):
+class CopyCommand(SessionHyperfocusCommand):
+    def __init__(self, session: Session) -> None:
         super().__init__(session=session)
         self._task_command = TaskCommand(session)
 
