@@ -1,27 +1,13 @@
-import functools
+from __future__ import annotations
+
 from datetime import datetime
 from enum import IntEnum, auto
 
 import peewee
 
 from hyperfocus.database import database
-from hyperfocus.exceptions import DatabaseError
+from hyperfocus.database.error_handler import db_error_handler
 from hyperfocus.utils import wrap_methods
-
-
-def db_error_handler(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except peewee.DatabaseError as error:
-            if "no such table" in str(error):
-                raise DatabaseError(
-                    "Database not initialized, please run init command first"
-                )
-            raise DatabaseError(f"Unexpected database error: {error}")
-
-    return wrapper
 
 
 class TaskStatus(IntEnum):

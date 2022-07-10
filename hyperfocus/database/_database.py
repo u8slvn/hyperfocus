@@ -21,6 +21,3 @@ class _Database:
 
     def close(self) -> None:
         self._engine.close()
-
-
-database = _Database()

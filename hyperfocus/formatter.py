@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 from enum import Enum, IntEnum, auto
 from typing import List
@@ -5,7 +7,7 @@ from typing import List
 import click
 from tabulate import tabulate
 
-from hyperfocus.models import Task, TaskStatus
+from hyperfocus.database.models import Task, TaskStatus
 
 
 class NotificationLevel(IntEnum):

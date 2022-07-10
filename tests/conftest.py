@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 from hyperfocus.database import database
-from hyperfocus.models import MODELS
+from hyperfocus.database.models import MODELS
 from hyperfocus.services import DailyTrackerService, PastTrackerService
 from hyperfocus.session import Session
 
@@ -28,16 +28,6 @@ def test_dir(tmpdir_factory):
 def clean_test_dir(test_dir):
     shutil.rmtree(test_dir)
     test_dir.mkdir()
-
-
-@pytest.fixture
-def test_db(test_dir):
-    db_path = test_dir / "test_db.sqlite"
-    database.connect(db_path)
-    database.init_models(MODELS)
-    yield
-    database.close()
-    db_path.unlink()
 
 
 @pytest.fixture
@@ -72,3 +62,13 @@ class PytestRegex:
 
 
 pytest_regex = PytestRegex
+
+
+@pytest.fixture
+def test_database(test_dir):
+    db_path = test_dir / "test_db.sqlite"
+    database.connect(db_path)
+    database.init_models(MODELS)
+    yield
+    database.close()
+    db_path.unlink()

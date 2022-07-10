@@ -5,7 +5,7 @@ from click.testing import CliRunner
 
 from hyperfocus import __app_name__, __version__
 from hyperfocus.cli import hyf
-from hyperfocus.models import Task, TaskStatus
+from hyperfocus.database.models import Task, TaskStatus
 from hyperfocus.services import DailyTrackerService, NullDailyTrackerService
 from tests.conftest import pytest_regex
 

@@ -2,7 +2,7 @@ from datetime import date
 
 from freezegun import freeze_time
 
-from hyperfocus.models import DailyTracker, Task, TaskStatus
+from hyperfocus.database.models import DailyTracker, Task, TaskStatus
 from hyperfocus.services import (
     DailyTrackerService,
     NullDailyTrackerService,
@@ -11,7 +11,7 @@ from hyperfocus.services import (
 
 
 @freeze_time("2022-01-01")
-def test_daily_tracker_service_add_task(test_db):
+def test_daily_tracker_service_add_task(test_database):
     daily_tracker = DailyTrackerService.today()
 
     task = daily_tracker.add_task(title="Test add task", details="Test add details")
@@ -28,7 +28,7 @@ def test_daily_tracker_service_add_task(test_db):
 
 
 @freeze_time("2022-01-02")
-def test_daily_tracker_service_get_task(test_db):
+def test_daily_tracker_service_get_task(test_database):
     daily_tracker = DailyTrackerService.today()
     _task = daily_tracker.add_task(title="Test add task", details="Test add details")
 
@@ -40,7 +40,7 @@ def test_daily_tracker_service_get_task(test_db):
 
 
 @freeze_time("2022-01-03")
-def test_daily_tracker_service_get_tasks(test_db):
+def test_daily_tracker_service_get_tasks(test_database):
     daily_tracker = DailyTrackerService.today()
     daily_tracker.add_task(title="Test add task 1", details="Test add details 1")
     daily_tracker.add_task(title="Test add task 2", details="Test add details 2")
@@ -51,7 +51,7 @@ def test_daily_tracker_service_get_tasks(test_db):
 
 
 @freeze_time("2022-01-04")
-def test_daily_tracker_service_get_tasks_with_exclude_status_filter(test_db):
+def test_daily_tracker_service_get_tasks_with_exclude_status_filter(test_database):
     daily_tracker = DailyTrackerService.today()
     daily_tracker.add_task(title="Test add task 1", details="Test add details 1")
     daily_tracker.add_task(title="Test add task 2", details="Test add details 2")
@@ -62,7 +62,7 @@ def test_daily_tracker_service_get_tasks_with_exclude_status_filter(test_db):
 
 
 @freeze_time("2022-01-05")
-def test_daily_tracker_service_update_task(test_db):
+def test_daily_tracker_service_update_task(test_database):
     daily_tracker = DailyTrackerService.today()
     _task = daily_tracker.add_task(title="Test add task", details="Test add details")
 
@@ -73,13 +73,13 @@ def test_daily_tracker_service_update_task(test_db):
 
 
 @freeze_time("2022-01-06")
-def test_daily_tracker_service_get_date(test_db):
+def test_daily_tracker_service_get_date(test_database):
     daily_tracker_service = DailyTrackerService.today()
 
     assert daily_tracker_service.date == date(2022, 1, 6)
 
 
-def test_past_tracker_get_past_tracker(test_db):
+def test_past_tracker_get_past_tracker(test_database):
     with freeze_time("2022-01-10"):
         daily_tracker = DailyTrackerService.today()
         task1 = daily_tracker.add_task(title="test 1")
@@ -100,7 +100,7 @@ def test_past_tracker_get_past_tracker(test_db):
     assert tasks[1].title == "test 2"
 
 
-def test_past_tracker_get_past_tracker_return_null_daily_tracker(test_db):
+def test_past_tracker_get_past_tracker_return_null_daily_tracker(test_database):
     with freeze_time("2022-01-18"):
         daily_tracker = DailyTrackerService.today()
         past_tracker = PastTrackerService(current_day=daily_tracker)

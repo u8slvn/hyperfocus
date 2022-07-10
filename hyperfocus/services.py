@@ -2,7 +2,7 @@ import datetime
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from hyperfocus.models import DailyTracker, Task, TaskStatus
+from hyperfocus.database.models import DailyTracker, Task, TaskStatus
 
 
 class DailyTrackerServiceBase(ABC):

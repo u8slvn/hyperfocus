@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from hyperfocus import formatter, printer
+from hyperfocus.database.models import Task as TaskModel, TaskStatus
 from hyperfocus.exceptions import HyperfocusExit, TaskError
-from hyperfocus.models import Task as TaskModel, TaskStatus
 
 
 if TYPE_CHECKING:

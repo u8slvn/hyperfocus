@@ -33,10 +33,6 @@ class TaskError(HyperfocusException):
     pass
 
 
-class DatabaseError(HyperfocusException):
-    pass
-
-
 class SessionError(HyperfocusException):
     pass
 

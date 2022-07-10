@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 from typing import Any, List
 
 import click
 
 from hyperfocus import formatter
-from hyperfocus.models import Task
+from hyperfocus.database.models import Task
 
 
 def echo(text: str):

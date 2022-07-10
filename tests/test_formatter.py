@@ -4,7 +4,7 @@ import pytest
 from freezegun import freeze_time
 
 from hyperfocus import formatter
-from hyperfocus.models import Task, TaskStatus
+from hyperfocus.database.models import Task, TaskStatus
 
 
 @freeze_time("2012-01-14")
