@@ -1,7 +1,11 @@
 # Changelog
 
-## 0.2.0 (unreleased)
+## 0.2.0 (2022-07-11)
 
+* Add alias options in config.
+* Add review of previous unfinished tasks on new day.
+* Add status command.
+* Add config command.
 * Pretty print click exceptions.
 
 ## 0.1.1 (2022-07-05)
