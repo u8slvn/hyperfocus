@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pyperclip
 
-from hyperfocus import printer
+from hyperfocus import formatter, printer
 from hyperfocus.commands.core import HyperfocusCommand
 from hyperfocus.database.models import Task, TaskStatus
 from hyperfocus.exceptions import HyperfocusExit, TaskError
@@ -15,11 +15,14 @@ class TaskCommand(HyperfocusCommand):
         super().__init__(session=session)
         self._daily_tracker = DailyTrackerService.from_date(session.date)
 
-    def check_task_id_or_ask(self, task_id: int | None, text: str) -> int:
+    def check_task_id_or_ask(
+        self, task_id: int | None, text: str, exclude: list[TaskStatus] | None = None
+    ) -> int:
         if task_id:
             return task_id
 
-        self.show_tasks(newline=True)
+        exclude = exclude or []
+        self.show_tasks(newline=True, exclude=exclude)
 
         return printer.ask(text, type=int)
 
@@ -42,6 +45,34 @@ class TaskCommand(HyperfocusCommand):
 
         return task
 
+    def update_task(self, task: Task, status: TaskStatus) -> None:
+        self._daily_tracker.update_task(task=task, status=status)
+
+
+class UpdateTaskCommand(HyperfocusCommand):
+    def __init__(self, session: Session):
+        super().__init__(session=session)
+        self._task_command = TaskCommand(session)
+
+    def execute(self, task_id: int | None, status: TaskStatus, text: str) -> None:
+        task_id = self._task_command.check_task_id_or_ask(
+            task_id=task_id, text=text, exclude=[status]
+        )
+
+        task = self._task_command.get_task(task_id=task_id)
+        if task.status == status.value:
+            printer.warning(
+                text=formatter.task(task=task, show_prefix=True),
+                event="no change",
+            )
+            raise HyperfocusExit()
+
+        self._task_command.update_task(task=task, status=status)
+        printer.success(
+            text=formatter.task(task=task, show_prefix=True),
+            event="updated",
+        )
+
 
 class ShowTaskCommand(HyperfocusCommand):
     def __init__(self, session: Session):
@@ -62,7 +93,7 @@ class CopyCommand(HyperfocusCommand):
         super().__init__(session=session)
         self._task_command = TaskCommand(session)
 
-    def execute(self, task_id: int | None):
+    def execute(self, task_id: int | None) -> None:
         task_id = self._task_command.check_task_id_or_ask(
             task_id=task_id, text="Copy task details"
         )

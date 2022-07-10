@@ -6,8 +6,8 @@ from pathlib import Path
 import click
 
 from hyperfocus import __app_name__, __version__, cli_helper, formatter, printer
-from hyperfocus.commands.config import ConfigCommand
-from hyperfocus.commands.task import CopyCommand, ShowTaskCommand
+from hyperfocus.commands.cmd_config import ConfigCommand
+from hyperfocus.commands.cmd_task import CopyCommand, ShowTaskCommand, UpdateTaskCommand
 from hyperfocus.config.config import Config
 from hyperfocus.database import database
 from hyperfocus.database.models import MODELS, TaskStatus
@@ -85,10 +85,8 @@ def add(title: str, add_details: bool) -> None:
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
 def done(task_id: int) -> None:
     session = get_current_session()
-    helper = cli_helper.Task(session=session)
-
-    helper.update_task(
-        task_id=task_id, status=TaskStatus.DONE, text="Mark task as done"
+    UpdateTaskCommand(session).execute(
+        task_id=task_id, status=TaskStatus.DONE, text="Validate task"
     )
 
 
@@ -96,27 +94,27 @@ def done(task_id: int) -> None:
 @click.argument("task_id", metavar="<id>", required=False, type=int)
 def reset(task_id: int) -> None:
     session = get_current_session()
-    helper = cli_helper.Task(session=session)
-
-    helper.update_task(task_id=task_id, status=TaskStatus.TODO, text="Reset task")
+    UpdateTaskCommand(session).execute(
+        task_id=task_id, status=TaskStatus.TODO, text="Reset task"
+    )
 
 
 @hyf.command(help="Mark task as blocked")
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
 def block(task_id: int) -> None:
     session = get_current_session()
-    helper = cli_helper.Task(session=session)
-
-    helper.update_task(task_id=task_id, status=TaskStatus.BLOCKED, text="Block task")
+    UpdateTaskCommand(session).execute(
+        task_id=task_id, status=TaskStatus.BLOCKED, text="Block task"
+    )
 
 
 @hyf.command(help="Delete given task")
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
 def delete(task_id: int) -> None:
     session = get_current_session()
-    helper = cli_helper.Task(session=session)
-
-    helper.update_task(task_id=task_id, status=TaskStatus.DELETED, text="Delete task")
+    UpdateTaskCommand(session).execute(
+        task_id=task_id, status=TaskStatus.DELETED, text="Delete task"
+    )
 
 
 @hyf.command(help="Show task details")

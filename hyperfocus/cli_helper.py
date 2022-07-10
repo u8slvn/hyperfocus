@@ -45,26 +45,6 @@ class Task(CLIHelper):
 
         return task
 
-    def update_task(self, task_id: int, status: TaskStatus, text: str):
-        task_id = self.check_task_id_or_ask(
-            task_id=task_id, text=text, exclude=[status]
-        )
-
-        task = self.get_task(task_id=task_id)
-        if task.status == status.value:
-            printer.warning(
-                text=formatter.task(task=task, show_prefix=True),
-                event="no change",
-            )
-            raise HyperfocusExit()
-
-        task.status = status
-        self._session.daily_tracker.update_task(task=task, status=status)
-        printer.success(
-            text=formatter.task(task=task, show_prefix=True),
-            event="updated",
-        )
-
 
 class NewDay(CLIHelper):
     def manage_new_day(self):

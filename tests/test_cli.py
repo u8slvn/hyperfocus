@@ -1,11 +1,10 @@
 from datetime import date
 
-import pytest
 from click.testing import CliRunner
 
 from hyperfocus import __app_name__, __version__
 from hyperfocus.cli import hyf
-from hyperfocus.database.models import Task, TaskStatus
+from hyperfocus.database.models import Task
 from hyperfocus.services import DailyTrackerService, NullDailyTrackerService
 from tests.conftest import pytest_regex
 
@@ -156,96 +155,3 @@ def test_add_cmd_task_with_details(cli_session):
     expected = "? Task details: Test\n" "✔(created) Task: #1 ⬢ Test ⊕\n"
     assert expected == result.stdout
     assert result.exit_code == 0
-
-
-@pytest.mark.parametrize(
-    "command",
-    [
-        "delete",
-        "done",
-        "block",
-        "reset",
-    ],
-)
-def test_done_cmd_non_existing_task(cli_session, command):
-    cli_session.daily_tracker.get_task.return_value = None
-
-    result = runner.invoke(hyf, [command, "9"])
-
-    expected = "✘(task error) Task 9 does not exist.\n"
-    assert expected == result.stdout
-    assert result.exit_code == 1
-    cli_session.daily_tracker.update_task.assert_not_called()
-
-
-def test_reset_cmd_task(cli_session):
-    task = Task(id=1, title="Test", details="Test", status=TaskStatus.DONE)
-    cli_session.daily_tracker.get_task.return_value = task
-
-    result = runner.invoke(hyf, ["reset", "1"])
-
-    expected = "✔(updated) Task: #1 ⬢ Test ⊕\n"
-    assert expected == result.stdout
-    assert result.exit_code == 0
-    cli_session.daily_tracker.get_task.assert_called_once_with(task_id=1)
-    cli_session.daily_tracker.update_task.assert_called_once_with(
-        status=TaskStatus.TODO, task=task
-    )
-
-
-def test_reset_cmd_task_on_already_reset_task(cli_session):
-    task = Task(id=1, title="Test", details="Test")
-    cli_session.daily_tracker.get_task.return_value = task
-
-    result = runner.invoke(hyf, ["reset", "1"])
-
-    expected = "▼(no change) Task: #1 ⬢ Test ⊕\n"
-    assert expected == result.stdout
-    assert result.exit_code == 0
-    cli_session.daily_tracker.get_task.assert_called_once_with(task_id=1)
-    cli_session.daily_tracker.update_task.assert_not_called()
-
-
-@pytest.mark.parametrize(
-    "command, updated",
-    [
-        ("delete", TaskStatus.DELETED),
-        ("done", TaskStatus.DONE),
-        ("block", TaskStatus.BLOCKED),
-    ],
-)
-def test_update_status_cmd_task(cli_session, command, updated):
-    task = Task(id=1, title="Test", details="Test")
-    cli_session.daily_tracker.get_task.return_value = task
-
-    result = runner.invoke(hyf, [command, "1"])
-
-    expected = "✔(updated) Task: #1 ⬢ Test ⊕\n"
-    assert expected == result.stdout
-    assert result.exit_code == 0
-    cli_session.daily_tracker.get_task.assert_called_once_with(task_id=1)
-    cli_session.daily_tracker.update_task.assert_called_once_with(
-        status=updated, task=task
-    )
-
-
-def test_update_task_with_no_id(cli_session):
-    task = Task(id=1, title="Test", details="Test", status=TaskStatus.DONE.value)
-    cli_session.daily_tracker.get_tasks.return_value = [task]
-    cli_session.daily_tracker.get_task.return_value = task
-
-    result = runner.invoke(hyf, ["reset"], input="1")
-
-    expected = (
-        "  #  tasks\n"
-        "---  --------\n"
-        "  1  ⬢ Test ⊕ \n\n"
-        "? Reset task: 1\n"
-        "✔(updated) Task: #1 ⬢ Test ⊕\n"
-    )
-    assert expected == result.stdout
-    assert result.exit_code == 0
-    cli_session.daily_tracker.get_task.assert_called_once_with(task_id=1)
-    cli_session.daily_tracker.update_task.assert_called_once_with(
-        status=TaskStatus.TODO, task=task
-    )
