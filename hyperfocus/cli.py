@@ -141,21 +141,21 @@ def copy(task_id: int | None) -> Session:
 @click.argument(
     "option",
     cls=NotRequiredIf,
-    not_required_if=["list"],
+    not_required_if=["list_"],
     metavar="<option>",
     type=click.STRING,
 )
 @click.argument(
     "value",
     cls=NotRequiredIf,
-    not_required_if=["list", "unset"],
+    not_required_if=["list_", "unset"],
     metavar="<value>",
     type=click.STRING,
 )
 @click.option(
     "--unset",
     cls=NotRequired,
-    not_required=["value", "list"],
+    not_required=["value", "list_"],
     is_flag=True,
     help="Unset an option",
 )
