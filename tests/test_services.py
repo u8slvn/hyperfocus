@@ -2,11 +2,7 @@ import datetime
 from datetime import date
 
 from hyperfocus.database.models import DailyTracker, Task, TaskStatus
-from hyperfocus.services import (
-    DailyTrackerService,
-    NullDailyTrackerService,
-    PastTrackerService,
-)
+from hyperfocus.services import DailyTrackerService
 
 
 def test_daily_tracker_service_add_task(test_database):
@@ -72,32 +68,21 @@ def test_daily_tracker_service_get_date(test_database):
     assert daily_tracker.date == date(2022, 1, 6)
 
 
-def test_past_tracker_get_past_tracker(test_database):
-    daily_tracker = DailyTrackerService.from_date(datetime.date(2022, 1, 10))
-    task1 = daily_tracker.add_task(title="test 1")
-    task2 = daily_tracker.add_task(title="test 2")
-    daily_tracker.update_task(task=task1, status=TaskStatus.DONE)
-    daily_tracker.update_task(task=task2, status=TaskStatus.BLOCKED)
-    daily_tracker = DailyTrackerService.from_date(datetime.date(2022, 1, 11))
-    past_tracker = PastTrackerService(current_day=daily_tracker)
+def test_daily_tracker_service_get_previous_day(test_database):
+    _prev_day = DailyTrackerService.from_date(datetime.date(2022, 2, 1))
+    _prev_day.add_task(title="Test1", details="1")
+    _prev_day.add_task(title="Test2", details="2")
+    daily_tracker = DailyTrackerService.from_date(datetime.date(2022, 2, 2))
 
-    previous_day = past_tracker.get_previous_day()
+    previous_day = daily_tracker.get_previous_day()
 
-    assert isinstance(previous_day, DailyTrackerService)
-    tasks = previous_day.get_tasks()
-    assert previous_day.date == date(2022, 1, 10)
-    assert len(tasks) == 2
-    assert tasks[0].title == "test 1"
-    assert tasks[1].title == "test 2"
+    assert previous_day.date == date(2022, 2, 1)
+    assert len(previous_day.get_tasks()) == 2
 
 
-def test_past_tracker_get_past_tracker_return_null_daily_tracker(test_database):
-    daily_tracker = DailyTrackerService.from_date(datetime.date(2022, 1, 18))
-    past_tracker = PastTrackerService(current_day=daily_tracker)
+def test_daily_tracker_service_get_previous_day_return_none(test_database):
+    daily_tracker = DailyTrackerService.from_date(datetime.date(2022, 2, 1))
 
-    previous_day = past_tracker.get_previous_day()
+    previous_day = daily_tracker.get_previous_day()
 
-    assert isinstance(previous_day, NullDailyTrackerService)
-    tasks = previous_day.get_tasks()
-    assert tasks == []
-    assert previous_day.date == date(1970, 1, 1)
+    assert previous_day is None

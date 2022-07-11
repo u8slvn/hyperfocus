@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from hyperfocus import formatter
 from hyperfocus.commands import SessionHyperfocusCommand, printer
 from hyperfocus.database.models import TaskStatus
-from hyperfocus.services import DailyTrackerService, PastTrackerService
+from hyperfocus.services import DailyTrackerService
 
 
 if TYPE_CHECKING:
@@ -28,8 +28,10 @@ class NewDayCommand(SessionHyperfocusCommand):
 
     def review_unfinished_tasks(self) -> None:
         daily_tracker = DailyTrackerService.from_date(self._session.date)
-        past_tracker = PastTrackerService(daily_tracker)
-        prev_day = past_tracker.get_previous_day()
+        prev_day = daily_tracker.get_previous_day()
+        if prev_day is None:
+            return
+
         finished_status = [TaskStatus.DELETED, TaskStatus.DONE]
         if not (tasks := prev_day.get_tasks(exclude=finished_status)):
             return
