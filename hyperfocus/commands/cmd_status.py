@@ -16,4 +16,4 @@ class StatusCommand(SessionHyperfocusCommand):
         self._task_command = TaskCommand(session)
 
     def execute(self) -> None:
-        self._task_command.show_tasks(newline=True)
+        self._task_command.show_tasks()

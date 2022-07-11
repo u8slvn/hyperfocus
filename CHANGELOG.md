@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1 (2022-07-12)
+
+* Fix config command `--list` option.
+
 ## 0.2.0 (2022-07-11)
 
 * Add alias options in config.
