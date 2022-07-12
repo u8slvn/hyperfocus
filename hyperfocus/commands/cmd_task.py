@@ -7,7 +7,7 @@ import pyperclip
 from hyperfocus import formatter
 from hyperfocus.commands import SessionHyperfocusCommand, printer
 from hyperfocus.exceptions import HyperfocusExit, TaskError
-from hyperfocus.services import DailyTrackerService
+from hyperfocus.services import DailyTracker
 
 
 if TYPE_CHECKING:
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class TaskCommand(SessionHyperfocusCommand):
     def __init__(self, session: Session) -> None:
         super().__init__(session=session)
-        self._daily_tracker = DailyTrackerService.from_date(session.date)
+        self._daily_tracker = DailyTracker.from_date(session.date)
 
     def check_task_id_or_ask(
         self, task_id: int | None, text: str, exclude: list[TaskStatus] | None = None

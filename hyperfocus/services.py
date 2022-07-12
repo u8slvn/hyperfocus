@@ -3,56 +3,55 @@ from __future__ import annotations
 import datetime
 from typing import List
 
-from hyperfocus.database.models import DailyTracker, Task, TaskStatus
+from hyperfocus.database.models import Task, TaskStatus, WorkingDay
 
 
-class DailyTrackerService:
-    def __init__(self, daily_tracker: DailyTracker, is_a_new_day: bool = False) -> None:
-        self._base = daily_tracker
+class DailyTracker:
+    def __init__(self, working_day: WorkingDay, is_a_new_day: bool = False) -> None:
+        self._working_day = working_day
         self.is_a_new_day = is_a_new_day
 
     @classmethod
-    def from_date(cls, date: datetime.date) -> DailyTrackerService:
-        daily_tracker, is_a_new_day = DailyTracker.get_or_create(date=date)
-        return cls(daily_tracker=daily_tracker, is_a_new_day=is_a_new_day)
+    def from_date(cls, date: datetime.date) -> DailyTracker:
+        working_day, is_a_new_day = WorkingDay.get_or_create(date=date)
+        return cls(working_day=working_day, is_a_new_day=is_a_new_day)
 
-    def get_previous_day(self) -> DailyTrackerService | None:
-        query = DailyTracker.select()
-        query = query.where(DailyTracker.date < self.date)
-        query = query.order_by(DailyTracker.date.desc())
+    def get_previous_day(self) -> DailyTracker | None:
+        query = WorkingDay.select()
+        query = query.where(WorkingDay.date < self.date)
+        query = query.order_by(WorkingDay.date.desc())
         previous_day = query.get_or_none()
 
         if not previous_day:
             return None
 
-        return DailyTrackerService(previous_day)
+        return DailyTracker(previous_day)
 
     @property
     def date(self) -> datetime.date:
-        return self._base.date
+        return self._working_day.date
 
     def add_task(self, title: str, details: str | None = None) -> Task:
         details = details.strip() if isinstance(details, str) else details
-        task = Task(
-            id=self._base.next_task_id,
+        task = Task.create(
+            id=self._working_day.next_task_id,
             title=title.strip(),
             details=details,
             status=TaskStatus.TODO,
-            daily_tracker=self._base,
+            daily_tracker=self._working_day,
         )
-        task.save()
-
-        self._base.task_increment += 1
-        self._base.save()
+        self._working_day.save()
 
         return task
 
     def get_task(self, task_id: int) -> Task | None:
-        return Task.get_or_none(Task.id == task_id, Task.daily_tracker == self._base)
+        return Task.get_or_none(
+            Task.id == task_id, Task.daily_tracker == self._working_day
+        )
 
     def get_tasks(self, exclude: list[TaskStatus] | None = None) -> List[Task]:
         exclude = exclude or []
-        tasks = [task for task in self._base.tasks if task.status not in exclude]
+        tasks = [task for task in self._working_day.tasks if task.status not in exclude]
         return tasks
 
     @staticmethod

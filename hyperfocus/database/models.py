@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from datetime import datetime
+import datetime
+import uuid
 from enum import IntEnum, auto
 
 import peewee
@@ -22,30 +23,37 @@ class BaseModel(peewee.Model):
         database = database()
 
 
-@wrap_methods(db_error_handler, ["save", "get_or_create"])
-class DailyTracker(BaseModel):
-    date = peewee.DateField(primary_key=True, default=datetime.now().date())
+@wrap_methods(db_error_handler, ["save", "get_or_create", "get_or_none"])
+class WorkingDay(BaseModel):
+    date = peewee.DateField(primary_key=True)
     task_increment = peewee.IntegerField(default=0)
+    locked = peewee.BooleanField(default=False)
 
     @property
     def next_task_id(self):
-        return self.task_increment + 1
+        self.task_increment += 1
+        return self.task_increment
 
 
 @wrap_methods(db_error_handler, ["save", "get_or_none"])
 class Task(BaseModel):
-    _id = peewee.AutoField()
+    uuid = peewee.UUIDField(primary_key=True, default=uuid.uuid4)
     id = peewee.IntegerField()
     title = peewee.TextField()
     details = peewee.TextField(null=True)
     status = peewee.IntegerField(default=TaskStatus.TODO)
-    postponed_at = peewee.DateField(null=True)
-    updated_at = peewee.DateTimeField(default=datetime.now())
-    daily_tracker = peewee.ForeignKeyField(DailyTracker, backref="tasks", null=True)
+    parent_task = peewee.ForeignKeyField("self", null=True)
+    daily_tracker = peewee.ForeignKeyField(WorkingDay, backref="tasks", null=True)
+    created_at = peewee.DateTimeField(default=datetime.datetime.now)
+    updated_at = peewee.DateTimeField(default=datetime.datetime.now)
 
     class Meta:
         table_name = "tasks"
-        indexes = ((("id", "daily_tracker"), True),)
+        indexes = ((("uuid", "daily_tracker"), True),)
+
+    def save(self, *args, **kwargs) -> Task:
+        self.updated_at = datetime.datetime.now()
+        return super(Task, self).save(*args, **kwargs)
 
 
-MODELS = [DailyTracker, Task]
+MODELS = [WorkingDay, Task]

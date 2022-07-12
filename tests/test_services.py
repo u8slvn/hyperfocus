@@ -1,16 +1,16 @@
 import datetime
 from datetime import date
 
-from hyperfocus.database.models import DailyTracker, Task, TaskStatus
-from hyperfocus.services import DailyTrackerService
+from hyperfocus.database.models import Task, TaskStatus, WorkingDay
+from hyperfocus.services import DailyTracker
 
 
 def test_daily_tracker_service_add_task(test_database):
-    daily_tracker = DailyTrackerService.from_date(datetime.date(2022, 1, 1))
+    daily_tracker = DailyTracker.from_date(datetime.date(2022, 1, 1))
 
     task = daily_tracker.add_task(title="Test add task", details="Test add details")
 
-    created_daily_tracker = DailyTracker.get(DailyTracker.date == daily_tracker.date)
+    created_daily_tracker = WorkingDay.get(WorkingDay.date == daily_tracker.date)
     created_task = Task.get(
         Task.id == task.id,
         Task.daily_tracker == created_daily_tracker,
@@ -22,7 +22,7 @@ def test_daily_tracker_service_add_task(test_database):
 
 
 def test_daily_tracker_service_get_task(test_database):
-    daily_tracker = DailyTrackerService.from_date(datetime.date(2022, 1, 2))
+    daily_tracker = DailyTracker.from_date(datetime.date(2022, 1, 2))
     _task = daily_tracker.add_task(title="Test add task", details="Test add details")
 
     task = daily_tracker.get_task(task_id=_task.id)
@@ -33,7 +33,7 @@ def test_daily_tracker_service_get_task(test_database):
 
 
 def test_daily_tracker_service_get_tasks(test_database):
-    daily_tracker = DailyTrackerService.from_date(datetime.date(2022, 1, 3))
+    daily_tracker = DailyTracker.from_date(datetime.date(2022, 1, 3))
     daily_tracker.add_task(title="Test add task 1", details="Test add details 1")
     daily_tracker.add_task(title="Test add task 2", details="Test add details 2")
 
@@ -43,7 +43,7 @@ def test_daily_tracker_service_get_tasks(test_database):
 
 
 def test_daily_tracker_service_get_tasks_with_exclude_status_filter(test_database):
-    daily_tracker = DailyTrackerService.from_date(datetime.date(2022, 1, 4))
+    daily_tracker = DailyTracker.from_date(datetime.date(2022, 1, 4))
     daily_tracker.add_task(title="Test add task 1", details="Test add details 1")
     daily_tracker.add_task(title="Test add task 2", details="Test add details 2")
 
@@ -53,7 +53,7 @@ def test_daily_tracker_service_get_tasks_with_exclude_status_filter(test_databas
 
 
 def test_daily_tracker_service_update_task(test_database):
-    daily_tracker = DailyTrackerService.from_date(datetime.date(2022, 1, 5))
+    daily_tracker = DailyTracker.from_date(datetime.date(2022, 1, 5))
     _task = daily_tracker.add_task(title="Test add task", details="Test add details")
 
     daily_tracker.update_task(task=_task, status=TaskStatus.DONE)
@@ -63,16 +63,16 @@ def test_daily_tracker_service_update_task(test_database):
 
 
 def test_daily_tracker_service_get_date(test_database):
-    daily_tracker = DailyTrackerService.from_date(datetime.date(2022, 1, 6))
+    daily_tracker = DailyTracker.from_date(datetime.date(2022, 1, 6))
 
     assert daily_tracker.date == date(2022, 1, 6)
 
 
 def test_daily_tracker_service_get_previous_day(test_database):
-    _prev_day = DailyTrackerService.from_date(datetime.date(2022, 2, 1))
+    _prev_day = DailyTracker.from_date(datetime.date(2022, 2, 1))
     _prev_day.add_task(title="Test1", details="1")
     _prev_day.add_task(title="Test2", details="2")
-    daily_tracker = DailyTrackerService.from_date(datetime.date(2022, 2, 2))
+    daily_tracker = DailyTracker.from_date(datetime.date(2022, 2, 2))
 
     previous_day = daily_tracker.get_previous_day()
 
@@ -81,7 +81,7 @@ def test_daily_tracker_service_get_previous_day(test_database):
 
 
 def test_daily_tracker_service_get_previous_day_return_none(test_database):
-    daily_tracker = DailyTrackerService.from_date(datetime.date(2022, 2, 1))
+    daily_tracker = DailyTracker.from_date(datetime.date(2022, 2, 1))
 
     previous_day = daily_tracker.get_previous_day()
 

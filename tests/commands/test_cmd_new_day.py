@@ -2,7 +2,7 @@ import pytest
 
 from hyperfocus.commands.cmd_new_day import NewDayCommand
 from hyperfocus.database.models import Task
-from hyperfocus.services import DailyTrackerService
+from hyperfocus.services import DailyTracker
 
 
 @pytest.fixture
@@ -12,9 +12,9 @@ def printer(mocker):
 
 @pytest.fixture
 def daily_tracker(mocker):
-    daily_tracker = mocker.Mock(spec=DailyTrackerService, intsance=True)
+    daily_tracker = mocker.Mock(spec=DailyTracker, intsance=True)
     mocker.patch(
-        "hyperfocus.commands.cmd_new_day.DailyTrackerService",
+        "hyperfocus.commands.cmd_new_day.DailyTracker",
         **{"from_date.return_value": daily_tracker}
     )
     yield daily_tracker
@@ -54,7 +54,7 @@ def test_review_unfinished_tasks_with_no_previous_day(
 def test_review_unfinished_tasks_with_no_task(
     mocker, test_session, daily_tracker, printer
 ):
-    prev_day = mocker.Mock(spec=DailyTrackerService, instance=True)
+    prev_day = mocker.Mock(spec=DailyTracker, instance=True)
     daily_tracker.get_previous_day.return_value = prev_day
     prev_day.get_tasks.return_value = []
 
@@ -68,7 +68,7 @@ def test_review_unfinished_tasks_with_no_task(
 def test_review_unfinished_tasks_with_task_respond_no(
     mocker, test_session, daily_tracker, printer
 ):
-    prev_day = mocker.Mock(spec=DailyTrackerService, instance=True)
+    prev_day = mocker.Mock(spec=DailyTracker, instance=True)
     daily_tracker.get_previous_day.return_value = prev_day
     prev_day.get_tasks.return_value = [Task(id=1, title="foobar")]
     printer.confirm.return_value = False
@@ -83,7 +83,7 @@ def test_review_unfinished_tasks_with_task_respond_no(
 def test_review_unfinished_tasks_with_task_respond_yes(
     mocker, test_session, daily_tracker, printer
 ):
-    prev_day = mocker.Mock(spec=DailyTrackerService, instance=True)
+    prev_day = mocker.Mock(spec=DailyTracker, instance=True)
     daily_tracker.get_previous_day.return_value = prev_day
     prev_day.get_tasks.return_value = [Task(id=1, title="foobar")]
     printer.confirm.return_value = True

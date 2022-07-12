@@ -9,7 +9,7 @@ from hyperfocus.commands.cmd_task import (
 )
 from hyperfocus.database.models import Task, TaskStatus
 from hyperfocus.exceptions import HyperfocusExit, TaskError
-from hyperfocus.services import DailyTrackerService
+from hyperfocus.services import DailyTracker
 
 
 @pytest.fixture
@@ -19,9 +19,9 @@ def printer(mocker):
 
 @pytest.fixture
 def daily_tracker(mocker):
-    daily_tracker = mocker.Mock(spec=DailyTrackerService, instance=True)
+    daily_tracker = mocker.Mock(spec=DailyTracker, instance=True)
     mocker.patch(
-        "hyperfocus.commands.cmd_task.DailyTrackerService.from_date",
+        "hyperfocus.commands.cmd_task.DailyTracker.from_date",
         return_value=daily_tracker,
     )
     return daily_tracker
