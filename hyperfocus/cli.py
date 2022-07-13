@@ -13,7 +13,7 @@ from hyperfocus.commands.cmd_task import (
     AddTaskCommand,
     CopyCommand,
     ShowTaskCommand,
-    UpdateTaskCommand,
+    UpdateTasksCommand,
 )
 from hyperfocus.database.models import TaskStatus
 from hyperfocus.hyf_click.core import HyfGroup
@@ -76,44 +76,44 @@ def add(title: str, add_details: bool) -> Session:
 
 
 @hyf.command(help="Mark task as done")
-@click.argument("task_id", metavar="<id>", required=False, type=click.INT)
-def done(task_id: int | None) -> Session:
+@click.argument("task_ids", metavar="<id>", required=False, nargs=-1, type=click.INT)
+def done(task_ids: tuple[int, ...]) -> Session:
     session = get_current_session()
-    UpdateTaskCommand(session).execute(
-        task_id=task_id, status=TaskStatus.DONE, text="Validate task"
+    UpdateTasksCommand(session).execute(
+        task_ids=task_ids, status=TaskStatus.DONE, text="Validate task"
     )
 
     return session
 
 
 @hyf.command(help="Reset task as todo")
-@click.argument("task_id", metavar="<id>", required=False, type=int)
-def reset(task_id: int | None) -> Session:
+@click.argument("task_ids", metavar="<id>", required=False, nargs=-1, type=int)
+def reset(task_ids: tuple[int, ...]) -> Session:
     session = get_current_session()
-    UpdateTaskCommand(session).execute(
-        task_id=task_id, status=TaskStatus.TODO, text="Reset task"
+    UpdateTasksCommand(session).execute(
+        task_ids=task_ids, status=TaskStatus.TODO, text="Reset task"
     )
 
     return session
 
 
 @hyf.command(help="Mark task as blocked")
-@click.argument("task_id", metavar="<id>", required=False, type=click.INT)
-def block(task_id: int | None) -> Session:
+@click.argument("task_ids", metavar="<id>", required=False, nargs=-1, type=click.INT)
+def block(task_ids: tuple[int, ...]) -> Session:
     session = get_current_session()
-    UpdateTaskCommand(session).execute(
-        task_id=task_id, status=TaskStatus.BLOCKED, text="Block task"
+    UpdateTasksCommand(session).execute(
+        task_ids=task_ids, status=TaskStatus.BLOCKED, text="Block task"
     )
 
     return session
 
 
 @hyf.command(help="Delete given task")
-@click.argument("task_id", metavar="<id>", required=False, type=click.INT)
-def delete(task_id: int | None) -> Session:
+@click.argument("task_ids", metavar="<id>", required=False, nargs=-1, type=click.INT)
+def delete(task_ids: tuple[int, ...]) -> Session:
     session = get_current_session()
-    UpdateTaskCommand(session).execute(
-        task_id=task_id, status=TaskStatus.DELETED, text="Delete task"
+    UpdateTasksCommand(session).execute(
+        task_ids=task_ids, status=TaskStatus.DELETED, text="Delete task"
     )
 
     return session

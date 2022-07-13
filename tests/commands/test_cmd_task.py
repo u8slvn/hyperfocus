@@ -5,7 +5,7 @@ from hyperfocus.commands.cmd_task import (
     CopyCommand,
     ShowTaskCommand,
     TaskCommand,
-    UpdateTaskCommand,
+    UpdateTasksCommand,
 )
 from hyperfocus.database.models import Task, TaskStatus
 from hyperfocus.exceptions import HyperfocusExit, TaskError
@@ -28,23 +28,12 @@ def daily_tracker(mocker):
 
 
 class TestTackCommand:
-    def test_task_command_check_task_id_or_ask(
-        self, mocker, test_session, printer, daily_tracker
-    ):
+    def test_task_command_ask_id(self, mocker, test_session, printer, daily_tracker):
         mocker.patch("hyperfocus.commands.cmd_task.TaskCommand.show_tasks")
 
-        TaskCommand(test_session).check_task_id_or_ask(task_id=None, text="foobar")
+        TaskCommand(test_session).ask_task_id(text="foobar")
 
         printer.ask.assert_called_once_with("foobar", type=int)
-
-    def test_task_command_check_task_id_or_ask_do_not_ask(
-        self, mocker, test_session, printer, daily_tracker
-    ):
-        mocker.patch("hyperfocus.commands.cmd_task.TaskCommand.show_tasks")
-
-        TaskCommand(test_session).check_task_id_or_ask(task_id=1, text="foobar")
-
-        printer.ask.assert_not_called()
 
     def test_task_command_show_tasks_with_no_tasks(
         self, mocker, test_session, printer, daily_tracker
@@ -141,41 +130,53 @@ class TestAddTaskCommand:
         printer.success.assert_called_once()
 
 
-class TestUpdateTaskCommand:
-    def test_update_task_command(self, test_session, task_command, printer, formatter):
+class TestUpdateTasksCommand:
+    def test_update_tasks_command(
+        self, mocker, test_session, task_command, printer, formatter
+    ):
+        task1 = Task(id=1, title="foo", details="bar")
+        task2 = Task(id=2, title="oof", details="rab")
+        task_command.get_task.side_effect = [task1, task2]
+
+        UpdateTasksCommand(test_session).execute(
+            task_ids=(1, 2), status=TaskStatus.DONE, text="Test"
+        )
+
+        task_command.ask_task_id.assert_not_called()
+        task_command.get_task.call_args_list = [
+            mocker.call(task1),
+            mocker.call(task2),
+        ]
+        task_command.update_task.call_args_list = [
+            mocker.call(task=task1, status=TaskStatus.DONE),
+            mocker.call(task=task2, status=TaskStatus.DONE),
+        ]
+        assert formatter.task.call_count == 2
+        assert printer.success.call_count == 2
+
+    def test_update_tasks_command_ask_id_if_none(
+        self, mocker, test_session, task_command, printer, formatter
+    ):
         task = Task(id=1, title="foo", details="bar")
-        task_command.check_task_id_or_ask.return_value = task.id
         task_command.get_task.return_value = task
 
-        UpdateTaskCommand(test_session).execute(
-            task_id=1, status=TaskStatus.DONE, text="Test"
+        UpdateTasksCommand(test_session).execute(
+            task_ids=tuple(), status=TaskStatus.DONE, text="Test"
         )
 
-        task_command.check_task_id_or_ask.assert_called_once_with(
-            task_id=1, text="Test", exclude=[TaskStatus.DONE]
-        )
-        task_command.get_task.assert_called_once_with(task_id=1)
-        task_command.update_task.assert_called_once_with(
-            task=task, status=TaskStatus.DONE
-        )
-        formatter.task.assert_called_once()
-        printer.success.assert_called_once()
+        task_command.ask_task_id.assert_called_once()
 
-    def test_update_task_command_with_same_status(
+    def test_update_tasks_command_with_same_status(
         self, test_session, task_command, printer, formatter
     ):
         task = Task(id=1, title="foo", details="bar", status=TaskStatus.DELETED)
-        task_command.check_task_id_or_ask.return_value = task.id
         task_command.get_task.return_value = task
 
-        with pytest.raises(HyperfocusExit):
-            UpdateTaskCommand(test_session).execute(
-                task_id=1, status=TaskStatus.DELETED, text="Test"
-            )
-
-        task_command.check_task_id_or_ask.assert_called_once_with(
-            task_id=1, text="Test", exclude=[TaskStatus.DELETED]
+        UpdateTasksCommand(test_session).execute(
+            task_ids=(1,), status=TaskStatus.DELETED, text="Test"
         )
+
+        task_command.ask_task_id.assert_not_called()
         task_command.get_task.assert_called_once_with(task_id=1)
         formatter.task.assert_called_once()
         printer.warning.assert_called_once()
@@ -188,25 +189,30 @@ class TestShowTaskCommand:
         task_command.get_task.return_value = task
         ShowTaskCommand(test_session).execute(task_id=1)
 
-        task_command.check_task_id_or_ask.assert_called_once_with(
-            task_id=1, text="Show task details"
-        )
+        task_command.ask_task_id.assert_not_called()
         printer.task.assert_called_once_with(
             task=task, show_details=True, show_prefix=True
         )
+
+    def test_show_task_command_ask_id_if_none(
+        self, test_session, task_command, printer
+    ):
+        task = Task(id=1, title="foo", details="bar")
+        task_command.get_task.return_value = task
+        ShowTaskCommand(test_session).execute(task_id=None)
+
+        task_command.ask_task_id.assert_called_once()
 
 
 class TestCopyCommand:
     def test_copy_command(self, test_session, printer, pyperclip, task_command):
         task1 = Task(id=1, title="foo", details="bar")
-        task_command.check_task_id_or_ask.return_value = task1.id
+        task_command.ask_task_id.return_value = task1.id
         task_command.get_task.return_value = task1
 
         CopyCommand(test_session).execute(task_id=1)
 
-        task_command.check_task_id_or_ask.assert_called_once_with(
-            task_id=1, text="Copy task details"
-        )
+        task_command.ask_task_id.assert_not_called()
         pyperclip.copy.assert_called_once_with("bar")
         printer.success.assert_called_once_with(
             "Task 1 details copied to clipboard.", event="success"
@@ -214,14 +220,12 @@ class TestCopyCommand:
 
     def test_copy_command_fails(self, test_session, printer, pyperclip, task_command):
         task1 = Task(id=1, title="foo", details="")
-        task_command.check_task_id_or_ask.return_value = task1.id
+        task_command.ask_task_id.return_value = task1.id
         task_command.get_task.return_value = task1
 
         with pytest.raises(TaskError, match=r"Task \d does not have details."):
-            CopyCommand(test_session).execute(task_id=1)
+            CopyCommand(test_session).execute(task_id=None)
 
-        task_command.check_task_id_or_ask.assert_called_once_with(
-            task_id=1, text="Copy task details"
-        )
+        task_command.ask_task_id.assert_called_once_with(text="Copy task details")
         pyperclip.copy.assert_not_called()
         printer.success.assert_not_called()

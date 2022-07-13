@@ -20,12 +20,7 @@ class TaskCommand(SessionHyperfocusCommand):
         super().__init__(session=session)
         self._daily_tracker = DailyTracker.from_date(session.date)
 
-    def check_task_id_or_ask(
-        self, task_id: int | None, text: str, exclude: list[TaskStatus] | None = None
-    ) -> int:
-        if task_id:
-            return task_id
-
+    def ask_task_id(self, text: str, exclude: list[TaskStatus] | None = None) -> int:
         exclude = exclude or []
         self.show_tasks(newline=True, exclude=exclude)
 
@@ -72,29 +67,30 @@ class AddTaskCommand(SessionHyperfocusCommand):
         )
 
 
-class UpdateTaskCommand(SessionHyperfocusCommand):
+class UpdateTasksCommand(SessionHyperfocusCommand):
     def __init__(self, session: Session) -> None:
         super().__init__(session=session)
         self._task_command = TaskCommand(session)
 
-    def execute(self, task_id: int | None, status: TaskStatus, text: str) -> None:
-        task_id = self._task_command.check_task_id_or_ask(
-            task_id=task_id, text=text, exclude=[status]
-        )
+    def execute(self, task_ids: tuple[int, ...], status: TaskStatus, text: str) -> None:
+        if not task_ids:
+            task_id = self._task_command.ask_task_id(text=text, exclude=[status])
+            task_ids = (task_id,)
 
-        task = self._task_command.get_task(task_id=task_id)
-        if task.status == status.value:
-            printer.warning(
+        for task_id in task_ids:
+            task = self._task_command.get_task(task_id=task_id)
+            if task.status == status.value:
+                printer.warning(
+                    text=formatter.task(task=task, show_prefix=True),
+                    event="no change",
+                )
+                continue
+
+            self._task_command.update_task(task=task, status=status)
+            printer.success(
                 text=formatter.task(task=task, show_prefix=True),
-                event="no change",
+                event="updated",
             )
-            raise HyperfocusExit()
-
-        self._task_command.update_task(task=task, status=status)
-        printer.success(
-            text=formatter.task(task=task, show_prefix=True),
-            event="updated",
-        )
 
 
 class ShowTaskCommand(SessionHyperfocusCommand):
@@ -103,9 +99,8 @@ class ShowTaskCommand(SessionHyperfocusCommand):
         self._task_command = TaskCommand(session)
 
     def execute(self, task_id: int | None) -> None:
-        task_id = self._task_command.check_task_id_or_ask(
-            task_id=task_id, text="Show task details"
-        )
+        if not task_id:
+            task_id = self._task_command.ask_task_id(text="Show task details")
 
         task = self._task_command.get_task(task_id=task_id)
         printer.task(task=task, show_details=True, show_prefix=True)
@@ -117,9 +112,8 @@ class CopyCommand(SessionHyperfocusCommand):
         self._task_command = TaskCommand(session)
 
     def execute(self, task_id: int | None) -> None:
-        task_id = self._task_command.check_task_id_or_ask(
-            task_id=task_id, text="Copy task details"
-        )
+        if not task_id:
+            task_id = self._task_command.ask_task_id(text="Copy task details")
 
         task = self._task_command.get_task(task_id=task_id)
         if not task.details:
