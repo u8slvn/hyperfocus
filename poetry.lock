@@ -372,7 +372,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "43c3185fb7424ad3a54a9e414aa8f86716d35dba25089514a2342cd0eb5087e2"
+content-hash = "7f15a61129ba0ff644c2822226d31302a8cfd416ade3aed6115ffa23342df3f2"
 
 [metadata.files]
 atomicwrites = []
