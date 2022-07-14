@@ -19,7 +19,7 @@ def test_new_day_cmd_is_not_a_new_day(session, printer):
 
     NewDayCmd(session).execute()
 
-    printer.echo.assert_not_called()
+    printer.new_day.assert_not_called()
 
 
 def test_new_day_cmd_is_a_new_day(session, printer):
@@ -27,7 +27,7 @@ def test_new_day_cmd_is_a_new_day(session, printer):
 
     NewDayCmd(session).execute()
 
-    assert printer.echo.call_count == 2
+    assert printer.new_day.call_count == 2
 
 
 class TestCheckUnfinishedTask:

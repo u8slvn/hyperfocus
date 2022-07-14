@@ -22,8 +22,8 @@ class NewDayCmd(SessionHyperfocusCommand):
         if not self._session.daily_tracker.is_a_new_day():
             return
 
-        printer.echo(f"✨ {formatter.date(date=self._session.date)}")
-        printer.echo("✨ A new day starts, good luck!\n")
+        printer.new_day(f"{formatter.date(date=self._session.date)}")
+        printer.new_day("A new day starts, good luck!\n")
 
 
 class UnfinishedTasksCmd(SessionHyperfocusCommand, ABC):

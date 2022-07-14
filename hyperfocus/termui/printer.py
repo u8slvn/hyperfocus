@@ -6,7 +6,7 @@ import click
 import rich
 
 from hyperfocus.database.models import Task
-from hyperfocus.termui import formatter
+from hyperfocus.termui import formatter, icons
 
 
 def echo(text: str):
@@ -60,3 +60,7 @@ def confirm(text: str, **kwargs) -> Any:
 
 def banner(text: str) -> None:
     rich.print(f"[italic khaki1]{text}[/]")
+
+
+def new_day(text: str) -> None:
+    rich.print(f"{icons.NEW_DAY} [deep_sky_blue1]{text}[/]")
