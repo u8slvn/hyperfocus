@@ -7,6 +7,7 @@ from freezegun import freeze_time
 
 from hyperfocus.config.config import Config
 from hyperfocus.exceptions import SessionError
+from hyperfocus.services import DailyTracker
 from hyperfocus.session import Session, get_current_session
 
 
@@ -33,30 +34,30 @@ def test_get_current_session_with_no_click_context(mocker):
         _ = get_current_session()
 
 
-def test_session_bind_context(mocker, test_session):
+def test_session_bind_context(mocker, session):
     ctx = mocker.Mock(spec=click.Context, instance=True)
 
-    test_session.bind_context(ctx)
+    session.bind_context(ctx)
 
-    assert ctx.obj == test_session
-    ctx.call_on_close.assert_called_once_with(test_session.teardown)
+    assert ctx.obj == session
+    ctx.call_on_close.assert_called_once_with(session.teardown)
 
 
-def test_session_register_callback_commands(test_session):
+def test_session_register_callback_commands(session):
     callback1 = partial(int, "249")
     callback2 = partial(int, "417")
 
-    test_session.register_callback(callback1)
-    test_session.register_callback(callback2)
+    session.register_callback(callback1)
+    session.register_callback(callback2)
 
-    result = sum([callback() for callback in test_session.callback_commands])
+    result = sum([callback() for callback in session.callback_commands])
     assert result == 666
 
 
-def test_session_teardown(test_session):
-    test_session.teardown()
+def test_session_teardown(session):
+    session.teardown()
 
-    test_session._database.close.assert_called_once()
+    session._database.close.assert_called_once()
 
 
 @freeze_time("2022-01-01")
@@ -65,11 +66,13 @@ def test_session_init(mocker):
     mocker.patch(
         "hyperfocus.session.Config", spec=Config, **{"load.return_value": config}
     )
+    daily_tracker = mocker.patch("hyperfocus.session.DailyTracker", spec=DailyTracker)
     database = mocker.patch("hyperfocus.session.Session._database")
 
     session = Session()
 
     database.connect.assert_called_once()
+    daily_tracker.from_date.assert_called_once_with(datetime.datetime(2022, 1, 1))
     assert session._config == config
     assert session.date == datetime.date(2022, 1, 1)
     assert session.callback_commands == []

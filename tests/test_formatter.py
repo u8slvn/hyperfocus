@@ -3,8 +3,8 @@ from datetime import datetime
 import pytest
 from freezegun import freeze_time
 
-from hyperfocus import formatter
 from hyperfocus.database.models import Task, TaskStatus
+from hyperfocus.termui import formatter
 
 
 @freeze_time("2012-01-14")

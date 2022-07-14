@@ -4,25 +4,30 @@ import sys
 
 import click
 
-from hyperfocus import __app_name__, __version__, formatter
-from hyperfocus.commands.cmd_config import ConfigCommand
-from hyperfocus.commands.cmd_init import InitCommand
-from hyperfocus.commands.cmd_new_day import NewDayCommand
-from hyperfocus.commands.cmd_status import StatusCommand
-from hyperfocus.commands.cmd_task import (
-    AddTaskCommand,
-    CopyCommand,
-    ShowTaskCommand,
-    UpdateTasksCommand,
+from hyperfocus import __app_name__, __version__
+from hyperfocus.commands.config import ConfigCmd
+from hyperfocus.commands.init import InitCmd
+from hyperfocus.commands.new_day import (
+    CheckUnfinishedTasksCmd,
+    NewDayCmd,
+    ReviewUnfinishedTasksCmd,
+)
+from hyperfocus.commands.task import (
+    AddTaskCmd,
+    CopyTaskDetailsCmd,
+    ListTaskCmd,
+    ShowTaskCmd,
+    UpdateTasksCmd,
 )
 from hyperfocus.database.models import TaskStatus
 from hyperfocus.hyf_click.core import HyfGroup
 from hyperfocus.hyf_click.parameters import NotRequired, NotRequiredIf
 from hyperfocus.locations import DEFAULT_DB_PATH
 from hyperfocus.session import Session, get_current_session
+from hyperfocus.termui import formatter
 
 
-@click.group(cls=HyfGroup, help="Minimalist task manager")
+@click.group(cls=HyfGroup, invoke_without_command=True, help="Minimalist task manager")
 @click.version_option(
     version=__version__, prog_name=__app_name__, help="Show the version"
 )
@@ -34,7 +39,13 @@ def hyf(ctx: click.Context) -> None:
     session = Session()
     session.bind_context(ctx=ctx)
 
-    NewDayCommand(session).execute()
+    NewDayCmd(session).execute()
+    if ctx.invoked_subcommand is not None:
+        CheckUnfinishedTasksCmd(session).execute()
+        return
+
+    ReviewUnfinishedTasksCmd(session).execute()
+    ListTaskCmd(session).execute()
 
 
 @hyf.result_callback()
@@ -54,13 +65,13 @@ def process_session(session: Session | None, **_):
     help="Database file location",
 )
 def init(db_path: str) -> None:
-    InitCommand().execute(db_path=db_path)
+    InitCmd().execute(db_path=db_path)
 
 
 @hyf.command(help="Show current working day status")
 def status() -> Session:
     session = get_current_session()
-    StatusCommand(session).execute()
+    ListTaskCmd(session).execute()
 
     return session
 
@@ -70,7 +81,7 @@ def status() -> Session:
 @click.option("-d", "--details", "add_details", is_flag=True, help="add task details")
 def add(title: str, add_details: bool) -> Session:
     session = get_current_session()
-    AddTaskCommand(session).execute(title=title, add_details=add_details)
+    AddTaskCmd(session).execute(title=title, add_details=add_details)
 
     return session
 
@@ -79,7 +90,7 @@ def add(title: str, add_details: bool) -> Session:
 @click.argument("task_ids", metavar="<id>", required=False, nargs=-1, type=click.INT)
 def done(task_ids: tuple[int, ...]) -> Session:
     session = get_current_session()
-    UpdateTasksCommand(session).execute(
+    UpdateTasksCmd(session).execute(
         task_ids=task_ids, status=TaskStatus.DONE, text="Validate task"
     )
 
@@ -90,7 +101,7 @@ def done(task_ids: tuple[int, ...]) -> Session:
 @click.argument("task_ids", metavar="<id>", required=False, nargs=-1, type=int)
 def reset(task_ids: tuple[int, ...]) -> Session:
     session = get_current_session()
-    UpdateTasksCommand(session).execute(
+    UpdateTasksCmd(session).execute(
         task_ids=task_ids, status=TaskStatus.TODO, text="Reset task"
     )
 
@@ -101,7 +112,7 @@ def reset(task_ids: tuple[int, ...]) -> Session:
 @click.argument("task_ids", metavar="<id>", required=False, nargs=-1, type=click.INT)
 def block(task_ids: tuple[int, ...]) -> Session:
     session = get_current_session()
-    UpdateTasksCommand(session).execute(
+    UpdateTasksCmd(session).execute(
         task_ids=task_ids, status=TaskStatus.BLOCKED, text="Block task"
     )
 
@@ -112,7 +123,7 @@ def block(task_ids: tuple[int, ...]) -> Session:
 @click.argument("task_ids", metavar="<id>", required=False, nargs=-1, type=click.INT)
 def delete(task_ids: tuple[int, ...]) -> Session:
     session = get_current_session()
-    UpdateTasksCommand(session).execute(
+    UpdateTasksCmd(session).execute(
         task_ids=task_ids, status=TaskStatus.DELETED, text="Delete task"
     )
 
@@ -123,7 +134,7 @@ def delete(task_ids: tuple[int, ...]) -> Session:
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
 def show(task_id: int | None) -> Session:
     session = get_current_session()
-    ShowTaskCommand(session).execute(task_id=task_id)
+    ShowTaskCmd(session).execute(task_id=task_id)
 
     return session
 
@@ -132,7 +143,7 @@ def show(task_id: int | None) -> Session:
 @click.argument("task_id", metavar="<id>", required=False, type=click.INT)
 def copy(task_id: int | None) -> Session:
     session = get_current_session()
-    CopyCommand(session).execute(task_id=task_id)
+    CopyTaskDetailsCmd(session).execute(task_id=task_id)
 
     return session
 
@@ -169,7 +180,7 @@ def copy(task_id: int | None) -> Session:
 )
 def config(option: str | None, value: str | None, list_: bool, unset: bool) -> Session:
     session = get_current_session()
-    ConfigCommand(session).execute(option=option, value=value, list_=list_, unset=unset)
+    ConfigCmd(session).execute(option=option, value=value, list_=list_, unset=unset)
 
     return session
 

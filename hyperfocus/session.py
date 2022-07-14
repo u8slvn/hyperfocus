@@ -1,13 +1,18 @@
 from __future__ import annotations
 
 import datetime
-from typing import Callable
+from typing import TYPE_CHECKING
 
 import click
 
 from hyperfocus.config.config import Config
 from hyperfocus.database import database
 from hyperfocus.exceptions import SessionError
+from hyperfocus.services import DailyTracker
+
+
+if TYPE_CHECKING:
+    from typing import Callable
 
 
 class Session:
@@ -17,6 +22,7 @@ class Session:
         self._config = Config.load()
         self._database.connect(self._config["core.database"])
         self._date = datetime.datetime.now()
+        self._daily_tracker = DailyTracker.from_date(self._date)
         self._callback_commands: list[Callable] = []
 
     @property
@@ -26,6 +32,10 @@ class Session:
     @property
     def date(self) -> datetime.date:
         return self._date.date()
+
+    @property
+    def daily_tracker(self) -> DailyTracker:
+        return self._daily_tracker
 
     @property
     def callback_commands(self) -> list[Callable]:

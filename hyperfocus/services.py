@@ -7,29 +7,41 @@ from hyperfocus.database.models import Task, TaskStatus, WorkingDay
 
 
 class DailyTracker:
-    def __init__(self, working_day: WorkingDay, is_a_new_day: bool = False) -> None:
+    def __init__(self, working_day: WorkingDay, new_day: bool | None = None) -> None:
         self._working_day = working_day
-        self.is_a_new_day = is_a_new_day
+        self._new_day = new_day
+        self._previous_day: DailyTracker | None = None
 
     @classmethod
     def from_date(cls, date: datetime.date) -> DailyTracker:
-        working_day, is_a_new_day = WorkingDay.get_or_create(date=date)
-        return cls(working_day=working_day, is_a_new_day=is_a_new_day)
+        working_day, new_day = WorkingDay.get_or_create(date=date)
+        return cls(working_day=working_day, new_day=new_day)
 
     def get_previous_day(self) -> DailyTracker | None:
-        query = WorkingDay.select()
-        query = query.where(WorkingDay.date < self.date)
-        query = query.order_by(WorkingDay.date.desc())
-        previous_day = query.get_or_none()
+        if not self._previous_day:
+            query = WorkingDay.select()
+            query = query.where(WorkingDay.date < self.date)
+            query = query.order_by(WorkingDay.date.desc())
+            previous_day = query.get_or_none()
 
-        if not previous_day:
-            return None
+            if previous_day:
+                self._previous_day = DailyTracker(previous_day)
 
-        return DailyTracker(previous_day)
+        return self._previous_day
 
     @property
     def date(self) -> datetime.date:
         return self._working_day.date
+
+    def is_a_new_day(self):
+        return self._new_day
+
+    def is_locked(self):
+        return self._working_day.locked
+
+    def locked(self):
+        self._working_day.locked = True
+        self._working_day.save()
 
     def add_task(self, title: str, details: str | None = None) -> Task:
         details = details.strip() if isinstance(details, str) else details

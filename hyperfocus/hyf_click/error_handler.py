@@ -5,8 +5,8 @@ from typing import Callable
 
 import click
 
-from hyperfocus.commands import printer
 from hyperfocus.exceptions import HyperfocusException, HyperfocusExit
+from hyperfocus.termui import printer
 from hyperfocus.utils import un_camel_case
 
 

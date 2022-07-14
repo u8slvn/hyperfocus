@@ -1,12 +1,12 @@
 from peewee import Model
 
-from hyperfocus.database._database import _Database
+from hyperfocus.database._database import Database
 
 
 def test_database_with_models(test_dir):
     test_db_path = test_dir / "test_db.sqlite"
     test_db_path.touch()
-    db_test = _Database()
+    db_test = Database()
 
     class TestModel(Model):
         class Meta:

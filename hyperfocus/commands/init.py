@@ -1,21 +1,20 @@
-from pathlib import Path
-
-from hyperfocus.commands import HyperfocusCommand, printer
+from hyperfocus.commands import HyperfocusCommand
 from hyperfocus.config.config import Config
 from hyperfocus.database import database
 from hyperfocus.database.models import MODELS
+from hyperfocus.termui import printer
 
 
-class InitCommand(HyperfocusCommand):
+class InitCmd(HyperfocusCommand):
     def execute(self, db_path: str):
-        config = self.create_config(db_path=db_path)
-        self.init_database(config=config)
+        config = self._create_config(db_path=db_path)
+        self._init_database(config=config)
 
     @staticmethod
-    def create_config(db_path: str) -> Config:
+    def _create_config(db_path: str) -> Config:
         config = Config()
         config.make_directory()
-        config["core.database"] = str(Path(db_path).resolve())
+        config["core.database"] = db_path
         config.save()
         printer.info(
             text=f"Config file created successfully in {config.config_file.path}",
@@ -25,7 +24,7 @@ class InitCommand(HyperfocusCommand):
         return config
 
     @staticmethod
-    def init_database(config: Config) -> None:
+    def _init_database(config: Config) -> None:
         database.connect(config["core.database"])
         database.init_models(MODELS)
         printer.info(

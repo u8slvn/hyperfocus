@@ -11,7 +11,7 @@ class OptionPolicies:
     def __init__(self, policies: dict[str, Type[OptionPolicy]] | None = None):
         self._policies = policies or {}
 
-    def check(self, section: str, key: str, value: str) -> None:
+    def check_input(self, section: str, key: str, value: str) -> None:
         policy = self._policies.get(section)
         if policy is not None:
             policy(key, value).validate()

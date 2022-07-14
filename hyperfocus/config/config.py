@@ -10,7 +10,7 @@ from typing import Any, Generator
 from hyperfocus.config.exceptions import ConfigError, ConfigFileError
 from hyperfocus.config.file import ConfigFile
 from hyperfocus.config.policy import AliasPolicy, CorePolicy, OptionPolicies
-from hyperfocus.locations import CONFIG_DIR, CONFIG_PATH
+from hyperfocus.locations import CONFIG_DIR
 
 
 _loaded_config: Config | None = None
@@ -23,21 +23,28 @@ class Config:
         },
         "alias": {},
     }
-    _option_policies = OptionPolicies(
+    _policies = OptionPolicies(
         {
             "core": CorePolicy,
             "alias": AliasPolicy,
         }
     )
+    _dir = CONFIG_DIR
+    _filename = "config.ini"
 
     def __init__(self) -> None:
         self._config = deepcopy(self.default_config)
-        self._config_file: ConfigFile = ConfigFile(CONFIG_PATH)
+        config_path = self._build_config_path()
+        self._config_file: ConfigFile = ConfigFile(config_path)
 
-    @staticmethod
-    def make_directory() -> None:
+    @classmethod
+    def _build_config_path(cls) -> Path:
+        return cls._dir / cls._filename
+
+    @classmethod
+    def make_directory(cls) -> None:
         try:
-            CONFIG_DIR.mkdir(exist_ok=True)
+            cls._dir.mkdir(exist_ok=True)
         except OSError as error:
             raise ConfigError(f"Configuration folder creation failed: {error}")
 
@@ -60,7 +67,7 @@ class Config:
         global _loaded_config
 
         if _loaded_config is None or reload:
-            config_path = config_path or CONFIG_PATH
+            config_path = config_path or cls._build_config_path()
             config_file = ConfigFile(config_path)
             if not config_file.exists():
                 raise ConfigError(
@@ -89,16 +96,16 @@ class Config:
         return options
 
     def get_option(self, option: str) -> str:
-        with secured_option(option=option) as opt:
+        with self.secured_option(option=option) as opt:
             return self._config[opt.section][opt.key]
 
     def update_option(self, option: str, value: str) -> None:
-        with secured_option(option=option) as opt:
-            self._option_policies.check(section=opt.section, key=opt.key, value=value)
+        with self.secured_option(option=option) as opt:
+            self._policies.check_input(section=opt.section, key=opt.key, value=value)
             self._config[opt.section][opt.key] = value
 
     def delete_option(self, option: str) -> None:
-        with secured_option(option=option) as opt:
+        with self.secured_option(option=option) as opt:
             del self._config[opt.section][opt.key]
 
     def __getitem__(self, option: str) -> str:
@@ -113,14 +120,14 @@ class Config:
     def __contains__(self, option: str) -> bool:
         return option in self.options
 
+    @staticmethod
+    @contextlib.contextmanager
+    def secured_option(option: str) -> Generator:
+        match = re.match(r"^(?P<section>[A-Za-z0-9]+).(?P<key>[A-Za-z0-9]+)$", option)
+        if match is None:
+            raise ConfigError(f"Bad format config option '{option}'.")
 
-@contextlib.contextmanager
-def secured_option(option: str) -> Generator:
-    match = re.match(r"^(?P<section>[A-Za-z0-9]+).(?P<key>[A-Za-z0-9]+)$", option)
-    if match is None:
-        raise ConfigError(f"Bad format config option '{option}'.")
-
-    try:
-        yield SimpleNamespace(**match.groupdict())
-    except KeyError:
-        raise ConfigError(f"Variable '{option}' does not exist.")
+        try:
+            yield SimpleNamespace(**match.groupdict())
+        except KeyError:
+            raise ConfigError(f"Variable '{option}' does not exist.")

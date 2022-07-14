@@ -5,6 +5,24 @@ from hyperfocus.database.models import Task, TaskStatus, WorkingDay
 from hyperfocus.services import DailyTracker
 
 
+def test_daily_tracker_new_day(test_database):
+    daily_tracker1 = DailyTracker.from_date(datetime.date(2022, 2, 1))
+    daily_tracker2 = DailyTracker.from_date(datetime.date(2022, 2, 1))
+
+    assert daily_tracker1.is_a_new_day()
+    assert not daily_tracker2.is_a_new_day()
+
+
+def test_daily_tracker_locked(test_database):
+    daily_tracker = DailyTracker.from_date(datetime.date(2022, 2, 1))
+
+    assert not daily_tracker.is_locked()
+
+    daily_tracker.locked()
+
+    assert daily_tracker.is_locked()
+
+
 def test_daily_tracker_service_add_task(test_database):
     daily_tracker = DailyTracker.from_date(datetime.date(2022, 1, 1))
 

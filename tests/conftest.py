@@ -7,8 +7,9 @@ import pytest
 
 from hyperfocus.config.config import Config
 from hyperfocus.database import database
-from hyperfocus.database._database import _Database
+from hyperfocus.database._database import Database
 from hyperfocus.database.models import MODELS
+from hyperfocus.services import DailyTracker
 from hyperfocus.session import Session
 
 
@@ -57,14 +58,15 @@ def test_database(mocker, test_dir):
 
 
 @pytest.fixture
-def test_session(mocker):
+def session(mocker):
     class MockSession(Session):
-        _database = mocker.Mock(spec=_Database, instance=True)
+        _database = mocker.Mock(spec=Database, instance=True)
 
         def __init__(self):
             self._config = mocker.MagicMock(spec=Config, instance=True)
             self._database.connect(self._config)
             self._date = datetime.datetime(2022, 1, 1)
+            self._daily_tracker = mocker.Mock(spec=DailyTracker, instance=True)
             self._callback_commands = []
 
     return MockSession()

@@ -17,8 +17,8 @@ def test_option_policies(mocker):
         }
     )
 
-    option_policies.check("foo", mocker.sentinel.key, mocker.sentinel.value)
-    option_policies.check("bar", mocker.sentinel.key, mocker.sentinel.value)
+    option_policies.check_input("foo", mocker.sentinel.key, mocker.sentinel.value)
+    option_policies.check_input("bar", mocker.sentinel.key, mocker.sentinel.value)
 
     foo_policy.assert_called_once_with(mocker.sentinel.key, mocker.sentinel.value)
     foo_policy.return_value.validate.assert_called_once()

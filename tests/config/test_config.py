@@ -5,16 +5,19 @@ from hyperfocus.config.exceptions import ConfigError
 from tests.conftest import pytest_regex
 
 
-def test_config_make_directory(locations):
+def test_config_make_directory(test_dir):
+    config_dir = test_dir / "test_mkdir"
+    Config._dir = config_dir
     Config.make_directory()
 
-    assert locations.CONFIG_DIR.exists()
+    assert config_dir.exists()
 
 
-def test_config_make_directory_fails(mocker, dummy_dir):
-    mocker.patch("hyperfocus.config.config.CONFIG_DIR", dummy_dir)
+def test_config_make_directory_fails(dummy_dir):
+    config_dir = dummy_dir / "test_mkdir"
+    Config._dir = config_dir
 
-    with pytest.raises(ConfigError, match=r"Configuration folder creation failed"):
+    with pytest.raises(ConfigError, match=r"Configuration folder creation failed(.*)"):
         Config.make_directory()
 
 
@@ -39,20 +42,20 @@ def test_load_missing_config_fails(dummy_dir):
         _ = Config.load(config_path, reload=True)
 
 
-def test_save_config(locations):
+def test_save_config(test_dir):
+    Config._dir = test_dir
     config = Config()
 
     config.save()
 
     assert config.config_file.exists()
-    with open(locations.CONFIG_PATH) as f:
+    with open(config.config_file.path) as f:
         expected = pytest_regex(r"\[core\]\ndatabase = (.*)")
         assert expected == f.read()
 
 
-def test_config_save_fails(mocker, dummy_dir):
-    config_path = dummy_dir / "config.ini"
-    mocker.patch("hyperfocus.config.config.CONFIG_PATH", config_path)
+def test_config_save_fails(dummy_dir):
+    Config._dir = dummy_dir
     config = Config()
 
     with pytest.raises(ConfigError, match=r"Saving config to (.*) failed: (.*)"):

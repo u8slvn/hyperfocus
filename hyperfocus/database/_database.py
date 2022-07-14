@@ -5,7 +5,7 @@ from typing import Type
 from peewee import Model, SqliteDatabase
 
 
-class _Database:
+class Database:
     def __init__(self) -> None:
         self._engine = SqliteDatabase(None)
 

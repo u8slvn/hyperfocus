@@ -1,4 +1,4 @@
-from hyperfocus.database._database import _Database
+from hyperfocus.database._database import Database
 
 
-database = _Database()
+database = Database()
