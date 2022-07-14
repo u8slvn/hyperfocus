@@ -39,14 +39,14 @@ class TestCheckUnfinishedTask:
 
         CheckUnfinishedTasksCmd(session).execute()
 
-        printer.echo.assert_called_once()
+        printer.banner.assert_called_once()
 
     def test_check_unfinished_tasks_cmd_with_no_previous_day(self, session, printer):
         session._daily_tracker.get_previous_day.return_value = None
 
         CheckUnfinishedTasksCmd(session).execute()
 
-        printer.echo.assert_not_called()
+        printer.banner.assert_not_called()
 
     def test_check_unfinished_tasks_cmd_with_locked_previous_day(
         self, mocker, session, printer
@@ -57,7 +57,7 @@ class TestCheckUnfinishedTask:
 
         CheckUnfinishedTasksCmd(session).execute()
 
-        printer.echo.assert_not_called()
+        printer.banner.assert_not_called()
 
     def test_check_unfinished_tasks_cmd_with_no_tasks(self, mocker, session, printer):
         previous_day = mocker.Mock(spec=DailyTracker, intance=True)
@@ -67,7 +67,7 @@ class TestCheckUnfinishedTask:
 
         CheckUnfinishedTasksCmd(session).execute()
 
-        printer.echo.assert_not_called()
+        printer.banner.assert_not_called()
 
 
 class TestReviewUnfinishedTasksCmd:

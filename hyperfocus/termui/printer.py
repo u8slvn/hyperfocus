@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any, List
 
 import click
+import rich
 
 from hyperfocus.database.models import Task
 from hyperfocus.termui import formatter
@@ -55,3 +56,7 @@ def ask(text: str, **kwargs) -> Any:
 def confirm(text: str, **kwargs) -> Any:
     formatted_prompt = formatter.prompt(text=text)
     return click.confirm(text=formatted_prompt, **kwargs)
+
+
+def banner(text: str) -> None:
+    rich.print(f"[italic khaki1]{text}[/]")

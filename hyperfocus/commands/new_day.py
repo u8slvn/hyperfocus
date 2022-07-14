@@ -47,10 +47,10 @@ class CheckUnfinishedTasksCmd(UnfinishedTasksCmd):
             return
 
         self._previous_day = cast(DailyTracker, self._previous_day)
-        printer.echo(
+        printer.banner(
             f"You have {unfinished_tasks_count} unfinished task(s) from "
             f"{formatter.date(date=self._previous_day.date)}, run 'hyf' "
-            f"to review them."
+            f"to review."
         )
 
 
