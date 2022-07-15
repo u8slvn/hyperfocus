@@ -49,7 +49,7 @@ class TestTaskCmd:
         TaskCmd(session).show_tasks()
 
         session._daily_tracker.get_tasks.assert_called_once_with(exclude=[])
-        printer.tasks.assert_called_with(tasks=tasks, newline=False)
+        printer.tasks.assert_called_with(tasks=tasks)
 
     def test_show_tasks_fails(self, session, printer):
         session._daily_tracker.get_tasks.return_value = []
@@ -65,25 +65,25 @@ class TestTaskCmd:
 
         TaskCmd(session).ask_task_id("Test")
 
-        printer.tasks.assert_called_with(tasks=tasks, newline=True)
-        printer.ask.assert_called_once_with("Test", type=int)
+        printer.tasks.assert_called_with(tasks=tasks)
+        printer.ask_int.assert_called_once_with("Test")
 
     def test_check_task_id_or_ask(self, mocker, session, printer):
         tasks = [Task("foo"), Task("bar")]
         session._daily_tracker.get_tasks.return_value = tasks
-        printer.ask.return_value = mocker.sentinel.task_id
+        printer.ask_int.return_value = mocker.sentinel.task_id
 
         task_id = TaskCmd(session).check_task_id_or_ask(None, "Test")
 
         assert task_id == mocker.sentinel.task_id
-        printer.tasks.assert_called_with(tasks=tasks, newline=True)
-        printer.ask.assert_called_once_with("Test", type=int)
+        printer.tasks.assert_called_with(tasks=tasks)
+        printer.ask_int.assert_called_once_with("Test")
 
     def test_check_task_id_or_ask_with_id(self, session, printer):
         task_id = TaskCmd(session).check_task_id_or_ask(1, "Test")
 
         assert task_id == 1
-        printer.ask.assert_not_called()
+        printer.ask_int.assert_not_called()
 
 
 class TestAddTaskCmd:
@@ -141,7 +141,7 @@ class TestUpdateTasksCmd:
         )
 
         session._daily_tracker.get_tasks(exclude=[TaskStatus.DONE])
-        printer.ask.assert_called_once_with("Test", type=int)
+        printer.ask_int.assert_called_once_with("Test")
 
     def test_update_tasks_cmd_with_same_status(self, session, printer, formatter):
         task = Task(id=1, title="foo", details="bar", status=TaskStatus.DELETED)
@@ -166,7 +166,7 @@ class TestListTaskCmd:
         ListTaskCmd(session).execute()
 
         session._daily_tracker.get_tasks.assert_called_once_with(exclude=[])
-        printer.tasks.assert_called_with(tasks=tasks, newline=False)
+        printer.tasks.assert_called_with(tasks=tasks)
 
 
 class TestShowTaskCmd:
@@ -175,7 +175,7 @@ class TestShowTaskCmd:
         session._daily_tracker.get_task.return_value = task
         ShowTaskCmd(session).execute(task_id=1)
 
-        printer.ask.assert_not_called()
+        printer.ask_int.assert_not_called()
         printer.task.assert_called_once_with(
             task=task, show_details=True, show_prefix=True
         )
@@ -186,7 +186,7 @@ class TestShowTaskCmd:
 
         ShowTaskCmd(session).execute(task_id=None)
 
-        printer.ask.assert_called_once_with("Show task", type=int)
+        printer.ask_int.assert_called_once_with("Show task")
 
 
 class TestCopyCmd:
@@ -219,4 +219,4 @@ class TestCopyCmd:
 
         CopyTaskDetailsCmd(session).execute(task_id=None)
 
-        printer.ask.assert_called_once_with("Copy task details", type=int)
+        printer.ask_int.assert_called_once_with("Copy task details")

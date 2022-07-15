@@ -2,12 +2,9 @@ from __future__ import annotations
 
 import datetime
 from enum import Enum, IntEnum, auto
-from typing import List
-
-import click
-from tabulate import tabulate
 
 from hyperfocus.database.models import Task, TaskStatus
+from hyperfocus.termui import icons
 
 
 class NotificationLevel(IntEnum):
@@ -41,58 +38,47 @@ def date(date: datetime.date) -> str:
     return date.strftime("%a, %d %B %Y")
 
 
-def task_status(status: TaskStatus):
-    symbol = "⬢"
-    color = {
-        TaskStatus.TODO: Colors.WHITE,
-        TaskStatus.BLOCKED: Colors.BRIGHT_YELLOW,
-        TaskStatus.DELETED: Colors.RED,
-        TaskStatus.DONE: Colors.GREEN,
-    }.get(status, Colors.BLACK)
-
-    return click.style(symbol, fg=color)
-
-
 def prompt(text: str):
-    symbol = click.style("?", fg=Colors.BRIGHT_GREEN)
-    return f"{symbol} {text}"
+    return f"[chartreuse3]{icons.PROMPT}[/] {text}"
 
 
 def task(task: Task, show_details: bool = False, show_prefix: bool = False) -> str:
     empty_details = "No details provided ..."
 
     title_style = {
-        TaskStatus.DELETED: {"fg": Colors.BRIGHT_BLACK},
-        TaskStatus.DONE: {"strikethrough": True},
-    }.get(task.status, {})
+        TaskStatus.DELETED: "[bright_black]{title}[/]",
+        TaskStatus.DONE: "[strike]{title}[/]",
+    }.get(task.status, "{title}")
 
-    title = click.style(task.title, **title_style)  # type: ignore
-    details = "⊕" if task.details else "◌"
-    prefix = f"Task: #{task.id} " if show_prefix else ""
+    title = title_style.format(title=task.title)
+    prefix = f"Task: #{str(task.id)} " if show_prefix else ""
 
     headline = f"{prefix}{task_status(task.status)} {title}"
 
     if show_details:
         return f"{headline}\n{task.details or empty_details}"
 
-    return f"{headline} {details}"
+    return headline
 
 
-def tasks(tasks: List[Task], newline: bool = False) -> str:
-    headers = ["#", "tasks"]
-    suffix = "\n" if newline else ""
-    lines = [[t.id, task(t)] for t in tasks]
+def task_status(status: TaskStatus):
+    color = {
+        TaskStatus.TODO: "bright_white",
+        TaskStatus.BLOCKED: "orange1",
+        TaskStatus.DELETED: "deep_pink2",
+        TaskStatus.DONE: "chartreuse3",
+    }.get(status, "bright_black")
 
-    return f"{tabulate(lines, headers)} {suffix}"
+    return f"[{color}]{icons.TASK_STATUS}[/]"
 
 
 def notification(text: str, event: str, status: NotificationLevel) -> str:
-    symbol, color = {
-        NotificationLevel.SUCCESS: ("✔", Colors.BRIGHT_GREEN),
-        NotificationLevel.INFO: ("ℹ", Colors.BRIGHT_CYAN),
-        NotificationLevel.WARNING: ("▼", Colors.BRIGHT_YELLOW),
-        NotificationLevel.ERROR: ("✘", Colors.BRIGHT_RED),
-    }.get(status, (">", Colors.BRIGHT_WHITE))
-    prefix = click.style(f"{symbol}({event})", fg=color)
+    color, icon = {
+        NotificationLevel.SUCCESS: ("chartreuse3", icons.NOTIFICATION_SUCCESS),
+        NotificationLevel.INFO: ("steel_blue1", icons.NOTIFICATION_INFO),
+        NotificationLevel.WARNING: ("orange1", icons.NOTIFICATION_WARNING),
+        NotificationLevel.ERROR: ("deep_pink2", icons.NOTIFICATION_ERROR),
+    }.get(status, ("bright_white", Colors.BRIGHT_WHITE))
+    prefix = f"[{color}]{icon}({event})[/]"
 
     return f"{prefix} {text}"

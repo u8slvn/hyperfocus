@@ -29,7 +29,7 @@ class TaskCmd(SessionHyperfocusCommand, ABC):
     def ask_task_id(self, text: str, exclude: list[TaskStatus] | None = None) -> int:
         self.show_tasks(newline=True, exclude=exclude)
 
-        return printer.ask(text, type=int)
+        return printer.ask_int(text)
 
     def show_tasks(
         self, exclude: list[TaskStatus] | None = None, newline=False
@@ -41,7 +41,7 @@ class TaskCmd(SessionHyperfocusCommand, ABC):
             printer.echo("No tasks for today...")
             raise HyperfocusExit()
 
-        printer.tasks(tasks=tasks, newline=newline)
+        printer.tasks(tasks=tasks)
 
     def get_task(self, task_id: int) -> Task:
         task = self._session.daily_tracker.get_task(task_id=task_id)

@@ -64,7 +64,7 @@ class ReviewUnfinishedTasksCmd(UnfinishedTasksCmd):
         printer.echo(
             f"Unfinished task(s) from {formatter.date(date=self._previous_day.date)}:"
         )
-        printer.tasks(tasks=unfinished_tasks, newline=True)
+        printer.tasks(tasks=unfinished_tasks)
         if not printer.confirm(
             f"Review {len(unfinished_tasks)} unfinished task(s)",
             default=True,

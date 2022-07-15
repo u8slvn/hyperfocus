@@ -4,7 +4,7 @@ import pytest
 from freezegun import freeze_time
 
 from hyperfocus.database.models import Task, TaskStatus
-from hyperfocus.termui import formatter
+from hyperfocus.termui import formatter, icons
 
 
 @freeze_time("2012-01-14")
@@ -20,10 +20,10 @@ def test_formatter_date():
 @pytest.mark.parametrize(
     "status, expected",
     [
-        (TaskStatus.TODO, "\x1b[37m⬢\x1b[0m"),
-        (TaskStatus.BLOCKED, "\x1b[93m⬢\x1b[0m"),
-        (TaskStatus.DELETED, "\x1b[31m⬢\x1b[0m"),
-        (TaskStatus.DONE, "\x1b[32m⬢\x1b[0m"),
+        (TaskStatus.TODO, f"[bright_white]{icons.TASK_STATUS}[/]"),
+        (TaskStatus.BLOCKED, f"[orange1]{icons.TASK_STATUS}[/]"),
+        (TaskStatus.DELETED, f"[deep_pink2]{icons.TASK_STATUS}[/]"),
+        (TaskStatus.DONE, f"[chartreuse3]{icons.TASK_STATUS}[/]"),
     ],
 )
 def test_formatter_task_status(status, expected):
@@ -35,15 +35,15 @@ def test_formatter_task_status(status, expected):
 @pytest.mark.parametrize(
     "formatter_args, expected",
     [
-        ({}, "\x1b[37m⬢\x1b[0m Test\x1b[0m ◌"),
-        ({"show_prefix": True}, "Task: #1 \x1b[37m⬢\x1b[0m Test\x1b[0m ◌"),
+        ({}, "[bright_white]⬢[/] Test"),
+        ({"show_prefix": True}, "Task: #1 [bright_white]⬢[/] Test"),
         (
             {"show_details": True},
-            "\x1b[37m⬢\x1b[0m Test\x1b[0m\nNo details provided ...",
+            "[bright_white]⬢[/] Test\nNo details provided ...",
         ),
         (
             {"show_details": True, "show_prefix": True},
-            "Task: #1 \x1b[37m⬢\x1b[0m Test\x1b[0m\nNo details provided ...",
+            "Task: #1 [bright_white]⬢[/] Test\nNo details provided ...",
         ),
     ],
 )
@@ -58,12 +58,12 @@ def test_formatter_task_with_no_details(formatter_args, expected):
 @pytest.mark.parametrize(
     "pretty_args, expected",
     [
-        ({}, "\x1b[37m⬢\x1b[0m Test\x1b[0m ⊕"),
-        ({"show_prefix": True}, "Task: #1 \x1b[37m⬢\x1b[0m Test\x1b[0m ⊕"),
-        ({"show_details": True}, "\x1b[37m⬢\x1b[0m Test\x1b[0m\nHello"),
+        ({}, "[bright_white]⬢[/] Test"),
+        ({"show_prefix": True}, "Task: #1 [bright_white]⬢[/] Test"),
+        ({"show_details": True}, "[bright_white]⬢[/] Test\nHello"),
         (
             {"show_details": True, "show_prefix": True},
-            "Task: #1 \x1b[37m⬢\x1b[0m Test\x1b[0m\nHello",
+            "Task: #1 [bright_white]⬢[/] Test\nHello",
         ),
     ],
 )
@@ -75,52 +75,34 @@ def test_formatter_task_with_details(pretty_args, expected):
     assert pretty_task == expected
 
 
-def test_formatter_tasks():
-    tasks = [
-        Task(id=1, title="Test", details="new"),
-        Task(id=2, title="Test", status=TaskStatus.DELETED),
-        Task(id=3, title="Test", status=TaskStatus.DONE),
-    ]
-
-    formatted_tasks = formatter.tasks(tasks=tasks)
-
-    expected = (
-        "  #  tasks\n"
-        "---  --------\n"
-        "  1  \x1b[37m⬢\x1b[0m Test\x1b[0m ⊕\n"
-        "  2  \x1b[31m⬢\x1b[0m \x1b[90mTest\x1b[0m ◌\n"
-        "  3  \x1b[32m⬢\x1b[0m \x1b[9mTest\x1b[0m ◌ "
-    )
-    assert formatted_tasks == expected
-
-
-def test_formatter_tasks_with_newline():
-    tasks = [
-        Task(id=1, title="Test"),
-    ]
-
-    formatted_tasks = formatter.tasks(tasks=tasks, newline=True)
-
-    expected = "  #  tasks\n" "---  --------\n" "  1  \x1b[37m⬢\x1b[0m Test\x1b[0m ◌ \n"
-    assert formatted_tasks == expected
-
-
 def test_formatter_prompt():
     text = "Test prompt"
 
     formatter_prompt = formatter.prompt(text=text)
 
-    expected = "\x1b[92m?\x1b[0m Test prompt"
+    expected = f"[chartreuse3]{icons.PROMPT}[/] Test prompt"
     assert formatter_prompt == expected
 
 
 @pytest.mark.parametrize(
     "status, expected",
     [
-        (formatter.NotificationLevel.SUCCESS, "\x1b[92m✔(test)\x1b[0m Test"),
-        (formatter.NotificationLevel.INFO, "\x1b[96mℹ(test)\x1b[0m Test"),
-        (formatter.NotificationLevel.WARNING, "\x1b[93m▼(test)\x1b[0m Test"),
-        (formatter.NotificationLevel.ERROR, "\x1b[91m✘(test)\x1b[0m Test"),
+        (
+            formatter.NotificationLevel.SUCCESS,
+            f"[chartreuse3]{icons.NOTIFICATION_SUCCESS}(test)[/] Test",
+        ),
+        (
+            formatter.NotificationLevel.INFO,
+            f"[steel_blue1]{icons.NOTIFICATION_INFO}(test)[/] Test",
+        ),
+        (
+            formatter.NotificationLevel.WARNING,
+            f"[orange1]{icons.NOTIFICATION_WARNING}(test)[/] Test",
+        ),
+        (
+            formatter.NotificationLevel.ERROR,
+            f"[deep_pink2]{icons.NOTIFICATION_ERROR}(test)[/] Test",
+        ),
     ],
 )
 def test_formatter_notification(status, expected):
