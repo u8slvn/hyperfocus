@@ -12,7 +12,7 @@ from hyperfocus.database.models import Task
 from hyperfocus.termui import formatter, icons
 
 
-console = Console(highlight=False)
+console = Console(highlight=False, force_terminal=True)
 
 
 def echo(text: str):

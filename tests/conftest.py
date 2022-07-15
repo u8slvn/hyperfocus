@@ -1,4 +1,5 @@
 import datetime
+import os
 import re
 import shutil
 from pathlib import Path
@@ -70,3 +71,10 @@ def session(mocker):
             self._callback_commands = []
 
     return MockSession()
+
+
+@pytest.fixture(scope="session", autouse=True)
+def no_color():
+    os.environ["TERM"] = "dumb"
+    yield
+    del os.environ["TERM"]

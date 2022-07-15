@@ -7,8 +7,8 @@ from hyperfocus.termui import icons, printer
 @pytest.mark.parametrize(
     "func, expected",
     [
-        ("banner", "\x1b[3;38;5;228mfoobar\x1b[0m\n"),
-        ("new_day", f"{icons.NEW_DAY} \x1b[38;5;81mfoobar\x1b[0m\n"),
+        ("banner", "foobar\n"),
+        ("new_day", f"{icons.NEW_DAY} foobar\n"),
     ],
 )
 def test_banner(capsys, func, expected):
