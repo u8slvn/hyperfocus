@@ -4,7 +4,7 @@ import pytest
 from freezegun import freeze_time
 
 from hyperfocus.database.models import Task, TaskStatus
-from hyperfocus.termui import formatter, icons
+from hyperfocus.termui import formatter, icons, style
 
 
 @freeze_time("2012-01-14")
@@ -20,10 +20,10 @@ def test_formatter_date():
 @pytest.mark.parametrize(
     "status, expected",
     [
-        (TaskStatus.TODO, f"[bright_white]{icons.TASK_STATUS}[/]"),
-        (TaskStatus.BLOCKED, f"[orange1]{icons.TASK_STATUS}[/]"),
-        (TaskStatus.DELETED, f"[deep_pink2]{icons.TASK_STATUS}[/]"),
-        (TaskStatus.DONE, f"[chartreuse3]{icons.TASK_STATUS}[/]"),
+        (TaskStatus.TODO, f"[{style.DEFAULT}]{icons.TASK_STATUS}[/]"),
+        (TaskStatus.BLOCKED, f"[{style.WARNING}]{icons.TASK_STATUS}[/]"),
+        (TaskStatus.DELETED, f"[{style.ERROR}]{icons.TASK_STATUS}[/]"),
+        (TaskStatus.DONE, f"[{style.SUCCESS}]{icons.TASK_STATUS}[/]"),
     ],
 )
 def test_formatter_task_status(status, expected):
@@ -35,15 +35,15 @@ def test_formatter_task_status(status, expected):
 @pytest.mark.parametrize(
     "formatter_args, expected",
     [
-        ({}, "[bright_white]⬢[/] Test"),
-        ({"show_prefix": True}, "Task: #1 [bright_white]⬢[/] Test"),
+        ({}, f"[{style.DEFAULT}]⬢[/] Test"),
+        ({"show_prefix": True}, f"Task: #1 [{style.DEFAULT}]⬢[/] Test"),
         (
             {"show_details": True},
-            "[bright_white]⬢[/] Test\nNo details provided ...",
+            f"[{style.DEFAULT}]⬢[/] Test\nNo details provided ...",
         ),
         (
             {"show_details": True, "show_prefix": True},
-            "Task: #1 [bright_white]⬢[/] Test\nNo details provided ...",
+            f"Task: #1 [{style.DEFAULT}]⬢[/] Test\nNo details provided ...",
         ),
     ],
 )
@@ -58,12 +58,12 @@ def test_formatter_task_with_no_details(formatter_args, expected):
 @pytest.mark.parametrize(
     "pretty_args, expected",
     [
-        ({}, "[bright_white]⬢[/] Test"),
-        ({"show_prefix": True}, "Task: #1 [bright_white]⬢[/] Test"),
-        ({"show_details": True}, "[bright_white]⬢[/] Test\nHello"),
+        ({}, f"[{style.DEFAULT}]⬢[/] Test"),
+        ({"show_prefix": True}, f"Task: #1 [{style.DEFAULT}]⬢[/] Test"),
+        ({"show_details": True}, f"[{style.DEFAULT}]⬢[/] Test\nHello"),
         (
             {"show_details": True, "show_prefix": True},
-            "Task: #1 [bright_white]⬢[/] Test\nHello",
+            f"Task: #1 [{style.DEFAULT}]⬢[/] Test\nHello",
         ),
     ],
 )
@@ -80,7 +80,7 @@ def test_formatter_prompt():
 
     formatter_prompt = formatter.prompt(text=text)
 
-    expected = f"[chartreuse3]{icons.PROMPT}[/] Test prompt"
+    expected = f"[{style.SUCCESS}]{icons.PROMPT}[/] Test prompt"
     assert formatter_prompt == expected
 
 
@@ -89,19 +89,19 @@ def test_formatter_prompt():
     [
         (
             formatter.NotificationLevel.SUCCESS,
-            f"[chartreuse3]{icons.NOTIFICATION_SUCCESS}(test)[/] Test",
+            f"[{style.SUCCESS}]{icons.NOTIFICATION_SUCCESS}(test)[/] Test",
         ),
         (
             formatter.NotificationLevel.INFO,
-            f"[steel_blue1]{icons.NOTIFICATION_INFO}(test)[/] Test",
+            f"[{style.INFO}]{icons.NOTIFICATION_INFO}(test)[/] Test",
         ),
         (
             formatter.NotificationLevel.WARNING,
-            f"[orange1]{icons.NOTIFICATION_WARNING}(test)[/] Test",
+            f"[{style.WARNING}]{icons.NOTIFICATION_WARNING}(test)[/] Test",
         ),
         (
             formatter.NotificationLevel.ERROR,
-            f"[deep_pink2]{icons.NOTIFICATION_ERROR}(test)[/] Test",
+            f"[{style.ERROR}]{icons.NOTIFICATION_ERROR}(test)[/] Test",
         ),
     ],
 )
@@ -125,8 +125,8 @@ def test_formatter_notification(status, expected):
                 Task(title="foo", status=TaskStatus.DONE),
             ],
             (
-                f"[chartreuse3]50% [{icons.PROGRESS_BAR * 15}[/]"
-                f"[bright_white]{icons.PROGRESS_BAR * 15}] 50%[/]"
+                f"[{style.SUCCESS}]50% [{icons.PROGRESS_BAR * 15}[/]"
+                f"[{style.DEFAULT}]{icons.PROGRESS_BAR * 15}] 50%[/]"
             ),
         ),
         (
@@ -136,8 +136,8 @@ def test_formatter_notification(status, expected):
                 Task(title="foo", status=TaskStatus.DONE),
             ],
             (
-                f"[chartreuse3]33% [{icons.PROGRESS_BAR * 10}[/]"
-                f"[bright_white]{icons.PROGRESS_BAR * 20}] 66%[/]"
+                f"[{style.SUCCESS}]33% [{icons.PROGRESS_BAR * 10}[/]"
+                f"[{style.DEFAULT}]{icons.PROGRESS_BAR * 20}] 66%[/]"
             ),
         ),
     ],

@@ -4,7 +4,7 @@ import datetime
 from enum import IntEnum, auto
 
 from hyperfocus.database.models import Task, TaskStatus
-from hyperfocus.termui import icons
+from hyperfocus.termui import icons, style
 
 
 PROGRESS_BAR_SIZE = 30
@@ -22,15 +22,15 @@ def date(date: datetime.date) -> str:
 
 
 def prompt(text: str):
-    return f"[chartreuse3]{icons.PROMPT}[/] {text}"
+    return f"[{style.SUCCESS}]{icons.PROMPT}[/] {text}"
 
 
 def task(task: Task, show_details: bool = False, show_prefix: bool = False) -> str:
     empty_details = "No details provided ..."
 
     title_style = {
-        TaskStatus.DELETED: "[bright_black]{title}[/]",
-        TaskStatus.DONE: "[strike]{title}[/]",
+        TaskStatus.DELETED: f"[{style.DELETED_TASK}]{{title}}[/]",
+        TaskStatus.DONE: f"[{style.DONE_TASK}]{{title}}[/]",
     }.get(task.status, "{title}")
 
     title = title_style.format(title=task.title)
@@ -46,22 +46,22 @@ def task(task: Task, show_details: bool = False, show_prefix: bool = False) -> s
 
 def task_status(status: TaskStatus):
     color = {
-        TaskStatus.TODO: "bright_white",
-        TaskStatus.BLOCKED: "orange1",
-        TaskStatus.DELETED: "deep_pink2",
-        TaskStatus.DONE: "chartreuse3",
-    }.get(status, "bright_black")
+        TaskStatus.TODO: style.DEFAULT,
+        TaskStatus.BLOCKED: style.WARNING,
+        TaskStatus.DELETED: style.ERROR,
+        TaskStatus.DONE: style.SUCCESS,
+    }.get(status, style.UNKNOWN)
 
     return f"[{color}]{icons.TASK_STATUS}[/]"
 
 
 def notification(text: str, event: str, status: NotificationLevel) -> str:
     color, icon = {
-        NotificationLevel.SUCCESS: ("chartreuse3", icons.NOTIFICATION_SUCCESS),
-        NotificationLevel.INFO: ("steel_blue1", icons.NOTIFICATION_INFO),
-        NotificationLevel.WARNING: ("orange1", icons.NOTIFICATION_WARNING),
-        NotificationLevel.ERROR: ("deep_pink2", icons.NOTIFICATION_ERROR),
-    }.get(status, ("bright_white", icons.NOTIFICATION))
+        NotificationLevel.SUCCESS: (style.SUCCESS, icons.NOTIFICATION_SUCCESS),
+        NotificationLevel.INFO: (style.INFO, icons.NOTIFICATION_INFO),
+        NotificationLevel.WARNING: (style.WARNING, icons.NOTIFICATION_WARNING),
+        NotificationLevel.ERROR: (style.ERROR, icons.NOTIFICATION_ERROR),
+    }.get(status, (style.DEFAULT, icons.NOTIFICATION))
     prefix = f"[{color}]{icon}({event})[/]"
 
     return f"{prefix} {text}"
@@ -78,8 +78,8 @@ def progress_bar(tasks: list[Task]):
     display_todo_count = PROGRESS_BAR_SIZE - display_done_count
 
     return (
-        f"[chartreuse3]{int(percent_done)}% ["
+        f"[{style.SUCCESS}]{int(percent_done)}% ["
         f"{icons.PROGRESS_BAR * display_done_count}[/]"
-        f"[bright_white]{icons.PROGRESS_BAR * display_todo_count}"
+        f"[{style.DEFAULT}]{icons.PROGRESS_BAR * display_todo_count}"
         f"] {int(percent_todo)}%[/]"
     )

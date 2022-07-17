@@ -8,12 +8,20 @@ from rich.box import Box
 from rich.console import Console
 from rich.prompt import Confirm, IntPrompt, Prompt
 from rich.table import Table
+from rich.theme import Theme
 
 from hyperfocus.database.models import Task
-from hyperfocus.termui import formatter, icons
+from hyperfocus.termui import formatter, icons, style
 
 
-console = Console(highlight=False, force_terminal=True)
+theme = Theme(
+    {
+        "prompt.invalid": style.ERROR,
+        "prompt.invalid.choice": style.ERROR,
+    }
+)
+
+console = Console(highlight=False, force_terminal=True, theme=theme)
 
 CUSTOM_BOX: Box = Box(
     "\n".join(
@@ -80,26 +88,26 @@ def error(text: str, event: str):
 
 def ask(text: str, **kwargs) -> Any:
     text = formatter.prompt(text)
-    return Prompt.ask(text, **kwargs)
+    return Prompt(console=console).ask(text, **kwargs)
 
 
 def ask_int(text: str, **kwargs) -> Any:
     text = formatter.prompt(text)
-    return IntPrompt.ask(text, **kwargs)
+    return IntPrompt(console=console).ask(text, **kwargs)
 
 
 def confirm(text: str, **kwargs) -> Any:
     text = formatter.prompt(text)
-    return Confirm.ask(text, **kwargs)
+    return Confirm(console=console).ask(text, **kwargs)
 
 
 def banner(text: str) -> None:
-    echo(f"[italic khaki1]> {text}[/]")
+    echo(f"[{style.BANNER}]> {text}[/]")
 
 
 def new_day(date: datetime.date) -> None:
     echo(
-        f"[steel_blue1]> {icons.NEW_DAY} {formatter.date(date)}: "
+        f"[{style.NEW_DAY}]> {icons.NEW_DAY} {formatter.date(date)}: "
         f"A new day starts, good luck![/]"
     )
 
