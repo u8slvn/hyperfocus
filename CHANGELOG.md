@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.0-alpha.0 (2022-07-17)
+
+* Add task details with history in `show` command.
+* Rework unfinished tasks review system.
+* Add progress bar to working day status.
+* Minor design modifications on `new day` and `unfinised tasks` events.
+* Add security check preventing bad config deletion.
+* Commands `done`, `block`, `reset` and `delete` accept task id batches.
+
 ## 0.2.1 (2022-07-12)
 
 * Fix config command `--list` option.
