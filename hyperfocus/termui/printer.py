@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 from typing import Any, List
 
 import rich
@@ -78,8 +79,11 @@ def confirm(text: str, **kwargs) -> Any:
 
 
 def banner(text: str) -> None:
-    console.print(f"[italic khaki1]{text}[/]")
+    console.print(f"[italic khaki1]> {text}[/]")
 
 
-def new_day(text: str) -> None:
-    console.print(f"{icons.NEW_DAY} [steel_blue1]{text}[/]")
+def new_day(date: datetime.date) -> None:
+    console.print(
+        f"[steel_blue1]> {icons.NEW_DAY} {formatter.date(date)}: "
+        f"A new day starts, good luck![/]"
+    )

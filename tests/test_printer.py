@@ -1,21 +1,24 @@
-import pytest
+import datetime
 
 from hyperfocus.database.models import Task
 from hyperfocus.termui import icons, printer
 
 
-@pytest.mark.parametrize(
-    "func, expected",
-    [
-        ("banner", "foobar\n"),
-        ("new_day", f"{icons.NEW_DAY} foobar\n"),
-    ],
-)
-def test_banner(capsys, func, expected):
-    getattr(printer, func)("foobar")
+def test_banner(capsys):
+    printer.banner("foobar")
 
     captured = capsys.readouterr()
-    assert captured.out == expected
+    assert captured.out == "> foobar\n"
+
+
+def test_new_day(capsys):
+    printer.new_day(datetime.date(2022, 1, 1))
+
+    captured = capsys.readouterr()
+    assert (
+        captured.out
+        == f"> {icons.NEW_DAY} Sat, 01 January 2022: A new day starts, good luck!\n"
+    )
 
 
 def test_tasks(capsys):

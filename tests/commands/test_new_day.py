@@ -27,7 +27,7 @@ def test_new_day_cmd_is_a_new_day(session, printer):
 
     NewDayCmd(session).execute()
 
-    assert printer.new_day.call_count == 2
+    printer.new_day.assert_called_once()
 
 
 class TestCheckUnfinishedTask:
