@@ -103,8 +103,9 @@ def notification(text: str, event: str, status: NotificationLevel) -> str:
 
 def progress_bar(tasks: list[Task]) -> str:
     done_tasks = list(filter(lambda task: task.status == TaskStatus.DONE, tasks))
+    todo_tasks = list(filter(lambda task: task.status == TaskStatus.TODO, tasks))
     done_count = len(done_tasks)
-    total_count = len(tasks)
+    total_count = len(todo_tasks) + done_count
 
     percent_done = done_count * 100 / total_count
     percent_todo = 100 - percent_done

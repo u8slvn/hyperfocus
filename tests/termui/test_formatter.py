@@ -120,6 +120,7 @@ def test_formatter_notification(status, expected):
             [
                 Task(title="foo"),
                 Task(title="foo", status=TaskStatus.DONE),
+                Task(title="foobar", status=TaskStatus.DELETED),
             ],
             (
                 f"[{style.SUCCESS}]50% [{icons.PROGRESS_BAR * 15}[/]"
