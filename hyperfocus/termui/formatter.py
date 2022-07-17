@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import datetime
-from enum import Enum, IntEnum, auto
+from enum import IntEnum, auto
 
 from hyperfocus.database.models import Task, TaskStatus
 from hyperfocus.termui import icons
+
+
+PROGRESS_BAR_SIZE = 30
 
 
 class NotificationLevel(IntEnum):
@@ -12,26 +15,6 @@ class NotificationLevel(IntEnum):
     INFO = auto()
     WARNING = auto()
     ERROR = auto()
-
-
-class Colors(str, Enum):
-    BLACK = "black"
-    RED = "red"
-    GREEN = "green"
-    YELLOW = "yellow"
-    BLUE = "blue"
-    MAGENTA = "magenta"
-    CYAN = "cyan"
-    WHITE = "white"
-    RESET = "reset"
-    BRIGHT_BLACK = "bright_black"
-    BRIGHT_RED = "bright_red"
-    BRIGHT_GREEN = "bright_green"
-    BRIGHT_YELLOW = "bright_yellow"
-    BRIGHT_BLUE = "bright_blue"
-    BRIGHT_MAGENTA = "bright_magenta"
-    BRIGHT_CYAN = "bright_cyan"
-    BRIGHT_WHITE = "bright_white"
 
 
 def date(date: datetime.date) -> str:
@@ -78,7 +61,25 @@ def notification(text: str, event: str, status: NotificationLevel) -> str:
         NotificationLevel.INFO: ("steel_blue1", icons.NOTIFICATION_INFO),
         NotificationLevel.WARNING: ("orange1", icons.NOTIFICATION_WARNING),
         NotificationLevel.ERROR: ("deep_pink2", icons.NOTIFICATION_ERROR),
-    }.get(status, ("bright_white", Colors.BRIGHT_WHITE))
+    }.get(status, ("bright_white", icons.NOTIFICATION))
     prefix = f"[{color}]{icon}({event})[/]"
 
     return f"{prefix} {text}"
+
+
+def progress_bar(tasks: list[Task]):
+    done_tasks = list(filter(lambda task: task.status == TaskStatus.DONE, tasks))
+    done_count = len(done_tasks)
+    total_count = len(tasks)
+
+    percent_done = done_count * 100 / total_count
+    percent_todo = 100 - percent_done
+    display_done_count = round((percent_done * PROGRESS_BAR_SIZE) / 100)
+    display_todo_count = PROGRESS_BAR_SIZE - display_done_count
+
+    return (
+        f"[chartreuse3]{int(percent_done)}% ["
+        f"{icons.PROGRESS_BAR * display_done_count}[/]"
+        f"[bright_white]{icons.PROGRESS_BAR * display_todo_count}"
+        f"] {int(percent_todo)}%[/]"
+    )

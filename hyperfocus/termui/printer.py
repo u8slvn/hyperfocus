@@ -4,7 +4,7 @@ import datetime
 from typing import Any, List
 
 import rich
-from rich.box import HORIZONTALS
+from rich.box import Box
 from rich.console import Console
 from rich.prompt import Confirm, IntPrompt, Prompt
 from rich.table import Table
@@ -14,6 +14,21 @@ from hyperfocus.termui import formatter, icons
 
 
 console = Console(highlight=False, force_terminal=True)
+
+CUSTOM_BOX: Box = Box(
+    "\n".join(
+        [
+            "    ",
+            "    ",
+            " -- ",
+            "    ",
+            "    ",
+            "    ",
+            "    ",
+            "    ",
+        ]
+    )
+)
 
 
 def echo(text: str):
@@ -29,7 +44,7 @@ def task(task: Task, show_details: bool = False, show_prefix: bool = False):
 
 def tasks(tasks: List[Task]):
     table = Table(
-        box=HORIZONTALS,
+        box=CUSTOM_BOX,
     )
     table.add_column("#", justify="right")
     table.add_column("tasks")
@@ -79,11 +94,15 @@ def confirm(text: str, **kwargs) -> Any:
 
 
 def banner(text: str) -> None:
-    console.print(f"[italic khaki1]> {text}[/]")
+    echo(f"[italic khaki1]> {text}[/]")
 
 
 def new_day(date: datetime.date) -> None:
-    console.print(
+    echo(
         f"[steel_blue1]> {icons.NEW_DAY} {formatter.date(date)}: "
         f"A new day starts, good luck![/]"
     )
+
+
+def progress_bar(tasks: list[Task]):
+    echo(formatter.progress_bar(tasks))
