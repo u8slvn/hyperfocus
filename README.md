@@ -14,6 +14,6 @@
 
 ---
 
-```sh
-$ pipx install hyperfocus
+```shell
+$ pipx install hyperfocus --pip-args="--pre"
 ```

@@ -5,7 +5,7 @@
 * Add task details with history in `show` command.
 * Rework unfinished tasks review system.
 * Add progress bar to working day status.
-* Minor design modifications on `new day` and `unfinised tasks` events.
+* Minor design modifications on `new day` and `unfinished tasks` events.
 * Add security check preventing bad config deletion.
 * Commands `done`, `block`, `reset` and `delete` accept task id batches.
 
