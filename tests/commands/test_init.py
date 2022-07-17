@@ -5,12 +5,13 @@ from hyperfocus.database._database import Database
 
 def test_init_command(mocker):
     printer = mocker.patch("hyperfocus.commands.init.printer")
+    printer.ask.return_value = "/dummy/path/database.sqlite"
     config = mocker.MagicMock(spec=Config, instance=True)
     mocker.patch("hyperfocus.commands.init.Config", return_value=config)
     database = mocker.Mock(spec=Database, instance=True)
     mocker.patch("hyperfocus.commands.init.database", database)
 
-    InitCmd().execute("/dummy/path/database.sqlite")
+    InitCmd().execute()
 
     config.make_directory.assert_called_once()
     config.__setitem__.assert_called_once_with(

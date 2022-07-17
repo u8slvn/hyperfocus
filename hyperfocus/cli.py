@@ -22,9 +22,7 @@ from hyperfocus.commands.task import (
 from hyperfocus.database.models import TaskStatus
 from hyperfocus.hyf_click.core import HyfGroup
 from hyperfocus.hyf_click.parameters import NotRequired, NotRequiredIf
-from hyperfocus.locations import DEFAULT_DB_PATH
 from hyperfocus.session import Session, get_current_session
-from hyperfocus.termui import formatter
 
 
 @click.group(cls=HyfGroup, invoke_without_command=True, help="Minimalist task manager")
@@ -58,14 +56,8 @@ def process_session(session: Session | None, **_):
 
 
 @hyf.command(help="Initialize hyperfocus config and database")
-@click.option(
-    "--db-path",
-    default=DEFAULT_DB_PATH,
-    prompt=formatter.prompt("Database location"),
-    help="Database file location",
-)
-def init(db_path: str) -> None:
-    InitCmd().execute(db_path=db_path)
+def init() -> None:
+    InitCmd().execute()
 
 
 @hyf.command(help="Show current working day status")

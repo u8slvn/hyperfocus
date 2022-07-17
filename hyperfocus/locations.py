@@ -8,6 +8,5 @@ from hyperfocus import __app_name__
 
 
 CONFIG_DIR = Path(click.get_app_dir(__app_name__))
-CONFIG_PATH = CONFIG_DIR / "config.ini"
 
 DEFAULT_DB_PATH = Path.home() / f".{__app_name__}.sqlite"
