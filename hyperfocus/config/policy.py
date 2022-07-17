@@ -7,38 +7,52 @@ from typing import Type
 from hyperfocus.config.exceptions import ConfigError
 
 
-class OptionPolicies:
-    def __init__(self, policies: dict[str, Type[OptionPolicy]] | None = None):
+class ConfigPolicies:
+    def __init__(self, policies: dict[str, Type[ConfigPolicy]] | None = None):
         self._policies = policies or {}
 
-    def check_input(self, section: str, key: str, value: str) -> None:
+    def _check(self, section: str, key: str, value: str | None = None) -> None:
         policy = self._policies.get(section)
-        if policy is not None:
-            policy(key, value).validate()
+        if policy is None:
+            return
+
+        if value is not None:
+            policy(key).check_input(value)
+        else:
+            policy(key).check_deletion()
+
+    def check_input(self, section: str, key: str, value: str) -> None:
+        self._check(section=section, key=key, value=value)
+
+    def check_deletion(self, section: str, key: str) -> None:
+        self._check(section=section, key=key)
 
 
-class OptionPolicy(ABC):
+class ConfigPolicy(ABC):
     section: str | None = None
 
-    def __init__(self, key: str, value: str):
+    def __init__(self, key: str):
         self.key = key
-        self.value = value
 
     @property
     def option(self) -> str:
         return f"{self.section}.{self.key}"
 
     @abstractmethod
-    def validate(self) -> None:
+    def check_input(self, value: str) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def check_deletion(self) -> None:
         raise NotImplementedError
 
 
-class CorePolicy(OptionPolicy):
+class CorePolicy(ConfigPolicy):
     section = "core"
 
-    def validate(self) -> None:
+    def check_input(self, value: str) -> None:
         if self.key == "database":
-            db_path = Path(self.value)
+            db_path = Path(value)
             if not db_path.parent.is_dir():
                 raise ConfigError(
                     f"Config option '{self.option}' must be a valid path."
@@ -46,12 +60,21 @@ class CorePolicy(OptionPolicy):
         else:
             raise ConfigError(f"Unknown config option '{self.option}'.")
 
+    def check_deletion(self) -> None:
+        if self.key == "database":
+            raise ConfigError(
+                f"Deletion of config option '{self.option}' is forbidden."
+            )
 
-class AliasPolicy(OptionPolicy):
+
+class AliasPolicy(ConfigPolicy):
     section = "alias"
 
-    def validate(self) -> None:
+    def check_input(self, value: str) -> None:
         from hyperfocus import cli
 
-        if self.value not in cli.get_commands():
+        if value not in cli.get_commands():
             raise ConfigError("Alias must referred to an existing command name.")
+
+    def check_deletion(self) -> None:
+        pass

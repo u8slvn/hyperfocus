@@ -129,11 +129,12 @@ def test_delete_config_options(fixtures_dir):
     config_path = fixtures_dir / "config.ini"
     config = Config.load(config_path, reload=True)
 
-    del config["core.database"]
     config.delete_option("alias.st")
 
     expected_config = {
-        "core": {},
+        "core": {
+            "database": "/test/database.sqlite",
+        },
         "alias": {
             "del": "delete",
         },
@@ -141,11 +142,21 @@ def test_delete_config_options(fixtures_dir):
     assert config.config == expected_config
 
 
+def test_delete_config_options_forbidden(fixtures_dir):
+    config_path = fixtures_dir / "config.ini"
+    config = Config.load(config_path, reload=True)
+
+    with pytest.raises(
+        ConfigError, match=r"Deletion of config option 'core.database' is forbidden."
+    ):
+        del config["core.database"]
+
+
 def test_delete_config_options_fails(fixtures_dir):
     config_path = fixtures_dir / "config.ini"
     config = Config.load(config_path, reload=True)
 
-    with pytest.raises(ConfigError, match=r"Variable (.*) does not exist"):
+    with pytest.raises(ConfigError, match=r"Variable '(.*)' does not exist."):
         del config["core.dummy"]
 
 
@@ -153,7 +164,7 @@ def test_delete_config_options_bad_format_fails(fixtures_dir):
     config_path = fixtures_dir / "config.ini"
     config = Config.load(config_path, reload=True)
 
-    with pytest.raises(ConfigError, match=r"Bad format config option (.*)"):
+    with pytest.raises(ConfigError, match=r"Bad format config option '(.*)'."):
         del config["core.dummy.foo"]
 
 

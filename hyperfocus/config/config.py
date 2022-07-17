@@ -9,7 +9,7 @@ from typing import Any, Generator
 
 from hyperfocus.config.exceptions import ConfigError, ConfigFileError
 from hyperfocus.config.file import ConfigFile
-from hyperfocus.config.policy import AliasPolicy, CorePolicy, OptionPolicies
+from hyperfocus.config.policy import AliasPolicy, ConfigPolicies, CorePolicy
 from hyperfocus.locations import CONFIG_DIR
 
 
@@ -23,7 +23,7 @@ class Config:
         },
         "alias": {},
     }
-    _policies = OptionPolicies(
+    _policies = ConfigPolicies(
         {
             "core": CorePolicy,
             "alias": AliasPolicy,
@@ -106,6 +106,7 @@ class Config:
 
     def delete_option(self, option: str) -> None:
         with self.secured_option(option=option) as opt:
+            self._policies.check_deletion(section=opt.section, key=opt.key)
             del self._config[opt.section][opt.key]
 
     def __getitem__(self, option: str) -> str:
