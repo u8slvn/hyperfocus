@@ -19,7 +19,6 @@ def test_formatter_date():
     "status, expected",
     [
         (TaskStatus.TODO, f"[{style.DEFAULT}]{icons.TASK_STATUS}[/]"),
-        (TaskStatus.BLOCKED, f"[{style.WARNING}]{icons.TASK_STATUS}[/]"),
         (TaskStatus.DELETED, f"[{style.ERROR}]{icons.TASK_STATUS}[/]"),
         (TaskStatus.DONE, f"[{style.SUCCESS}]{icons.TASK_STATUS}[/]"),
     ],

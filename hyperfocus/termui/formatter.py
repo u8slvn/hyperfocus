@@ -82,7 +82,6 @@ def task_history(task: Task) -> str:
 def task_status(status: TaskStatus) -> str:
     color = {
         TaskStatus.TODO: style.DEFAULT,
-        TaskStatus.BLOCKED: style.WARNING,
         TaskStatus.DELETED: style.ERROR,
         TaskStatus.DONE: style.SUCCESS,
     }.get(status, style.UNKNOWN)

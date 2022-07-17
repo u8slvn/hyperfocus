@@ -13,7 +13,7 @@ from hyperfocus.utils import wrap_methods
 
 class TaskStatus(IntEnum):
     TODO = auto()
-    BLOCKED = auto()
+    STASHED = auto()
     DELETED = auto()
     DONE = auto()
 

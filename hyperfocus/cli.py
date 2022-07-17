@@ -100,17 +100,6 @@ def reset(task_ids: tuple[int, ...]) -> Session:
     return session
 
 
-@hyf.command(help="Mark task as blocked")
-@click.argument("task_ids", metavar="<id>", required=False, nargs=-1, type=click.INT)
-def block(task_ids: tuple[int, ...]) -> Session:
-    session = get_current_session()
-    UpdateTasksCmd(session).execute(
-        task_ids=task_ids, status=TaskStatus.BLOCKED, text="Block task"
-    )
-
-    return session
-
-
 @hyf.command(help="Delete given task")
 @click.argument("task_ids", metavar="<id>", required=False, nargs=-1, type=click.INT)
 def delete(task_ids: tuple[int, ...]) -> Session:
