@@ -56,6 +56,19 @@ class DailyTracker:
 
         return task
 
+    def copy_task(self, task: Task) -> Task:
+        task = Task.create(
+            id=self._working_day.next_task_id,
+            title=task.title,
+            details=task.details,
+            status=TaskStatus.TODO,
+            daily_tracker=self._working_day,
+            parent_task=task,
+        )
+        self._working_day.save()
+
+        return task
+
     def get_task(self, task_id: int) -> Task | None:
         return Task.get_or_none(
             Task.id == task_id, Task.daily_tracker == self._working_day

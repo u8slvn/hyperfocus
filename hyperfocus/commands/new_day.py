@@ -73,8 +73,6 @@ class ReviewUnfinishedTasksCmd(UnfinishedTasksCmd):
 
         for task in unfinished_tasks:
             if printer.confirm(f'Take back task "{task.title}" for today'):
-                self._session.daily_tracker.add_task(
-                    title=task.title, details=task.details
-                )
+                self._session.daily_tracker.copy_task(task)
 
         self._previous_day.locked()

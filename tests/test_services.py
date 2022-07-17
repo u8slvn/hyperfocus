@@ -25,18 +25,33 @@ def test_daily_tracker_locked(test_database):
 
 def test_daily_tracker_service_add_task(test_database):
     daily_tracker = DailyTracker.from_date(datetime.date(2022, 1, 1))
-
     task = daily_tracker.add_task(title="Test add task", details="Test add details")
 
-    created_daily_tracker = WorkingDay.get(WorkingDay.date == daily_tracker.date)
+    working_day = WorkingDay.get(WorkingDay.date == daily_tracker.date)
     created_task = Task.get(
         Task.id == task.id,
-        Task.daily_tracker == created_daily_tracker,
+        Task.daily_tracker == working_day,
     )
     assert created_task.id == 1
     assert created_task.title == "Test add task"
     assert created_task.details == "Test add details"
-    assert created_daily_tracker.task_increment == 1
+    assert working_day.task_increment == 1
+
+
+def test_daily_tracker_service_copy_task(test_database):
+    daily_tracker1 = DailyTracker.from_date(datetime.date(2022, 1, 1))
+    task1 = daily_tracker1.add_task(title="foo", details="bar")
+    daily_tracker2 = DailyTracker.from_date(datetime.date(2022, 1, 2))
+    task2 = daily_tracker2.copy_task(task1)
+
+    copied_task = Task.get(
+        Task.id == task2.id,
+        Task.daily_tracker == WorkingDay.get(WorkingDay.date == daily_tracker2.date),
+    )
+    assert copied_task.id == 1
+    assert copied_task.title == task1.title
+    assert copied_task.details == task1.details
+    assert copied_task.parent_task == task1
 
 
 def test_daily_tracker_service_get_task(test_database):

@@ -72,14 +72,14 @@ class TestCheckUnfinishedTask:
 
 class TestReviewUnfinishedTasksCmd:
     @pytest.mark.parametrize(
-        "confirmation, add_task_count",
+        "confirmation, copy_task_count",
         [
             ([True, True, True], 2),
             ([True, False, True], 1),
         ],
     )
     def test_review_unfinished_tasks(
-        self, mocker, session, printer, confirmation, add_task_count
+        self, mocker, session, printer, confirmation, copy_task_count
     ):
         previous_day = mocker.Mock(spec=DailyTracker, intance=True)
         previous_day.is_locked.return_value = False
@@ -90,7 +90,7 @@ class TestReviewUnfinishedTasksCmd:
         ReviewUnfinishedTasksCmd(session).execute()
 
         printer.echo.assert_called_once()
-        assert session._daily_tracker.add_task.call_count == add_task_count
+        assert session._daily_tracker.copy_task.call_count == copy_task_count
         previous_day.locked.assert_called_once()
 
     def test_review_unfinished_tasks_with_no_confirmation(
