@@ -68,6 +68,7 @@ class ReviewUnfinishedTasksCmd(UnfinishedTasksCmd):
             f"Review {len(unfinished_tasks)} unfinished task(s)",
             default=True,
         ):
+            self._previous_day.locked()
             return
 
         for task in unfinished_tasks:

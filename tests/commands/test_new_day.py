@@ -105,6 +105,7 @@ class TestReviewUnfinishedTasksCmd:
         ReviewUnfinishedTasksCmd(session).execute()
 
         printer.echo.assert_called_once()
+        previous_day.locked.assert_called_once()
 
     def test_review_unfinished_tasks_cmd_with_no_previous_day(self, session, printer):
         session._daily_tracker.get_previous_day.return_value = None
