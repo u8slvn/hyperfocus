@@ -51,3 +51,21 @@ def test_progress_bar(capsys):
     expected = f"0% [{icons.PROGRESS_BAR * 30}] 100%\n"
     captured = capsys.readouterr()
     assert captured.out == expected
+
+
+def test_task_details(capsys):
+    created_at = datetime.datetime(2022, 1, 1)
+    task = Task(id=1, title="foo", created_at=created_at)
+
+    printer.task_details(task)
+
+    expected = (
+        "Task: #1\n"
+        "Status: ⬢ Todo\n"
+        "Title: foo\n"
+        "Details: ...\n"
+        "History: \n"
+        " • Sat, 01 January 2022 at 00:00:00 - add task\n"
+    )
+    captured = capsys.readouterr()
+    assert captured.out == expected

@@ -21,6 +21,10 @@ def date(date: datetime.date) -> str:
     return date.strftime("%a, %d %B %Y")
 
 
+def date_with_time(date: datetime.datetime) -> str:
+    return date.strftime("%a, %d %B %Y at %H:%M:%S")
+
+
 def prompt(text: str):
     return f"[{style.SUCCESS}]{icons.PROMPT}[/] {text}"
 
@@ -44,7 +48,38 @@ def task(task: Task, show_details: bool = False, show_prefix: bool = False) -> s
     return headline
 
 
-def task_status(status: TaskStatus):
+def task_details(task: Task) -> str:
+    task_info = {
+        "Task": f"#{task.id}",
+        "Status": (
+            f"{task_status(TaskStatus(task.status))} "
+            f"{TaskStatus(task.status).name.title()}"
+        ),
+        "Title": task.title,
+        "Details": task.details or "...",
+        "History": "",
+    }
+    full_details = []
+    for info, value in task_info.items():
+        full_details.append(f"[{style.INFO}]{info}[/][{style.LIST_POINT}]:[/] {value}")
+
+    return "\n".join(full_details) + f"\n{task_history(task)}"
+
+
+def task_history(task: Task) -> str:
+    bullet_point = f" [{style.LIST_POINT}]{icons.BULLET_POINT}[/] "
+    history = [f"{bullet_point}{date_with_time(task.created_at)} - add task"]
+    while True:
+        task = task.parent_task
+        if task is None:
+            break
+        step = f"{bullet_point}{date_with_time(task.created_at)} - recover task"
+        history.append(step)
+    history[-1] = history[-1].replace("recover task", "initial task creation")
+    return "\n".join(history)
+
+
+def task_status(status: TaskStatus) -> str:
     color = {
         TaskStatus.TODO: style.DEFAULT,
         TaskStatus.BLOCKED: style.WARNING,
@@ -67,7 +102,7 @@ def notification(text: str, event: str, status: NotificationLevel) -> str:
     return f"{prefix} {text}"
 
 
-def progress_bar(tasks: list[Task]):
+def progress_bar(tasks: list[Task]) -> str:
     done_tasks = list(filter(lambda task: task.status == TaskStatus.DONE, tasks))
     done_count = len(done_tasks)
     total_count = len(tasks)

@@ -1,15 +1,13 @@
-from datetime import datetime
+import datetime
 
 import pytest
-from freezegun import freeze_time
 
 from hyperfocus.database.models import Task, TaskStatus
 from hyperfocus.termui import formatter, icons, style
 
 
-@freeze_time("2012-01-14")
 def test_formatter_date():
-    date = datetime.now().date()
+    date = datetime.datetime(2012, 1, 14)
 
     pretty_date = formatter.date(date=date)
 
@@ -146,3 +144,26 @@ def test_progress_bar(tasks, expected):
     progress_bar = formatter.progress_bar(tasks)
 
     assert progress_bar == expected
+
+
+def test_task_details():
+    created_at = datetime.datetime(2022, 1, 1)
+    task1 = Task(title="foo", created_at=created_at)
+    task2 = Task(title="bar", parent_task=task1, created_at=created_at)
+    task3 = Task(id=3, title="foobar", parent_task=task2, created_at=created_at)
+
+    task_details = formatter.task_details(task3)
+
+    expected = (
+        f"[{style.INFO}]Task[/][{style.LIST_POINT}]:[/] #3\n"
+        f"[{style.INFO}]Status[/][{style.LIST_POINT}]:[/] "
+        f"[{style.DEFAULT}]{icons.TASK_STATUS}[/] Todo\n"
+        f"[{style.INFO}]Title[/][{style.LIST_POINT}]:[/] foobar\n"
+        f"[{style.INFO}]Details[/][{style.LIST_POINT}]:[/] ...\n"
+        f"[{style.INFO}]History[/][{style.LIST_POINT}]:[/] \n"
+        f" [{style.LIST_POINT}]•[/] Sat, 01 January 2022 at 00:00:00 - add task\n"
+        f" [{style.LIST_POINT}]•[/] Sat, 01 January 2022 at 00:00:00 - recover task\n"
+        f" [{style.LIST_POINT}]•[/] Sat, 01 January 2022 at 00:00:00 -"
+        f" initial task creation"
+    )
+    assert task_details == expected

@@ -92,7 +92,7 @@ class ShowTaskCmd(TaskCmd):
         task_id = self.check_task_id_or_ask(task_id=task_id, text="Show task")
 
         task = self.get_task(task_id=task_id)
-        printer.task(task=task, show_details=True, show_prefix=True)
+        printer.task_details(task)
 
 
 class ListTaskCmd(TaskCmd):

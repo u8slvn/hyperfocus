@@ -39,18 +39,22 @@ CUSTOM_BOX: Box = Box(
 )
 
 
-def echo(text: str):
+def echo(text: str) -> None:
     console.print(text)
 
 
-def task(task: Task, show_details: bool = False, show_prefix: bool = False):
+def task(task: Task, show_details: bool = False, show_prefix: bool = False) -> None:
     formatted_task = formatter.task(
         task=task, show_details=show_details, show_prefix=show_prefix
     )
     echo(text=formatted_task)
 
 
-def tasks(tasks: List[Task]):
+def task_details(task: Task) -> None:
+    echo(formatter.task_details(task))
+
+
+def tasks(tasks: List[Task]) -> None:
     table = Table(
         box=CUSTOM_BOX,
     )
@@ -63,26 +67,26 @@ def tasks(tasks: List[Task]):
     rich.print(table, end="")
 
 
-def notification(text: str, event: str, status: formatter.NotificationLevel):
+def notification(text: str, event: str, status: formatter.NotificationLevel) -> None:
     formatted_notification = formatter.notification(
         text=text, event=event, status=status
     )
     echo(text=formatted_notification)
 
 
-def info(text: str, event: str):
+def info(text: str, event: str) -> None:
     notification(text=text, event=event, status=formatter.NotificationLevel.INFO)
 
 
-def success(text: str, event: str):
+def success(text: str, event: str) -> None:
     notification(text=text, event=event, status=formatter.NotificationLevel.SUCCESS)
 
 
-def warning(text: str, event: str):
+def warning(text: str, event: str) -> None:
     notification(text=text, event=event, status=formatter.NotificationLevel.WARNING)
 
 
-def error(text: str, event: str):
+def error(text: str, event: str) -> None:
     notification(text=text, event=event, status=formatter.NotificationLevel.ERROR)
 
 
@@ -112,5 +116,5 @@ def new_day(date: datetime.date) -> None:
     )
 
 
-def progress_bar(tasks: list[Task]):
+def progress_bar(tasks: list[Task]) -> None:
     echo(formatter.progress_bar(tasks))

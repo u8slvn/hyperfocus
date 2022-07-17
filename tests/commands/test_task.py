@@ -187,9 +187,7 @@ class TestShowTaskCmd:
         ShowTaskCmd(session).execute(task_id=1)
 
         printer.ask_int.assert_not_called()
-        printer.task.assert_called_once_with(
-            task=task, show_details=True, show_prefix=True
-        )
+        printer.task_details.assert_called_once_with(task)
 
     def test_show_task_cmd_ask_for_id_if_none(self, session, printer):
         task = Task(id=1, title="foo", details="bar")

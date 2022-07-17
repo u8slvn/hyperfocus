@@ -8,5 +8,7 @@ UNKNOWN = "bright_black"
 NEW_DAY = f"italic {INFO}"
 BANNER = "italic khaki1"
 
+LIST_POINT = "khaki1"
+
 DELETED_TASK = f"{UNKNOWN}"
 DONE_TASK = "strike"
