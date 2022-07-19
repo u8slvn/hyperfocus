@@ -169,3 +169,18 @@ def test_task_details():
         f" initial task creation"
     )
     assert task_details == expected
+
+
+def test_config():
+    config = {
+        "core.database": "/database.sqlite",
+        "alias.st": "status",
+    }
+
+    result = formatter.config(config)
+
+    expected = (
+        f"[{style.INFO}]core.database[/] = /database.sqlite\n"
+        f"[{style.INFO}]alias.st[/] = status"
+    )
+    assert result == expected

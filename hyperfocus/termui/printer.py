@@ -118,3 +118,7 @@ def new_day(date: datetime.date) -> None:
 
 def progress_bar(tasks: list[Task]) -> None:
     echo(formatter.progress_bar(tasks))
+
+
+def config(config: dict[str, str]) -> None:
+    echo(formatter.config(config))

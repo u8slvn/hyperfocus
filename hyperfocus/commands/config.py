@@ -16,8 +16,7 @@ class ConfigCmd(SessionHyperfocusCommand):
             self._edit_option(option=option, value=value)
 
     def _show_config(self) -> None:
-        for option, value in self._session.config.options.items():
-            printer.echo(f"{option} = {value}")
+        printer.config(self._session.config.options)
 
     def _save_config(self) -> None:
         self._session.config.save()

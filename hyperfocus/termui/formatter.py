@@ -116,3 +116,7 @@ def progress_bar(tasks: list[Task]) -> str:
         f"[{style.SUCCESS}]{icons.PROGRESS_BAR * display_done_count}[/]"
         f"{icons.PROGRESS_BAR_EMPTY * display_todo_count}]"
     )
+
+
+def config(config: dict[str, str]) -> str:
+    return "\n".join([f"[{style.INFO}]{k}[/] = {v}" for k, v in config.items()])

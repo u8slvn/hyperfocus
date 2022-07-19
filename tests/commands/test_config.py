@@ -8,7 +8,7 @@ def printer(mocker):
     yield mocker.patch("hyperfocus.commands.config.printer")
 
 
-def test_config_cmd_show_config(mocker, session, printer):
+def test_config_cmd_show_config(session, printer):
     session.config.options = {
         "foo": "bar",
         "oof": "rab",
@@ -20,7 +20,7 @@ def test_config_cmd_show_config(mocker, session, printer):
         list_=True,
         unset=False,
     )
-    printer.echo.call_args_list = [mocker.call("foo = bar"), mocker.call("oof = rab")]
+    printer.config.assert_called_once_with(session.config.options)
 
 
 def test_config_cmd_delete_option(session, printer):

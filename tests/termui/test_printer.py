@@ -69,3 +69,16 @@ def test_task_details(capsys):
     )
     captured = capsys.readouterr()
     assert captured.out == expected
+
+
+def test_config(capsys):
+    config = {
+        "core.database": "/database.sqlite",
+        "alias.st": "status",
+    }
+
+    printer.config(config)
+
+    expected = "core.database = /database.sqlite\n" "alias.st = status\n"
+    captured = capsys.readouterr()
+    assert captured.out == expected
