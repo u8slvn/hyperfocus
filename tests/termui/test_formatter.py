@@ -123,8 +123,9 @@ def test_formatter_notification(status, expected):
                 Task(title="foobar", status=TaskStatus.DELETED),
             ],
             (
-                f"[{style.SUCCESS}]50% [{icons.PROGRESS_BAR * 15}[/]"
-                f"[{style.DEFAULT}]{icons.PROGRESS_BAR * 15}] 50%[/]"
+                f"[{style.SUCCESS}] ⬢ 50%[/] "
+                f"[[{style.SUCCESS}]{icons.PROGRESS_BAR * 15}[/]"
+                f"{icons.PROGRESS_BAR_EMPTY * 15}]"
             ),
         ),
         (
@@ -134,8 +135,9 @@ def test_formatter_notification(status, expected):
                 Task(title="foo", status=TaskStatus.DONE),
             ],
             (
-                f"[{style.SUCCESS}]33% [{icons.PROGRESS_BAR * 10}[/]"
-                f"[{style.DEFAULT}]{icons.PROGRESS_BAR * 20}] 66%[/]"
+                f"[{style.SUCCESS}] ⬢ 33%[/] "
+                f"[[{style.SUCCESS}]{icons.PROGRESS_BAR * 10}[/]"
+                f"{icons.PROGRESS_BAR_EMPTY * 20}]"
             ),
         ),
     ],

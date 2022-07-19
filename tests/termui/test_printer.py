@@ -48,7 +48,7 @@ def test_progress_bar(capsys):
 
     printer.progress_bar(tasks)
 
-    expected = f"0% [{icons.PROGRESS_BAR * 30}] 100%\n"
+    expected = f" ⬢ 0% [{icons.PROGRESS_BAR_EMPTY * 30}]\n"
     captured = capsys.readouterr()
     assert captured.out == expected
 

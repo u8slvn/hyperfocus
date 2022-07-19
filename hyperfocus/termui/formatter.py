@@ -108,13 +108,11 @@ def progress_bar(tasks: list[Task]) -> str:
     total_count = len(todo_tasks) + done_count
 
     percent_done = done_count * 100 / total_count
-    percent_todo = 100 - percent_done
     display_done_count = round((percent_done * PROGRESS_BAR_SIZE) / 100)
     display_todo_count = PROGRESS_BAR_SIZE - display_done_count
 
     return (
-        f"[{style.SUCCESS}]{int(percent_done)}% ["
-        f"{icons.PROGRESS_BAR * display_done_count}[/]"
-        f"[{style.DEFAULT}]{icons.PROGRESS_BAR * display_todo_count}"
-        f"] {int(percent_todo)}%[/]"
+        f"[{style.SUCCESS}] {icons.TASK_STATUS} {int(percent_done)}%[/] ["
+        f"[{style.SUCCESS}]{icons.PROGRESS_BAR * display_done_count}[/]"
+        f"{icons.PROGRESS_BAR_EMPTY * display_todo_count}]"
     )
