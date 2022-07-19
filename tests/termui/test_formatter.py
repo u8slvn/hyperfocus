@@ -157,15 +157,15 @@ def test_task_details():
     task_details = formatter.task_details(task3)
 
     expected = (
-        f"[{style.INFO}]Task[/][{style.LIST_POINT}]:[/] #3\n"
-        f"[{style.INFO}]Status[/][{style.LIST_POINT}]:[/] "
+        f"[{style.INFO}]Task[/]: #3\n"
+        f"[{style.INFO}]Status[/]: "
         f"[{style.DEFAULT}]{icons.TASK_STATUS}[/] Todo\n"
-        f"[{style.INFO}]Title[/][{style.LIST_POINT}]:[/] foobar\n"
-        f"[{style.INFO}]Details[/][{style.LIST_POINT}]:[/] ...\n"
-        f"[{style.INFO}]History[/][{style.LIST_POINT}]:[/] \n"
-        f" [{style.LIST_POINT}]•[/] Sat, 01 January 2022 at 00:00:00 - add task\n"
-        f" [{style.LIST_POINT}]•[/] Sat, 01 January 2022 at 00:00:00 - recover task\n"
-        f" [{style.LIST_POINT}]•[/] Sat, 01 January 2022 at 00:00:00 -"
+        f"[{style.INFO}]Title[/]: foobar\n"
+        f"[{style.INFO}]Details[/]: ...\n"
+        f"[{style.INFO}]History[/]: \n"
+        f" [{style.INFO}]•[/] Sat, 01 January 2022 at 00:00:00 - add task\n"
+        f" [{style.INFO}]•[/] Sat, 01 January 2022 at 00:00:00 - recover task\n"
+        f" [{style.INFO}]•[/] Sat, 01 January 2022 at 00:00:00 -"
         f" initial task creation"
     )
     assert task_details == expected

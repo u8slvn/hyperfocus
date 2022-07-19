@@ -61,13 +61,13 @@ def task_details(task: Task) -> str:
     }
     full_details = []
     for info, value in task_info.items():
-        full_details.append(f"[{style.INFO}]{info}[/][{style.LIST_POINT}]:[/] {value}")
+        full_details.append(f"[{style.INFO}]{info}[/]: {value}")
 
     return "\n".join(full_details) + f"\n{task_history(task)}"
 
 
 def task_history(task: Task) -> str:
-    bullet_point = f" [{style.LIST_POINT}]{icons.BULLET_POINT}[/] "
+    bullet_point = f" [{style.INFO}]{icons.BULLET_POINT}[/] "
     history = [f"{bullet_point}{date_with_time(task.created_at)} - add task"]
     while True:
         task = task.parent_task
