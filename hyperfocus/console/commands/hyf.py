@@ -45,15 +45,6 @@ def hyf(ctx: click.Context) -> None:
     ListTaskCmd(session).execute()
 
 
-@hyf.result_callback()
-def process_session(session: Session | None, **_):
-    if session is None:
-        return
-
-    for callback_commands in session.callback_commands:
-        callback_commands()
-
-
 hyf.add_commands(
     [
         add,

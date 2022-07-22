@@ -1,5 +1,4 @@
 import datetime
-from functools import partial
 
 import click
 import pytest
@@ -34,26 +33,6 @@ def test_get_current_session_with_no_click_context(mocker):
         _ = get_current_session()
 
 
-def test_session_bind_context(mocker, session):
-    ctx = mocker.Mock(spec=click.Context, instance=True)
-
-    session.bind_context(ctx)
-
-    assert ctx.obj == session
-    ctx.call_on_close.assert_called_once_with(session.teardown)
-
-
-def test_session_register_callback_commands(session):
-    callback1 = partial(int, "249")
-    callback2 = partial(int, "417")
-
-    session.register_callback(callback1)
-    session.register_callback(callback2)
-
-    result = sum([callback() for callback in session.callback_commands])
-    assert result == 666
-
-
 def test_session_teardown(session):
     session.teardown()
 
@@ -75,4 +54,3 @@ def test_session_init(mocker):
     daily_tracker.from_date.assert_called_once_with(datetime.datetime(2022, 1, 1))
     assert session._config == config
     assert session.date == datetime.date(2022, 1, 1)
-    assert session.callback_commands == []
