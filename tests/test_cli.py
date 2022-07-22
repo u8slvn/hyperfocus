@@ -1,7 +1,7 @@
 from click.testing import CliRunner
 
 from hyperfocus import __app_name__, __version__
-from hyperfocus.cli import hyf
+from hyperfocus.console.main import hyf
 
 
 runner = CliRunner()

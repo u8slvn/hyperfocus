@@ -1,3 +1,5 @@
+import click
+
 from hyperfocus.config.config import Config
 from hyperfocus.console.commands import HyperfocusCommand
 from hyperfocus.database import database
@@ -35,3 +37,8 @@ class InitCmd(HyperfocusCommand):
             text=f"Database initialized successfully in {config['core.database']}",
             event="init",
         )
+
+
+@click.command(help="Initialize hyperfocus config and database")
+def init() -> None:
+    InitCmd().execute()

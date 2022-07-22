@@ -71,9 +71,9 @@ class AliasPolicy(ConfigPolicy):
     section = "alias"
 
     def check_input(self, value: str) -> None:
-        from hyperfocus import cli
+        from hyperfocus.console.main import hyf
 
-        if value not in cli.get_commands():
+        if value not in hyf.get_commands():  # type: ignore
             raise ConfigError("Alias must referred to an existing command name.")
 
     def check_deletion(self) -> None:

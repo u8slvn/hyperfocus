@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import click
+from click import Command
 
 from hyperfocus.config.config import Config
 from hyperfocus.console.core.error_handler import hyf_error_handler
@@ -28,3 +29,10 @@ class AliasGroup(click.Group):
         _, cmd, args = super().resolve_command(ctx, args)
         cmd_name = cmd if cmd is None else cmd.name
         return cmd_name, cmd, args
+
+    def add_commands(self, commands: list[Command]) -> None:
+        for command in commands:
+            self.add_command(command)
+
+    def get_commands(self) -> list[str]:
+        return [command for command in self.commands.keys()]

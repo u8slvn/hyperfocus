@@ -42,7 +42,7 @@ pre-commit = "^2.6"
 pytest-dotenv = "^0.5.2"
 
 [tool.poetry.scripts]
-hyf = "hyperfocus.cli:hyf"
+hyf = "hyperfocus.console.main:cli"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

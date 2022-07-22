@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+import click
+
 from hyperfocus.console.commands import SessionHyperfocusCommand
+from hyperfocus.console.core.parameters import NotRequired, NotRequiredIf
+from hyperfocus.session import Session, get_current_session
 from hyperfocus.termui import printer
 
 
@@ -29,3 +33,40 @@ class ConfigCmd(SessionHyperfocusCommand):
     def _edit_option(self, option: str, value) -> None:
         self._session.config[option] = value
         self._save_config()
+
+
+@click.command(help="Get and set options")
+@click.argument(
+    "option",
+    cls=NotRequiredIf,
+    not_required_if=["list_"],
+    metavar="<option>",
+    type=click.STRING,
+)
+@click.argument(
+    "value",
+    cls=NotRequiredIf,
+    not_required_if=["list_", "unset"],
+    metavar="<value>",
+    type=click.STRING,
+)
+@click.option(
+    "--unset",
+    cls=NotRequired,
+    not_required=["value", "list_"],
+    is_flag=True,
+    help="Unset an option",
+)
+@click.option(
+    "--list",
+    "list_",
+    cls=NotRequired,
+    not_required=["option", "value", "unset"],
+    is_flag=True,
+    help="Show the whole config",
+)
+def config(option: str | None, value: str | None, list_: bool, unset: bool) -> Session:
+    session = get_current_session()
+    ConfigCmd(session).execute(option=option, value=value, list_=list_, unset=unset)
+
+    return session
