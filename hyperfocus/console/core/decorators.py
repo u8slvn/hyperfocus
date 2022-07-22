@@ -7,6 +7,6 @@ import click
 from hyperfocus.console.core.group import AliasGroup
 
 
-def hyperfocus(**kwargs: Any):
-    group = click.group(cls=AliasGroup, **kwargs)
-    return cast(AliasGroup, group)
+def hyperfocus(**kwargs: Any) -> AliasGroup:
+    cli = click.group(cls=AliasGroup, **kwargs)
+    return cast(AliasGroup, cli)

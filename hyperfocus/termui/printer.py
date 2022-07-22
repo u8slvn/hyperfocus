@@ -261,7 +261,7 @@ _re_markup = re.compile(r"(\[(?P<style>[a-z][^[]*?)](?P<text>[^[]*)(\[/]))")
 
 
 def echo(text: str) -> None:
-    text = re.sub(_re_markup, lambda m: _parse_markup(m), text)
+    text = re.sub(_re_markup, _parse_markup, text)
     click.echo(text)
 
 
