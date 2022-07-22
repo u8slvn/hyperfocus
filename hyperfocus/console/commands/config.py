@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from hyperfocus.commands import SessionHyperfocusCommand
+from hyperfocus.console.commands import SessionHyperfocusCommand
 from hyperfocus.termui import printer
 
 

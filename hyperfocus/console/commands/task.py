@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, cast
 
 import pyperclip
 
-from hyperfocus.commands import SessionHyperfocusCommand
+from hyperfocus.console.commands import SessionHyperfocusCommand
 from hyperfocus.exceptions import HyperfocusExit, TaskError
 from hyperfocus.termui import formatter, printer
 

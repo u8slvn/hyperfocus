@@ -3,12 +3,12 @@ from __future__ import annotations
 import click
 
 from hyperfocus.config.config import Config
-from hyperfocus.hyf_click.error_handler import hyf_error_handler
+from hyperfocus.console.core.error_handler import hyf_error_handler
 from hyperfocus.utils import wrap_methods
 
 
 @wrap_methods(hyf_error_handler, ["make_context", "invoke"])
-class HyfGroup(click.Group):
+class AliasGroup(click.Group):
     def get_command(self, ctx: click.Context, cmd_name: str):
         cmd = click.Group.get_command(self, ctx=ctx, cmd_name=cmd_name)
         if cmd is not None:

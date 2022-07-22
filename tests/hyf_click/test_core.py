@@ -12,7 +12,7 @@ def test_hyperfocus_command_return_command_without_checking_for_alias(hyf_group)
 
 def test_hyperfocus_command_handle_alias(mocker, hyf_group):
     config = {"alias.sailas": "alias"}
-    mocker.patch("hyperfocus.hyf_click.core.Config.load", return_value=config)
+    mocker.patch("hyperfocus.console.core.group.Config.load", return_value=config)
 
     result = runner.invoke(hyf_group, ["sailas"])
 

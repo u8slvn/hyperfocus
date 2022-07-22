@@ -1,11 +1,11 @@
 import pytest
 
-from hyperfocus.commands.config import ConfigCmd
+from hyperfocus.console.commands.config import ConfigCmd
 
 
 @pytest.fixture
 def printer(mocker):
-    yield mocker.patch("hyperfocus.commands.config.printer")
+    yield mocker.patch("hyperfocus.console.commands.config.printer")
 
 
 def test_config_cmd_show_config(session, printer):

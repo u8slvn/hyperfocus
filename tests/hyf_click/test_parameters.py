@@ -3,7 +3,7 @@ import re
 import click
 from click.testing import CliRunner
 
-from hyperfocus.hyf_click.parameters import NotRequired, NotRequiredIf
+from hyperfocus.console.core.parameters import NotRequired, NotRequiredIf
 from tests.conftest import pytest_regex
 
 

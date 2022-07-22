@@ -1,15 +1,15 @@
-from hyperfocus.commands.init import InitCmd
 from hyperfocus.config.config import Config
+from hyperfocus.console.commands.init import InitCmd
 from hyperfocus.database._database import Database
 
 
 def test_init_command(mocker):
-    printer = mocker.patch("hyperfocus.commands.init.printer")
+    printer = mocker.patch("hyperfocus.console.commands.init.printer")
     printer.ask.return_value = "/dummy/path/database.sqlite"
     config = mocker.MagicMock(spec=Config, instance=True)
-    mocker.patch("hyperfocus.commands.init.Config", return_value=config)
+    mocker.patch("hyperfocus.console.commands.init.Config", return_value=config)
     database = mocker.Mock(spec=Database, instance=True)
-    mocker.patch("hyperfocus.commands.init.database", database)
+    mocker.patch("hyperfocus.console.commands.init.database", database)
 
     InitCmd().execute()
 

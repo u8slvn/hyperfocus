@@ -1,6 +1,6 @@
 import pytest
 
-from hyperfocus.commands.new_day import (
+from hyperfocus.console.commands.new_day import (
     CheckUnfinishedTasksCmd,
     NewDayCmd,
     ReviewUnfinishedTasksCmd,
@@ -11,7 +11,7 @@ from hyperfocus.services import DailyTracker
 
 @pytest.fixture
 def printer(mocker):
-    yield mocker.patch("hyperfocus.commands.new_day.printer")
+    yield mocker.patch("hyperfocus.console.commands.new_day.printer")
 
 
 def test_new_day_cmd_is_not_a_new_day(session, printer):

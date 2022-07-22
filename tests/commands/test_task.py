@@ -1,6 +1,6 @@
 import pytest
 
-from hyperfocus.commands.task import (
+from hyperfocus.console.commands.task import (
     AddTaskCmd,
     CopyTaskDetailsCmd,
     ListTaskCmd,
@@ -14,17 +14,17 @@ from hyperfocus.exceptions import HyperfocusExit, TaskError
 
 @pytest.fixture
 def printer(mocker):
-    yield mocker.patch("hyperfocus.commands.task.printer")
+    yield mocker.patch("hyperfocus.console.commands.task.printer")
 
 
 @pytest.fixture
 def pyperclip(mocker):
-    yield mocker.patch("hyperfocus.commands.task.pyperclip")
+    yield mocker.patch("hyperfocus.console.commands.task.pyperclip")
 
 
 @pytest.fixture
 def formatter(mocker):
-    yield mocker.patch("hyperfocus.commands.task.formatter")
+    yield mocker.patch("hyperfocus.console.commands.task.formatter")
 
 
 class TestTaskCmd:

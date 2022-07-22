@@ -5,27 +5,29 @@ import sys
 import click
 
 from hyperfocus import __app_name__, __version__
-from hyperfocus.commands.config import ConfigCmd
-from hyperfocus.commands.init import InitCmd
-from hyperfocus.commands.new_day import (
+from hyperfocus.console.commands.config import ConfigCmd
+from hyperfocus.console.commands.init import InitCmd
+from hyperfocus.console.commands.new_day import (
     CheckUnfinishedTasksCmd,
     NewDayCmd,
     ReviewUnfinishedTasksCmd,
 )
-from hyperfocus.commands.task import (
+from hyperfocus.console.commands.task import (
     AddTaskCmd,
     CopyTaskDetailsCmd,
     ListTaskCmd,
     ShowTaskCmd,
     UpdateTasksCmd,
 )
+from hyperfocus.console.core.group import AliasGroup
+from hyperfocus.console.core.parameters import NotRequired, NotRequiredIf
 from hyperfocus.database.models import TaskStatus
-from hyperfocus.hyf_click.core import HyfGroup
-from hyperfocus.hyf_click.parameters import NotRequired, NotRequiredIf
 from hyperfocus.session import Session, get_current_session
 
 
-@click.group(cls=HyfGroup, invoke_without_command=True, help="Minimalist task manager")
+@click.group(
+    cls=AliasGroup, invoke_without_command=True, help="Minimalist task manager"
+)
 @click.version_option(
     version=__version__, prog_name=__app_name__, help="Show the version"
 )

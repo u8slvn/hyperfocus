@@ -1,12 +1,12 @@
 import click.exceptions
 import pytest
 
+from hyperfocus.console.core.error_handler import hyf_error_handler
 from hyperfocus.exceptions import HyperfocusException, HyperfocusExit
-from hyperfocus.hyf_click.error_handler import hyf_error_handler
 
 
 def test_hyf_error_handler_catch_hyperfocus_exec(mocker):
-    printer = mocker.patch("hyperfocus.hyf_click.error_handler.printer")
+    printer = mocker.patch("hyperfocus.console.core.error_handler.printer")
 
     @hyf_error_handler
     def foobar():
@@ -19,7 +19,7 @@ def test_hyf_error_handler_catch_hyperfocus_exec(mocker):
 
 
 def test_hyf_error_handler_catch_click_exec(mocker):
-    printer = mocker.patch("hyperfocus.hyf_click.error_handler.printer")
+    printer = mocker.patch("hyperfocus.console.core.error_handler.printer")
 
     @hyf_error_handler
     def foobar():
@@ -34,7 +34,7 @@ def test_hyf_error_handler_catch_click_exec(mocker):
 
 
 def test_hyf_error_handler_catch_click_usage_error_exec(mocker):
-    printer = mocker.patch("hyperfocus.hyf_click.error_handler.printer")
+    printer = mocker.patch("hyperfocus.console.core.error_handler.printer")
     click_ctx = mocker.Mock(spec=click.Context)
     click_ctx = click_ctx(mocker.sentinel.command)
     click_ctx.command = mocker.Mock(**{"get_help_option.return_value": True})

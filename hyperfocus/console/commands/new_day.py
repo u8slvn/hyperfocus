@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC
 from typing import TYPE_CHECKING, cast
 
-from hyperfocus.commands import SessionHyperfocusCommand
+from hyperfocus.console.commands import SessionHyperfocusCommand
 from hyperfocus.database.models import TaskStatus
 from hyperfocus.services import DailyTracker
 from hyperfocus.termui import formatter, printer

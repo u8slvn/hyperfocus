@@ -1,5 +1,5 @@
-from hyperfocus.commands import HyperfocusCommand
 from hyperfocus.config.config import Config
+from hyperfocus.console.commands import HyperfocusCommand
 from hyperfocus.database import database
 from hyperfocus.database.models import MODELS
 from hyperfocus.locations import DEFAULT_DB_PATH
