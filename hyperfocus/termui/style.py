@@ -11,4 +11,4 @@ BANNER = "italic khaki1"
 LIST_POINT = "khaki1"
 
 DELETED_TASK = f"{UNKNOWN}"
-DONE_TASK = "strike"
+DONE_TASK = "strikethrough"
