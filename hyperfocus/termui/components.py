@@ -42,6 +42,7 @@ class TasksTable(UIComponent):
         render_rows = []
         for row in zip(*self._columns):
             render_cells = []
+
             for n_cell, cell in enumerate(row):
                 alignment = self._alignments[n_cell]
                 width = max_col_length[n_cell]

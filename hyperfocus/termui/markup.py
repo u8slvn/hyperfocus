@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import re
-from typing import Any
+from typing import Any, Match
 
 import click
 
+from hyperfocus.termui.exceptions import TermUIError
 
-class MarkupResolver:
+
+class Markup:
     _text_styles = [
         "bold",
         "dim",
@@ -223,7 +225,7 @@ class MarkupResolver:
         "grey89": 254,
         "grey93": 255,
     }
-    _re_markup = re.compile(r"(\[(?P<style>[a-z][^[]*?)](?P<text>[^[]*)(\[/]))")
+    _re_markup = re.compile(r"(\[(?P<style>[a-z][^[]*?)](?P<text>.[^[]*|.*)(\[/]))")
 
     def _resolve_style(self, style: str) -> Any:
         tags: dict[str, int | None] = {}
@@ -236,28 +238,28 @@ class MarkupResolver:
             try:
                 tags.update({"fg": self._ansi_colors[tag]})
             except KeyError:
-                raise Exception(f"Unknown markup tag {tag}.")
+                raise TermUIError(f"Unknown markup tag {tag}.")
 
         return tags
 
-    def _parse_markup(self, markup) -> str:
-        tags = self._resolve_style(markup.group("style"))
-        text = markup.group("text")
+    def _parse_markup(self, match: Match) -> str:
+        tags = self._resolve_style(match.group("style"))
+        text = match.group("text")
         text = self.resolve(text)
 
         return click.style(text=text, **tags)
 
-    def resolve(self, text: str):
+    def resolve(self, text: str) -> str:
         return re.sub(self._re_markup, self._parse_markup, text)
 
-    def _remove_markup(self, markup) -> str:
-        text = markup.group("text")
+    def _remove_markup(self, match: Match) -> str:
+        text = match.group("text")
         text = self.remove(text)
 
         return text
 
-    def remove(self, text: str):
+    def remove(self, text: str) -> str:
         return re.sub(self._re_markup, self._remove_markup, text)
 
 
-markup = MarkupResolver()
+markup = Markup()

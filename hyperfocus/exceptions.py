@@ -25,17 +25,9 @@ class HyperfocusExit(click.exceptions.Exit):
     pass
 
 
-class AliasError(HyperfocusException):
-    pass
-
-
 class TaskError(HyperfocusException):
     pass
 
 
 class SessionError(HyperfocusException):
-    pass
-
-
-class ServiceError(HyperfocusException):
     pass
