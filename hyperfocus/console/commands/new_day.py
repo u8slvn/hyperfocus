@@ -7,6 +7,7 @@ from hyperfocus.console.commands import SessionHyperfocusCommand
 from hyperfocus.database.models import TaskStatus
 from hyperfocus.services import DailyTracker
 from hyperfocus.termui import formatter, printer, prompt
+from hyperfocus.termui.components import TasksTable
 
 
 if TYPE_CHECKING:
@@ -63,7 +64,7 @@ class ReviewUnfinishedTasksCmd(UnfinishedTasksCmd):
         printer.echo(
             f"Unfinished task(s) from {formatter.date(date=self._previous_day.date)}:"
         )
-        printer.tasks(tasks=unfinished_tasks)
+        printer.echo(TasksTable(unfinished_tasks))
         if not prompt.prompt(
             f"Review {len(unfinished_tasks)} unfinished task(s)",
             default=True,

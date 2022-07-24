@@ -9,6 +9,7 @@ import pyperclip
 from hyperfocus.console.commands import SessionHyperfocusCommand
 from hyperfocus.exceptions import HyperfocusExit, TaskError
 from hyperfocus.termui import formatter, printer, prompt
+from hyperfocus.termui.components import TasksTable
 
 
 if TYPE_CHECKING:
@@ -42,7 +43,7 @@ class TaskCmd(SessionHyperfocusCommand, ABC):
             printer.echo("No tasks for today...")
             raise HyperfocusExit()
 
-        printer.tasks(tasks)
+        printer.echo(TasksTable(tasks))
         if progress_bar:
             printer.progress_bar(tasks)
 

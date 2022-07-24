@@ -54,7 +54,7 @@ class TestTaskCmd:
         TaskCmd(session).show_tasks()
 
         session._daily_tracker.get_tasks.assert_called_once_with(exclude=[])
-        printer.tasks.assert_called_with(tasks)
+        printer.echo.assert_called_once()
         printer.progress_bar.assert_not_called()
 
     def test_show_tasks_with_progress_bar(self, session, printer):
@@ -64,7 +64,7 @@ class TestTaskCmd:
         TaskCmd(session).show_tasks(progress_bar=True)
 
         session._daily_tracker.get_tasks.assert_called_once_with(exclude=[])
-        printer.tasks.assert_called_with(tasks)
+        printer.echo.assert_called_once()
         printer.progress_bar.assert_called_once_with(tasks)
 
     def test_show_tasks_fails(self, session, printer):
@@ -81,7 +81,7 @@ class TestTaskCmd:
 
         TaskCmd(session).ask_task_id("Test")
 
-        printer.tasks.assert_called_with(tasks)
+        printer.echo.assert_called_once()
         prompt.prompt.assert_called_once()
 
     def test_check_task_id_or_ask(self, mocker, session, printer, prompt):
@@ -92,7 +92,7 @@ class TestTaskCmd:
         task_id = TaskCmd(session).check_task_id_or_ask(None, "Test")
 
         assert task_id == mocker.sentinel.task_id
-        printer.tasks.assert_called_with(tasks)
+        printer.echo.assert_called_once()
         prompt.prompt.assert_called_once()
 
     def test_check_task_id_or_ask_with_id(self, session, prompt):
@@ -184,7 +184,7 @@ class TestListTaskCmd:
         ListTaskCmd(session).execute()
 
         session._daily_tracker.get_tasks.assert_called_once_with(exclude=[])
-        printer.tasks.assert_called_with(tasks)
+        printer.echo.assert_called_once()
 
 
 class TestShowTaskCmd:

@@ -250,5 +250,14 @@ class MarkupResolver:
     def resolve(self, text: str):
         return re.sub(self._re_markup, self._parse_markup, text)
 
+    def _remove_markup(self, markup) -> str:
+        text = markup.group("text")
+        text = self.remove(text)
+
+        return text
+
+    def remove(self, text: str):
+        return re.sub(self._re_markup, self._remove_markup, text)
+
 
 markup = MarkupResolver()

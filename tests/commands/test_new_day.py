@@ -94,7 +94,7 @@ class TestReviewUnfinishedTasksCmd:
 
         ReviewUnfinishedTasksCmd(session).execute()
 
-        printer.echo.assert_called_once()
+        assert printer.echo.call_count == 2
         assert session._daily_tracker.copy_task.call_count == copy_task_count
         previous_day.locked.assert_called_once()
 
@@ -109,7 +109,7 @@ class TestReviewUnfinishedTasksCmd:
 
         ReviewUnfinishedTasksCmd(session).execute()
 
-        printer.echo.assert_called_once()
+        assert printer.echo.call_count == 2
         previous_day.locked.assert_called_once()
 
     def test_review_unfinished_tasks_cmd_with_no_previous_day(self, session, printer):
