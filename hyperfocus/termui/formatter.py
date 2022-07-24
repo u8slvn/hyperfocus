@@ -104,18 +104,18 @@ def notification(text: str, event: str, status: NotificationLevel) -> str:
 def progress_bar(tasks: list[Task]) -> str:
     done_tasks = list(filter(lambda task: task.status == TaskStatus.DONE, tasks))
     todo_tasks = list(filter(lambda task: task.status == TaskStatus.TODO, tasks))
-    done_count = len(done_tasks)
-    total_count = len(todo_tasks) + done_count
 
-    percent_done = done_count * 100 / total_count
-    display_done_count = round((percent_done * PROGRESS_BAR_SIZE) / 100)
-    display_todo_count = PROGRESS_BAR_SIZE - display_done_count
+    if len(done_tasks) + len(todo_tasks) == 0:
+        return ""
 
-    return (
-        f"[{style.SUCCESS}] {icons.TASK_STATUS} {int(percent_done)}%[/] ["
-        f"[{style.SUCCESS}]{icons.PROGRESS_BAR * display_done_count}[/]"
-        f"{icons.PROGRESS_BAR_EMPTY * display_todo_count}]"
-    )
+    percent_done = len(done_tasks) * 100 / (len(done_tasks) + len(todo_tasks))
+    done_count = round((percent_done * PROGRESS_BAR_SIZE) / 100)
+    todo_count = PROGRESS_BAR_SIZE - done_count
+
+    prefix = f"[{style.SUCCESS}] {icons.TASK_STATUS} {int(percent_done)}%[/] "
+    done = f"[{style.SUCCESS}]{icons.PROGRESSBAR * done_count}[/]" if done_count else ""
+    todo = icons.PROGRESSBAR_EMPTY * todo_count
+    return f"{prefix}[{done}{todo}]\n"
 
 
 def config(config: dict[str, str]) -> str:

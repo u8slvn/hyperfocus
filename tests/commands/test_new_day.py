@@ -14,6 +14,11 @@ def printer(mocker):
     yield mocker.patch("hyperfocus.console.commands.new_day.printer")
 
 
+@pytest.fixture
+def prompt(mocker):
+    yield mocker.patch("hyperfocus.console.commands.new_day.prompt")
+
+
 def test_new_day_cmd_is_not_a_new_day(session, printer):
     session._daily_tracker.is_a_new_day.return_value = False
 
@@ -79,13 +84,13 @@ class TestReviewUnfinishedTasksCmd:
         ],
     )
     def test_review_unfinished_tasks(
-        self, mocker, session, printer, confirmation, copy_task_count
+        self, mocker, session, printer, confirmation, copy_task_count, prompt
     ):
         previous_day = mocker.Mock(spec=DailyTracker, intance=True)
         previous_day.is_locked.return_value = False
         previous_day.get_tasks.return_value = [Task("foo"), Task("bar")]
         session._daily_tracker.get_previous_day.return_value = previous_day
-        printer.confirm.side_effect = confirmation
+        prompt.prompt.side_effect = confirmation
 
         ReviewUnfinishedTasksCmd(session).execute()
 
@@ -94,13 +99,13 @@ class TestReviewUnfinishedTasksCmd:
         previous_day.locked.assert_called_once()
 
     def test_review_unfinished_tasks_with_no_confirmation(
-        self, mocker, session, printer
+        self, mocker, session, printer, prompt
     ):
         previous_day = mocker.Mock(spec=DailyTracker, intance=True)
         previous_day.is_locked.return_value = False
         previous_day.get_tasks.return_value = [Task("foo")]
         session._daily_tracker.get_previous_day.return_value = previous_day
-        printer.confirm.return_value = False
+        prompt.confirm.return_value = False
 
         ReviewUnfinishedTasksCmd(session).execute()
 

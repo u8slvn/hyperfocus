@@ -3,11 +3,12 @@ from __future__ import annotations
 from abc import ABC
 from typing import TYPE_CHECKING, cast
 
+import click
 import pyperclip
 
 from hyperfocus.console.commands import SessionHyperfocusCommand
 from hyperfocus.exceptions import HyperfocusExit, TaskError
-from hyperfocus.termui import formatter, printer
+from hyperfocus.termui import formatter, printer, prompt
 
 
 if TYPE_CHECKING:
@@ -29,7 +30,7 @@ class TaskCmd(SessionHyperfocusCommand, ABC):
     def ask_task_id(self, text: str, exclude: list[TaskStatus] | None = None) -> int:
         self.show_tasks(exclude=exclude)
 
-        return printer.ask_int(text)
+        return prompt.prompt(text, type=click.INT)
 
     def show_tasks(
         self, exclude: list[TaskStatus] | None = None, progress_bar: bool = False
@@ -55,7 +56,7 @@ class TaskCmd(SessionHyperfocusCommand, ABC):
 
 class AddTaskCmd(TaskCmd):
     def execute(self, title: str, add_details: bool) -> None:
-        details = printer.ask("Task details") if add_details else ""
+        details = prompt.prompt("Task details") if add_details else ""
 
         task = self._session.daily_tracker.add_task(title=title, details=details)
         printer.success(

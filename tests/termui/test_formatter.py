@@ -124,8 +124,8 @@ def test_formatter_notification(status, expected):
             ],
             (
                 f"[{style.SUCCESS}] ⬢ 50%[/] "
-                f"[[{style.SUCCESS}]{icons.PROGRESS_BAR * 15}[/]"
-                f"{icons.PROGRESS_BAR_EMPTY * 15}]"
+                f"[[{style.SUCCESS}]{icons.PROGRESSBAR * 15}[/]"
+                f"{icons.PROGRESSBAR_EMPTY * 15}]\n"
             ),
         ),
         (
@@ -136,8 +136,8 @@ def test_formatter_notification(status, expected):
             ],
             (
                 f"[{style.SUCCESS}] ⬢ 33%[/] "
-                f"[[{style.SUCCESS}]{icons.PROGRESS_BAR * 10}[/]"
-                f"{icons.PROGRESS_BAR_EMPTY * 20}]"
+                f"[[{style.SUCCESS}]{icons.PROGRESSBAR * 10}[/]"
+                f"{icons.PROGRESSBAR_EMPTY * 20}]\n"
             ),
         ),
     ],

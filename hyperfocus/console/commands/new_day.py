@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, cast
 from hyperfocus.console.commands import SessionHyperfocusCommand
 from hyperfocus.database.models import TaskStatus
 from hyperfocus.services import DailyTracker
-from hyperfocus.termui import formatter, printer
+from hyperfocus.termui import formatter, printer, prompt
 
 
 if TYPE_CHECKING:
@@ -64,7 +64,7 @@ class ReviewUnfinishedTasksCmd(UnfinishedTasksCmd):
             f"Unfinished task(s) from {formatter.date(date=self._previous_day.date)}:"
         )
         printer.tasks(tasks=unfinished_tasks)
-        if not printer.confirm(
+        if not prompt.prompt(
             f"Review {len(unfinished_tasks)} unfinished task(s)",
             default=True,
         ):
@@ -72,7 +72,7 @@ class ReviewUnfinishedTasksCmd(UnfinishedTasksCmd):
             return
 
         for task in unfinished_tasks:
-            if printer.confirm(f'Take back task "{task.title}" for today'):
+            if prompt.prompt(f'Take back task "{task.title}" for today'):
                 self._session.daily_tracker.copy_task(task)
 
         self._previous_day.locked()
