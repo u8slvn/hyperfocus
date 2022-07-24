@@ -325,14 +325,6 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
-name = "types-tabulate"
-version = "0.8.11"
-description = "Typing stubs for tabulate"
-category = "dev"
-optional = false
-python-versions = "*"
-
-[[package]]
 name = "typing-extensions"
 version = "4.3.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
@@ -361,7 +353,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "3450c90f187fbfb7ff371496ef31532b1ca2338bafdf1f53def138a8f5715b2c"
+content-hash = "f973b0f842ec06bda2ed5de89e2d225dae988dbfcc00391b9e70e396e95734c1"
 
 [metadata.files]
 atomicwrites = []
@@ -394,6 +386,5 @@ pyyaml = []
 six = []
 toml = []
 tomli = []
-types-tabulate = []
 typing-extensions = []
 virtualenv = []
