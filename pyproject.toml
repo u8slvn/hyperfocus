@@ -40,7 +40,7 @@ types-tabulate = "^0.8.11"
 pre-commit = "^2.6"
 
 [tool.poetry.scripts]
-hyf = "hyperfocus.console.main:cli"
+hyf = "hyperfocus.console.cli:run"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

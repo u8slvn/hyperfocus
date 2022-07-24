@@ -64,7 +64,7 @@ def test_config_save_fails(dummy_dir):
 
 def test_update_config_options(mocker, fixtures_dir, test_dir):
     mocker.patch(
-        "hyperfocus.console.main.hyf.get_commands", return_value=["test", "delete"]
+        "hyperfocus.console.cli.hyf.get_commands", return_value=["test", "delete"]
     )
     config_path = fixtures_dir / "config.ini"
     config = Config.load(config_path, reload=True)

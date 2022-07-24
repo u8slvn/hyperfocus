@@ -62,14 +62,14 @@ def test_core_policy_fails_with_unknown_option():
 
 
 def test_alias_policy(mocker):
-    mocker.patch("hyperfocus.console.main.hyf.get_commands", return_value=["foo"])
+    mocker.patch("hyperfocus.console.cli.hyf.get_commands", return_value=["foo"])
     alias_policy = AliasPolicy("bar")
 
     alias_policy.check_input("foo")
 
 
 def test_alias_policy_fails_with_non_existing_command(mocker):
-    mocker.patch("hyperfocus.console.main.hyf.get_commands", return_value=["foo"])
+    mocker.patch("hyperfocus.console.cli.hyf.get_commands", return_value=["foo"])
     alias_policy = AliasPolicy("bar")
 
     with pytest.raises(
