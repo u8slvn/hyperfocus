@@ -40,17 +40,28 @@ def test_session_teardown(session):
 
 
 @freeze_time("2022-01-01")
-def test_session_init(mocker):
+def test_session_create(mocker):
     config = mocker.MagicMock(spec=Config, instance=True)
     mocker.patch(
         "hyperfocus.session.Config", spec=Config, **{"load.return_value": config}
     )
     daily_tracker = mocker.patch("hyperfocus.session.DailyTracker", spec=DailyTracker)
+    daily_tracker.from_date.return_value.date = mocker.sentinel.date
     database = mocker.patch("hyperfocus.session.Session._database")
 
-    session = Session()
+    session = Session.create()
 
     database.connect.assert_called_once()
     daily_tracker.from_date.assert_called_once_with(datetime.datetime(2022, 1, 1))
     assert session._config == config
-    assert session.date == datetime.date(2022, 1, 1)
+    assert session.date == mocker.sentinel.date
+
+
+def test_session_bind_context(mocker):
+    context = mocker.create_autospec(click.Context)
+    session = Session(mocker.MagicMock(), mocker.Mock())
+
+    session.bind_context(context)
+
+    assert context.obj == session
+    context.call_on_close.assert_called_once_with(session.teardown)

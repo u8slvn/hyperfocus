@@ -1,0 +1,22 @@
+from hyperfocus.database.models import Task
+from hyperfocus.termui import printer
+from hyperfocus.termui.components import TasksTable
+
+
+def test_tasks_table(capsys):
+    tasks = [
+        Task(id=1, title="foo"),
+        Task(id=1, title="bar", details="hello"),
+    ]
+    printer.echo(TasksTable(tasks))
+
+    expected = (
+        "\n"
+        "  #   tasks   details  \n"
+        " --------------------- \n"
+        "  1   ⬢ foo      □     \n"
+        "  1   ⬢ bar      ■     \n"
+        "\n"
+    )
+    captured = capsys.readouterr()
+    assert captured.out == expected

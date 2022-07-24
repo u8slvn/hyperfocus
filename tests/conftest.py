@@ -1,5 +1,3 @@
-import datetime
-import os
 import re
 import shutil
 from pathlib import Path
@@ -49,7 +47,7 @@ pytest_regex = PytestRegex
 
 
 @pytest.fixture
-def test_database(mocker, test_dir):
+def test_database(test_dir):
     db_path = test_dir / "test_db.sqlite"
     database.connect(db_path)
     database.init_models(MODELS)
@@ -60,21 +58,8 @@ def test_database(mocker, test_dir):
 
 @pytest.fixture
 def session(mocker):
-    class MockSession(Session):
-        _database = mocker.Mock(spec=Database, instance=True)
+    config = mocker.MagicMock(spec=Config, instance=True)
+    daily_tracker = mocker.Mock(spec=DailyTracker, instance=True)
+    Session._database = mocker.Mock(spec=Database, instance=True)
 
-        def __init__(self):
-            self._config = mocker.MagicMock(spec=Config, instance=True)
-            self._database.connect(self._config)
-            self._date = datetime.datetime(2022, 1, 1)
-            self._daily_tracker = mocker.Mock(spec=DailyTracker, instance=True)
-            self._callback_commands = []
-
-    return MockSession()
-
-
-@pytest.fixture(scope="session", autouse=True)
-def no_color():
-    os.environ["TERM"] = "dumb"
-    yield
-    del os.environ["TERM"]
+    return Session(config=config, daily_tracker=daily_tracker)

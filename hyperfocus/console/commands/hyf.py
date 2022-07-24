@@ -33,7 +33,7 @@ def hyf(ctx: click.Context) -> None:
     if ctx.invoked_subcommand in ["init"] or "--help" in sys.argv[1:]:
         return
 
-    session = Session()
+    session = Session.create()
     session.bind_context(ctx=ctx)
 
     NewDayCmd(session).execute()

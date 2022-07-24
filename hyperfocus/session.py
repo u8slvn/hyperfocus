@@ -13,11 +13,18 @@ from hyperfocus.services import DailyTracker
 class Session:
     _database = database
 
-    def __init__(self) -> None:
-        self._config = Config.load()
+    def __init__(self, config: Config, daily_tracker: DailyTracker) -> None:
+        self._config = config
         self._database.connect(self._config["core.database"])
-        self._date = datetime.datetime.now()
-        self._daily_tracker = DailyTracker.from_date(self._date)
+        self._daily_tracker = daily_tracker
+
+    @classmethod
+    def create(cls) -> Session:
+        config = Config.load()
+        date = datetime.datetime.now()
+        daily_tracker = DailyTracker.from_date(date)
+
+        return Session(config=config, daily_tracker=daily_tracker)
 
     @property
     def config(self) -> Config:
@@ -25,7 +32,7 @@ class Session:
 
     @property
     def date(self) -> datetime.date:
-        return self._date.date()
+        return self._daily_tracker.date
 
     @property
     def daily_tracker(self) -> DailyTracker:
