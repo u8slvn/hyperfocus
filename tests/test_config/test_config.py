@@ -5,7 +5,7 @@ from hyperfocus.config.exceptions import ConfigError
 from tests.conftest import pytest_regex
 
 
-def test_config_make_directory(test_dir):
+def test_config_make_directory(monkeypatch, test_dir):
     config_dir = test_dir / "test_mkdir"
     Config._dir = config_dir
     Config.make_directory()
@@ -13,7 +13,7 @@ def test_config_make_directory(test_dir):
     assert config_dir.exists()
 
 
-def test_config_make_directory_fails(dummy_dir):
+def test_config_make_directory_fails(monkeypatch, dummy_dir):
     config_dir = dummy_dir / "test_mkdir"
     Config._dir = config_dir
 
@@ -42,7 +42,7 @@ def test_load_missing_config_fails(dummy_dir):
         _ = Config.load(config_path, reload=True)
 
 
-def test_save_config(test_dir):
+def test_save_config(monkeypatch, test_dir):
     Config._dir = test_dir
     config = Config()
 

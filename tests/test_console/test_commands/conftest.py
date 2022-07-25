@@ -1,17 +1,16 @@
 import pytest
-from freezegun import freeze_time
 
 from hyperfocus.config.config import Config
-from hyperfocus.console.commands.main import hyf
+from hyperfocus.console.cli import hyf
 from hyperfocus.database import database
-from hyperfocus.database.models import MODELS
+from hyperfocus.database.models import MODELS, Task, WorkingDay
 from hyperfocus.services import DailyTracker
 
 
 @pytest.fixture(scope="session")
 def cli_config(test_dir):
     config = Config()
-    config._dir = test_dir
+    Config._dir = test_dir
     config["core.database"] = test_dir / "test_db.sqlite"
     config.save()
 
@@ -22,14 +21,13 @@ def cli_config(test_dir):
 
 
 @pytest.fixture
-def cli_new_day(monkeypatch, cli_config):
+def cli_new_day(monkeypatch, cli_config, test_dir):
     monkeypatch.setattr(Config, "load", lambda: cli_config)
 
-    with freeze_time("2022-01-01"):
-        yield hyf
+    yield hyf
 
-    for model in MODELS:
-        model.delete().execute()
+    Task.delete().execute()
+    WorkingDay.delete().execute()
 
 
 @pytest.fixture

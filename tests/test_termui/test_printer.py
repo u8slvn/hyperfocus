@@ -1,7 +1,7 @@
 import datetime
 
 from hyperfocus.database.models import Task
-from hyperfocus.termui import icons, printer
+from hyperfocus.termui import printer
 
 
 def test_banner(capsys):
@@ -9,29 +9,6 @@ def test_banner(capsys):
 
     captured = capsys.readouterr()
     assert captured.out == "> foobar\n"
-
-
-def test_new_day(capsys):
-    printer.new_day(datetime.date(2022, 1, 1))
-
-    captured = capsys.readouterr()
-    assert (
-        captured.out
-        == f"> {icons.NEW_DAY} Sat, 01 January 2022: A new day starts, good luck!\n"
-    )
-
-
-def test_progress_bar(capsys):
-    tasks = [
-        Task(title="foo"),
-        Task(title="bar"),
-    ]
-
-    printer.progress_bar(tasks)
-
-    expected = f" ⬢ 0% [{icons.PROGRESSBAR_EMPTY * 30}]\n"
-    captured = capsys.readouterr()
-    assert captured.out == expected
 
 
 def test_task_details(capsys):

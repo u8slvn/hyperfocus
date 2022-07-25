@@ -64,8 +64,7 @@ class TestTaskCmd:
         TaskCmd(session).show_tasks(progress_bar=True)
 
         session._daily_tracker.get_tasks.assert_called_once_with(exclude=[])
-        printer.echo.assert_called_once()
-        printer.progress_bar.assert_called_once_with(tasks)
+        assert printer.echo.call_count == 2
 
     def test_show_tasks_fails(self, session, printer):
         session._daily_tracker.get_tasks.return_value = []
@@ -184,7 +183,7 @@ class TestListTaskCmd:
         ListTaskCmd(session).execute()
 
         session._daily_tracker.get_tasks.assert_called_once_with(exclude=[])
-        printer.echo.assert_called_once()
+        assert printer.echo.call_count == 2
 
 
 class TestShowTaskCmd:

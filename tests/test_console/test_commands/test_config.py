@@ -1,4 +1,5 @@
 from click.testing import CliRunner
+from freezegun import freeze_time
 
 from tests.conftest import pytest_regex
 
@@ -6,6 +7,7 @@ from tests.conftest import pytest_regex
 runner = CliRunner()
 
 
+@freeze_time("2022-01-01")
 def test_config(cli):
     result = runner.invoke(cli, ["config", "--list"])
 

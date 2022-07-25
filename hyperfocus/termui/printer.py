@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-import datetime
 from typing import cast
 
 import click
 
 from hyperfocus.database.models import Task
-from hyperfocus.termui import formatter, icons, style
+from hyperfocus.termui import formatter, style
 from hyperfocus.termui.components import UIComponent
 from hyperfocus.termui.markup import markup
 
@@ -53,17 +52,6 @@ def error(text: str, event: str) -> None:
 
 def banner(text: str) -> None:
     echo(f"[{style.BANNER}]> {text}[/]")
-
-
-def new_day(date: datetime.date) -> None:
-    echo(
-        f"[{style.NEW_DAY}]> {icons.NEW_DAY} {formatter.date(date)}: "
-        f"A new day starts, good luck![/]"
-    )
-
-
-def progress_bar(tasks: list[Task]) -> None:
-    echo(formatter.progress_bar(tasks), nl=False)
 
 
 def config(config: dict[str, str]) -> None:

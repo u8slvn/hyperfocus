@@ -113,41 +113,6 @@ def test_formatter_notification(status, expected):
     assert formatted_notification == expected
 
 
-@pytest.mark.parametrize(
-    "tasks, expected",
-    [
-        (
-            [
-                Task(title="foo"),
-                Task(title="foo", status=TaskStatus.DONE),
-                Task(title="foobar", status=TaskStatus.DELETED),
-            ],
-            (
-                f"[{style.SUCCESS}] ⬢ 50%[/] "
-                f"[[{style.SUCCESS}]{icons.PROGRESSBAR * 15}[/]"
-                f"{icons.PROGRESSBAR_EMPTY * 15}]\n"
-            ),
-        ),
-        (
-            [
-                Task(title="foo"),
-                Task(title="foo"),
-                Task(title="foo", status=TaskStatus.DONE),
-            ],
-            (
-                f"[{style.SUCCESS}] ⬢ 33%[/] "
-                f"[[{style.SUCCESS}]{icons.PROGRESSBAR * 10}[/]"
-                f"{icons.PROGRESSBAR_EMPTY * 20}]\n"
-            ),
-        ),
-    ],
-)
-def test_progress_bar(tasks, expected):
-    progress_bar = formatter.progress_bar(tasks)
-
-    assert progress_bar == expected
-
-
 def test_task_details():
     created_at = datetime.datetime(2022, 1, 1)
     task1 = Task(title="foo", created_at=created_at)

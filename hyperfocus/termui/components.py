@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import datetime
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from hyperfocus.termui import formatter, icons
+from hyperfocus.database.models import TaskStatus
+from hyperfocus.termui import formatter, icons, style
 from hyperfocus.termui.markup import markup
 
 
@@ -13,7 +15,7 @@ if TYPE_CHECKING:
 
 class UIComponent(ABC):
     @abstractmethod
-    def resolve(self):
+    def resolve(self) -> str:
         raise NotImplementedError
 
 
@@ -66,3 +68,46 @@ class TasksTable(UIComponent):
                 render_rows.append(f" {separator} ")
 
         return "\n" + "\n".join(render_rows) + "\n"
+
+
+class ProgressBar(UIComponent):
+    width = 30
+
+    def __init__(self, tasks: list[Task]):
+        self._done_tasks = list(
+            filter(lambda task: task.status == TaskStatus.DONE, tasks)
+        )
+        self._todo_tasks = list(
+            filter(lambda task: task.status == TaskStatus.TODO, tasks)
+        )
+
+    def resolve(self) -> str:
+        done_tasks = len(self._done_tasks)
+        total = done_tasks + len(self._todo_tasks)
+        if total == 0:
+            return ""
+
+        percent_done = done_tasks * 100 / total
+        done_count = round((percent_done * self.width) / 100)
+        todo_count = self.width - done_count
+
+        prefix = f"[{style.SUCCESS}] {icons.TASK_STATUS} {int(percent_done)}%[/] "
+        done = (
+            f"[{style.SUCCESS}]{icons.PROGRESSBAR * done_count}[/]"
+            if done_count
+            else ""
+        )
+        todo = icons.PROGRESSBAR_EMPTY * todo_count
+
+        return f"{prefix}[{done}{todo}]\n"
+
+
+class NewDay(UIComponent):
+    def __init__(self, date: datetime.date) -> None:
+        self._date = date
+
+    def resolve(self) -> str:
+        return (
+            f"[{style.NEW_DAY}]> {icons.NEW_DAY} {formatter.date(self._date)}: "
+            f"A new day starts, good luck![/]"
+        )

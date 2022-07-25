@@ -9,7 +9,7 @@ import pyperclip
 from hyperfocus.console.commands import SessionHyperfocusCommand
 from hyperfocus.exceptions import HyperfocusExit, TaskError
 from hyperfocus.termui import formatter, printer, prompt
-from hyperfocus.termui.components import TasksTable
+from hyperfocus.termui.components import ProgressBar, TasksTable
 
 
 if TYPE_CHECKING:
@@ -45,7 +45,7 @@ class TaskCmd(SessionHyperfocusCommand, ABC):
 
         printer.echo(TasksTable(tasks))
         if progress_bar:
-            printer.progress_bar(tasks)
+            printer.echo(ProgressBar(tasks))
 
     def get_task(self, task_id: int) -> Task:
         task = self._session.daily_tracker.get_task(task_id=task_id)
