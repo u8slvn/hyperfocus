@@ -4,7 +4,7 @@ from hyperfocus.database._database import Database
 
 
 def test_database_with_models(test_dir):
-    test_db_path = test_dir / "test_db.sqlite"
+    test_db_path = test_dir / "test_init_db_with_model.sqlite"
     test_db_path.touch()
     db_test = Database()
 
@@ -20,5 +20,5 @@ def test_database_with_models(test_dir):
     core_db_test = db_test()
     assert core_db_test.get_tables() == ["testmodel"]
     db_test.close()
-    # close method return 'is_open' db status if closed
+    # close method returns 'is_open' db status if closed
     assert core_db_test.close() is False

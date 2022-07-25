@@ -54,8 +54,8 @@ def test_save_config(test_dir):
         assert expected == f.read()
 
 
-def test_config_save_fails(dummy_dir):
-    Config._dir = dummy_dir
+def test_config_save_fails(monkeypatch, dummy_dir):
+    monkeypatch.setattr(Config, "_dir", dummy_dir)
     config = Config()
 
     with pytest.raises(ConfigError, match=r"Saving config to (.*) failed: (.*)"):

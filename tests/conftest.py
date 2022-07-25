@@ -26,7 +26,7 @@ def test_dir(tmpdir_factory):
     yield Path(tmpdir_factory.mktemp("hyperfocus"))
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture()
 def clean_test_dir(test_dir):
     shutil.rmtree(test_dir)
     test_dir.mkdir()

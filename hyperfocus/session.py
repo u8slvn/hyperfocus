@@ -15,12 +15,13 @@ class Session:
 
     def __init__(self, config: Config, daily_tracker: DailyTracker) -> None:
         self._config = config
-        self._database.connect(self._config["core.database"])
         self._daily_tracker = daily_tracker
 
     @classmethod
     def create(cls) -> Session:
         config = Config.load()
+        cls._database.connect(config["core.database"])
+
         date = datetime.datetime.now()
         daily_tracker = DailyTracker.from_date(date)
 
