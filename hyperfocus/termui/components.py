@@ -73,7 +73,7 @@ class TasksTable(UIComponent):
 class ProgressBar(UIComponent):
     width = 30
 
-    def __init__(self, tasks: list[Task]):
+    def __init__(self, tasks: list[Task]) -> None:
         self._done_tasks = list(
             filter(lambda task: task.status == TaskStatus.DONE, tasks)
         )
@@ -111,3 +111,38 @@ class NewDay(UIComponent):
             f"[{style.NEW_DAY}]> {icons.NEW_DAY} {formatter.date(self._date)}: "
             f"A new day starts, good luck![/]"
         )
+
+
+class Notification(UIComponent):
+    level = ""
+
+    def __init__(self, text: str, event: str):
+        self._text = text
+        self._event = event
+
+    def resolve(self) -> str:
+        color, icon = {
+            "success": (style.SUCCESS, icons.NOTIFICATION_SUCCESS),
+            "info": (style.INFO, icons.NOTIFICATION_INFO),
+            "warning": (style.WARNING, icons.NOTIFICATION_WARNING),
+            "error": (style.ERROR, icons.NOTIFICATION_ERROR),
+        }.get(self.level, (style.DEFAULT, icons.NOTIFICATION))
+        prefix = f"[{color}]{icon}({self._event})[/]"
+
+        return f"{prefix} {self._text}"
+
+
+class SuccessNotification(Notification):
+    level = "success"
+
+
+class InfoNotification(Notification):
+    level = "info"
+
+
+class WarningNotification(Notification):
+    level = "warning"
+
+
+class ErrorNotification(Notification):
+    level = "error"

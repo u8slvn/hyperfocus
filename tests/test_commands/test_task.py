@@ -111,7 +111,7 @@ class TestAddTaskCmd:
 
         prompt.prompt.assert_not_called()
         formatter.task.assert_called_once()
-        printer.success.assert_called_once()
+        printer.echo.assert_called_once()
 
     def test_update_task_cmd_with_details(self, session, printer, formatter, prompt):
         session._daily_tracker.add_task.return_value = Task(
@@ -122,7 +122,7 @@ class TestAddTaskCmd:
 
         prompt.prompt.assert_called_once_with("Task details")
         formatter.task.assert_called_once()
-        printer.success.assert_called_once()
+        printer.echo.assert_called_once()
 
 
 class TestUpdateTasksCmd:
@@ -145,7 +145,7 @@ class TestUpdateTasksCmd:
             mocker.call(task=task2, status=TaskStatus.DONE),
         ]
         assert formatter.task.call_count == 2
-        assert printer.success.call_count == 2
+        assert printer.echo.call_count == 2
 
     def test_update_tasks_cmd_ask_for_id_if_none(
         self, session, printer, formatter, prompt
@@ -171,7 +171,7 @@ class TestUpdateTasksCmd:
         session._daily_tracker.get_tasks.assert_not_called()
         session._daily_tracker.get_task.assert_called_once_with(task_id=1)
         formatter.task.assert_called_once()
-        printer.warning.assert_called_once()
+        printer.echo.assert_called_once()
         session._daily_tracker.update_task.assert_not_called()
 
 
@@ -212,9 +212,7 @@ class TestCopyCmd:
         CopyTaskDetailsCmd(session).execute(task_id=1)
 
         pyperclip.copy.assert_called_once_with("bar")
-        printer.success.assert_called_once_with(
-            "Task 1 details copied to clipboard.", event="success"
-        )
+        printer.echo.assert_called_once()
 
     def test_copy_task_details_cmd_fails(self, session, printer, pyperclip):
         task = Task(id=1, title="foo", details="")
@@ -224,7 +222,7 @@ class TestCopyCmd:
             CopyTaskDetailsCmd(session).execute(task_id=1)
 
         pyperclip.copy.assert_not_called()
-        printer.success.assert_not_called()
+        printer.echo.assert_not_called()
 
     def test_copy_task_details_cmd_ask_for_id_if_none(
         self, session, printer, pyperclip, prompt

@@ -27,29 +27,6 @@ def task_details(task: Task) -> None:
     echo(formatter.task_details(task))
 
 
-def notification(text: str, event: str, status: formatter.NotificationLevel) -> None:
-    formatted_notification = formatter.notification(
-        text=text, event=event, status=status
-    )
-    echo(text=formatted_notification)
-
-
-def info(text: str, event: str) -> None:
-    notification(text=text, event=event, status=formatter.NotificationLevel.INFO)
-
-
-def success(text: str, event: str) -> None:
-    notification(text=text, event=event, status=formatter.NotificationLevel.SUCCESS)
-
-
-def warning(text: str, event: str) -> None:
-    notification(text=text, event=event, status=formatter.NotificationLevel.WARNING)
-
-
-def error(text: str, event: str) -> None:
-    notification(text=text, event=event, status=formatter.NotificationLevel.ERROR)
-
-
 def banner(text: str) -> None:
     echo(f"[{style.BANNER}]> {text}[/]")
 

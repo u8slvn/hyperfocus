@@ -15,7 +15,7 @@ def test_hyf_error_handler_catch_hyperfocus_exec(mocker):
     with pytest.raises(HyperfocusExit):
         foobar()
 
-    printer.error.assert_called_once_with(text="Test exception.", event="error")
+    printer.echo.assert_called_once()
 
 
 def test_hyf_error_handler_catch_click_exec(mocker):
@@ -28,9 +28,7 @@ def test_hyf_error_handler_catch_click_exec(mocker):
     with pytest.raises(HyperfocusExit):
         foobar()
 
-    printer.error.assert_called_once_with(
-        text="Test exception.", event="click exception"
-    )
+    printer.echo.assert_called_once()
 
 
 def test_hyf_error_handler_catch_click_usage_error_exec(mocker):
@@ -49,5 +47,4 @@ def test_hyf_error_handler_catch_click_usage_error_exec(mocker):
     with pytest.raises(HyperfocusExit):
         foobar()
 
-    printer.echo.assert_called_once_with("Test usage.\nTry 'foo bar' for help.\n")
-    printer.error.assert_called_once_with(text="Test usage error.", event="usage error")
+    assert printer.echo.call_count == 2

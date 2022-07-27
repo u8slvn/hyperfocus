@@ -7,6 +7,7 @@ import click
 
 from hyperfocus.exceptions import HyperfocusException, HyperfocusExit
 from hyperfocus.termui import printer
+from hyperfocus.termui.components import ErrorNotification
 from hyperfocus.utils import un_camel_case
 
 
@@ -58,13 +59,15 @@ def hyf_error_handler(func):
         try:
             return func(*args, **kwargs)
         except HyperfocusException as error:
-            printer.error(text=error.message, event=error.event)
+            printer.echo(ErrorNotification(text=error.message, event=error.event))
             raise HyperfocusExit(error.exit_code)
         except click.ClickException as error:
             hyf_error = HyfClickExceptionAdapter.adapt_from(error)
             if hyf_error.msg_prefix:
                 printer.echo(hyf_error.msg_prefix)
-            printer.error(text=hyf_error.message, event=hyf_error.event)
+            printer.echo(
+                ErrorNotification(text=hyf_error.message, event=hyf_error.event)
+            )
             raise HyperfocusExit(error.exit_code)
 
     return wrapper

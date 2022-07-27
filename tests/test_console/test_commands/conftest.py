@@ -21,10 +21,16 @@ def cli_config(test_dir):
 
 
 @pytest.fixture
-def cli_new_day(monkeypatch, cli_config, test_dir):
-    monkeypatch.setattr(Config, "load", lambda: cli_config)
+def base_cli():
 
     yield hyf
+
+
+@pytest.fixture
+def cli_new_day(monkeypatch, base_cli, cli_config, test_dir):
+    monkeypatch.setattr(Config, "load", lambda: cli_config)
+
+    yield base_cli
 
     Task.delete().execute()
     WorkingDay.delete().execute()

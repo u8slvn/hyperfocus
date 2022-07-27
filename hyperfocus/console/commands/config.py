@@ -5,6 +5,7 @@ import click
 from hyperfocus.console.core.parameters import NotRequired, NotRequiredIf
 from hyperfocus.session import get_current_session
 from hyperfocus.termui import printer
+from hyperfocus.termui.components import SuccessNotification
 
 
 @click.command(help="Get and set options")
@@ -48,4 +49,4 @@ def config(option: str | None, value: str | None, list: bool, unset: bool) -> No
         session.config[option] = value
 
     session.config.save()
-    printer.success("Config updated", event="success")
+    printer.echo(SuccessNotification("Config updated", event="success"))

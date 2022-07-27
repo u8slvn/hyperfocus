@@ -9,7 +9,12 @@ import pyperclip
 from hyperfocus.console.commands import SessionHyperfocusCommand
 from hyperfocus.exceptions import HyperfocusExit, TaskError
 from hyperfocus.termui import formatter, printer, prompt
-from hyperfocus.termui.components import ProgressBar, TasksTable
+from hyperfocus.termui.components import (
+    ProgressBar,
+    SuccessNotification,
+    TasksTable,
+    WarningNotification,
+)
 
 
 if TYPE_CHECKING:
@@ -60,9 +65,11 @@ class AddTaskCmd(TaskCmd):
         details = prompt.prompt("Task details") if add_details else ""
 
         task = self._session.daily_tracker.add_task(title=title, details=details)
-        printer.success(
-            text=formatter.task(task=task, show_prefix=True),
-            event="created",
+        printer.echo(
+            SuccessNotification(
+                text=formatter.task(task=task, show_prefix=True),
+                event="created",
+            )
         )
 
 
@@ -75,16 +82,20 @@ class UpdateTasksCmd(TaskCmd):
         for task_id in task_ids:
             task = self.get_task(task_id=task_id)
             if task.status == status.value:
-                printer.warning(
-                    text=formatter.task(task=task, show_prefix=True),
-                    event="no change",
+                printer.echo(
+                    WarningNotification(
+                        text=formatter.task(task=task, show_prefix=True),
+                        event="no change",
+                    )
                 )
                 continue
 
             self._session.daily_tracker.update_task(task=task, status=status)
-            printer.success(
-                text=formatter.task(task=task, show_prefix=True),
-                event="updated",
+            printer.echo(
+                SuccessNotification(
+                    text=formatter.task(task=task, show_prefix=True),
+                    event="updated",
+                )
             )
 
 
@@ -112,4 +123,8 @@ class CopyTaskDetailsCmd(TaskCmd):
             raise TaskError(f"Task {task_id} does not have details.")
 
         pyperclip.copy(task.details)
-        printer.success(f"Task {task_id} details copied to clipboard.", event="success")
+        printer.echo(
+            SuccessNotification(
+                f"Task {task_id} details copied to clipboard.", event="success"
+            )
+        )
