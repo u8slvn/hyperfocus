@@ -44,7 +44,7 @@ class Config:
     @classmethod
     def make_directory(cls) -> None:
         try:
-            cls._dir.mkdir(exist_ok=True)
+            cls._dir.mkdir(parents=True, exist_ok=True)
         except OSError as error:
             raise ConfigError(f"Configuration folder creation failed: {error}")
 
