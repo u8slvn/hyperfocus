@@ -2,7 +2,6 @@ import pytest
 
 from hyperfocus.console.commands.task import (
     AddTaskCmd,
-    CopyTaskDetailsCmd,
     ListTaskCmd,
     ShowTaskCmd,
     TaskCmd,
@@ -200,36 +199,5 @@ class TestShowTaskCmd:
         session._daily_tracker.get_task.return_value = task
 
         ShowTaskCmd(session).execute(task_id=None)
-
-        prompt.prompt.assert_called_once()
-
-
-class TestCopyCmd:
-    def test_copy_task_details_cmd(self, session, printer, pyperclip):
-        task = Task(id=1, title="foo", details="bar")
-        session._daily_tracker.get_task.return_value = task
-
-        CopyTaskDetailsCmd(session).execute(task_id=1)
-
-        pyperclip.copy.assert_called_once_with("bar")
-        printer.echo.assert_called_once()
-
-    def test_copy_task_details_cmd_fails(self, session, printer, pyperclip):
-        task = Task(id=1, title="foo", details="")
-        session._daily_tracker.get_task.return_value = task
-
-        with pytest.raises(TaskError, match=r"Task \d does not have details."):
-            CopyTaskDetailsCmd(session).execute(task_id=1)
-
-        pyperclip.copy.assert_not_called()
-        printer.echo.assert_not_called()
-
-    def test_copy_task_details_cmd_ask_for_id_if_none(
-        self, session, printer, pyperclip, prompt
-    ):
-        task = Task(id=1, title="foo", details="bar")
-        session._daily_tracker.get_task.return_value = task
-
-        CopyTaskDetailsCmd(session).execute(task_id=None)
 
         prompt.prompt.assert_called_once()

@@ -4,7 +4,6 @@ from abc import ABC
 from typing import TYPE_CHECKING, cast
 
 import click
-import pyperclip
 
 from hyperfocus.console.commands import SessionHyperfocusCommand
 from hyperfocus.exceptions import HyperfocusExit, TaskError
@@ -111,20 +110,3 @@ class ShowTaskCmd(TaskCmd):
 class ListTaskCmd(TaskCmd):
     def execute(self) -> None:
         self.show_tasks(progress_bar=True)
-
-
-class CopyTaskDetailsCmd(TaskCmd):
-    def execute(self, task_id: int | None) -> None:
-        task_id = cast(int, task_id)
-        task_id = self.check_task_id_or_ask(task_id=task_id, text="Copy task details")
-
-        task = self.get_task(task_id=task_id)
-        if not task.details:
-            raise TaskError(f"Task {task_id} does not have details.")
-
-        pyperclip.copy(task.details)
-        printer.echo(
-            SuccessNotification(
-                f"Task {task_id} details copied to clipboard.", event="success"
-            )
-        )
