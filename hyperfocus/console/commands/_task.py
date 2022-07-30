@@ -59,19 +59,6 @@ class TaskCmd(SessionHyperfocusCommand, ABC):
         return task
 
 
-class AddTaskCmd(TaskCmd):
-    def execute(self, title: str, add_details: bool) -> None:
-        details = prompt.prompt("Task details") if add_details else ""
-
-        task = self._session.daily_tracker.add_task(title=title, details=details)
-        printer.echo(
-            SuccessNotification(
-                text=formatter.task(task=task, show_prefix=True),
-                event="created",
-            )
-        )
-
-
 class UpdateTasksCmd(TaskCmd):
     def execute(self, task_ids: tuple[int, ...], status: TaskStatus, text: str) -> None:
         if not task_ids:

@@ -1,14 +1,22 @@
 import click
 
-from hyperfocus.console.commands._task import AddTaskCmd
-from hyperfocus.session import Session, get_current_session
+from hyperfocus.session import get_current_session
+from hyperfocus.termui import formatter, printer, prompt
+from hyperfocus.termui.components import SuccessNotification
 
 
 @click.command(help="Add task to current working day")
 @click.argument("title", metavar="<title>", type=click.STRING)
 @click.option("-d", "--details", "add_details", is_flag=True, help="add task details")
-def add(title: str, add_details: bool) -> Session:
+def add(title: str, add_details: bool) -> None:
     session = get_current_session()
-    AddTaskCmd(session).execute(title=title, add_details=add_details)
 
-    return session
+    details = prompt.prompt("Task details") if add_details else ""
+
+    task = session.daily_tracker.add_task(title=title, details=details)
+    printer.echo(
+        SuccessNotification(
+            text=formatter.task(task=task, show_prefix=True),
+            event="created",
+        )
+    )
