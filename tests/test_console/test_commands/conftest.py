@@ -22,7 +22,6 @@ def cli_config(test_dir):
 
 @pytest.fixture
 def base_cli():
-
     yield hyf
 
 

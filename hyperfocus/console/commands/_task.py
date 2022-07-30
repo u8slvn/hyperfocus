@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 import click
 
@@ -96,15 +96,6 @@ class UpdateTasksCmd(TaskCmd):
                     event="updated",
                 )
             )
-
-
-class ShowTaskCmd(TaskCmd):
-    def execute(self, task_id: int | None) -> None:
-        task_id = cast(int, task_id)
-        task_id = self.check_task_id_or_ask(task_id=task_id, text="Show task")
-
-        task = self.get_task(task_id=task_id)
-        printer.task_details(task)
 
 
 class ListTaskCmd(TaskCmd):

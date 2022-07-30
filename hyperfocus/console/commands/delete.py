@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import click
 
-from hyperfocus.console.commands.task import UpdateTasksCmd
+from hyperfocus.console.commands._task import UpdateTasksCmd
 from hyperfocus.database.models import TaskStatus
 from hyperfocus.session import Session, get_current_session
 

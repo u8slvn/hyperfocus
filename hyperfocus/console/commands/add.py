@@ -1,6 +1,6 @@
 import click
 
-from hyperfocus.console.commands.task import AddTaskCmd
+from hyperfocus.console.commands._task import AddTaskCmd
 from hyperfocus.session import Session, get_current_session
 
 

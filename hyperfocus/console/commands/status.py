@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import click
 
-from hyperfocus.console.commands.task import ListTaskCmd
+from hyperfocus.console.commands._task import ListTaskCmd
 from hyperfocus.session import Session, get_current_session
 
 

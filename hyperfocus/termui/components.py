@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 from hyperfocus.database.models import TaskStatus
 from hyperfocus.termui import formatter, icons, style
+from hyperfocus.termui.formatter import task_status
 from hyperfocus.termui.markup import markup
 
 
@@ -17,6 +18,44 @@ class UIComponent(ABC):
     @abstractmethod
     def resolve(self) -> str:
         raise NotImplementedError
+
+
+class TaskDetails(UIComponent):
+    def __init__(self, task: Task):
+        self._task = task
+
+    def resolve(self) -> str:
+        task_info = {
+            "Task": f"#{self._task.id}",
+            "Status": (
+                f"{task_status(TaskStatus(self._task.status))} "
+                f"{TaskStatus(self._task.status).name.title()}"
+            ),
+            "Title": self._task.title,
+            "Details": self._task.details or "...",
+            "History": "",
+        }
+        full_details = []
+        for info, value in task_info.items():
+            full_details.append(f"[{style.INFO}]{info}[/]: {value}")
+
+        task = self._task
+        bullet_point = f" [{style.INFO}]{icons.BULLET_POINT}[/] "
+        history = [
+            f"{bullet_point}{formatter.date_with_time(task.created_at)} " f"- add task"
+        ]
+        while True:
+            task = task.parent_task
+            if task is None:
+                break
+            step = (
+                f"{bullet_point}{formatter.date_with_time(task.created_at)} "
+                f"- continue task"
+            )
+            history.append(step)
+        history[-1] = history[-1].replace("continue", "create")
+
+        return "\n".join(full_details) + "\n" + "\n".join(history)
 
 
 class TasksTable(UIComponent):

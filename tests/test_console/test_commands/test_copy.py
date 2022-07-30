@@ -1,5 +1,7 @@
 from click.testing import CliRunner
 
+from hyperfocus.termui import icons
+
 
 runner = CliRunner()
 
@@ -21,11 +23,11 @@ def test_copy(mocker, cli):
         "\n"
         "  #   tasks   details  \n"
         " --------------------- \n"
-        "  1   ⬢ foo      □     \n"
-        "  2   ⬢ bar      ■     \n"
+        f"  1   {icons.TASK_STATUS} foo      {icons.NO_DETAILS}     \n"
+        f"  2   {icons.TASK_STATUS} bar      {icons.DETAILS}     \n"
         "\n"
-        "? Copy task details: 1\n"
-        "✘(task error) Task 1 does not have details.\n"
+        f"{icons.PROMPT} Copy task details: 1\n"
+        f"{icons.NOTIFICATION_ERROR}(task error) Task 1 does not have details.\n"
     )
     assert result.exit_code == 1
     assert result.output == expected
@@ -33,10 +35,15 @@ def test_copy(mocker, cli):
     result = runner.invoke(cli, ["copy", "77"])
 
     assert result.exit_code == 1
-    assert result.output == "✘(task error) Task 77 does not exist.\n"
+    assert result.output == (
+        f"{icons.NOTIFICATION_ERROR}(task error) " f"Task 77 does not exist.\n"
+    )
 
     result = runner.invoke(cli, ["copy", "2"])
 
     assert result.exit_code == 0
-    assert result.output == "✔(success) Task 2 details copied to clipboard.\n"
+    assert result.output == (
+        f"{icons.NOTIFICATION_SUCCESS}(success) "
+        f"Task 2 details copied to clipboard.\n"
+    )
     pyperclip.copy.assert_called_once_with("foobar")

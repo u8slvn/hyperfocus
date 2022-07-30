@@ -1,6 +1,7 @@
 from click.testing import CliRunner
 from freezegun import freeze_time
 
+from hyperfocus.termui import icons
 from tests.conftest import pytest_regex
 
 
@@ -17,7 +18,7 @@ def test_config(cli):
     result = runner.invoke(cli, ["config", "alias.st", "status"])
 
     assert result.exit_code == 0
-    assert result.output == "✔(success) Config updated\n"
+    assert result.output == f"{icons.NOTIFICATION_SUCCESS}(success) Config updated\n"
 
     result = runner.invoke(cli, ["config", "--list"])
 
@@ -27,7 +28,7 @@ def test_config(cli):
     result = runner.invoke(cli, ["config", "alias.st", "--unset"])
 
     assert result.exit_code == 0
-    assert result.output == "✔(success) Config updated\n"
+    assert result.output == f"{icons.NOTIFICATION_SUCCESS}(success) Config updated\n"
 
     result = runner.invoke(cli, ["config", "--list"])
 

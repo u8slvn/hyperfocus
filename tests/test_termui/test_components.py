@@ -11,6 +11,7 @@ from hyperfocus.termui.components import (
     Notification,
     ProgressBar,
     SuccessNotification,
+    TaskDetails,
     TasksTable,
     WarningNotification,
 )
@@ -27,8 +28,8 @@ def test_tasks_table(capsys):
         "\n"
         "  #   tasks   details  \n"
         " --------------------- \n"
-        "  1   ⬢ foo      □     \n"
-        "  1   ⬢ bar      ■     \n"
+        f"  1   {icons.TASK_STATUS} foo      {icons.NO_DETAILS}     \n"
+        f"  1   {icons.TASK_STATUS} bar      {icons.DETAILS}     \n"
         "\n"
     )
     captured = capsys.readouterr()
@@ -83,5 +84,27 @@ def test_new_day(capsys):
 def test_notification(capsys, notification, expected):
     printer.echo(notification(text="foo", event="bar"))
 
+    captured = capsys.readouterr()
+    assert captured.out == expected
+
+
+def test_task_details(capsys):
+    created_at = datetime.datetime(2022, 1, 1)
+    task1 = Task(id=1, title="foo", created_at=created_at)
+    task2 = Task(id=1, title="foo", created_at=created_at, parent_task=task1)
+    task3 = Task(id=1, title="foo", created_at=created_at, parent_task=task2)
+
+    printer.echo(TaskDetails(task3))
+
+    expected = (
+        "Task: #1\n"
+        f"Status: {icons.TASK_STATUS} Todo\n"
+        "Title: foo\n"
+        "Details: ...\n"
+        "History: \n"
+        " • Sat, 01 January 2022 at 00:00:00 - add task\n"
+        " • Sat, 01 January 2022 at 00:00:00 - continue task\n"
+        " • Sat, 01 January 2022 at 00:00:00 - create task\n"
+    )
     captured = capsys.readouterr()
     assert captured.out == expected
