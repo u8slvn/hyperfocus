@@ -33,8 +33,4 @@ def copy(task_id: int | None) -> None:
         raise TaskError(f"Task {task_id} does not have details.")
 
     pyperclip.copy(task.details)
-    printer.echo(
-        SuccessNotification(
-            f"Task {task_id} details copied to clipboard.", event="success"
-        )
-    )
+    printer.echo(SuccessNotification(f"Task {task_id} details copied to clipboard."))

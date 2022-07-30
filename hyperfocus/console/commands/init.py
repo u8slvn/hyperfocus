@@ -20,7 +20,6 @@ def init() -> None:
     printer.echo(
         InfoNotification(
             text=f"Config file created successfully in {config.config_file.path}",
-            event="init",
         )
     )
 
@@ -29,6 +28,5 @@ def init() -> None:
     printer.echo(
         InfoNotification(
             text=f"Database initialized successfully in {config['core.database']}",
-            event="init",
         )
     )

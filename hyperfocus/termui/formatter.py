@@ -1,17 +1,9 @@
 from __future__ import annotations
 
 import datetime
-from enum import IntEnum, auto
 
 from hyperfocus.database.models import Task, TaskStatus
 from hyperfocus.termui import icons, style
-
-
-class NotificationLevel(IntEnum):
-    SUCCESS = auto()
-    INFO = auto()
-    WARNING = auto()
-    ERROR = auto()
 
 
 def date(date: datetime.date) -> str:

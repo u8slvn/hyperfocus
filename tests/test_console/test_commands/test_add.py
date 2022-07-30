@@ -11,7 +11,7 @@ def test_add(cli):
 
     assert result.exit_code == 0
     assert result.output == (
-        f"{icons.NOTIFICATION_SUCCESS}(created) " f"Task: #1 {icons.TASK_STATUS} foo\n"
+        f"{icons.SUCCESS}(success) " f"Task: #1 {icons.TASK_STATUS} foo created\n"
     )
 
     result = runner.invoke(cli, ["add", "bar", "-d"], input="baz\n")
@@ -19,6 +19,6 @@ def test_add(cli):
     assert result.exit_code == 0
     assert result.output == (
         f"{icons.PROMPT} Task details: baz\n"
-        f"{icons.NOTIFICATION_SUCCESS}(created) "
-        f"Task: #2 {icons.TASK_STATUS} bar\n"
+        f"{icons.SUCCESS}(success) "
+        f"Task: #2 {icons.TASK_STATUS} bar created\n"
     )

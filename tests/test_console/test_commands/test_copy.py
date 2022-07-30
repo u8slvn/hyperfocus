@@ -27,7 +27,7 @@ def test_copy(mocker, cli):
         f"  2   {icons.TASK_STATUS} bar      {icons.DETAILS}     \n"
         "\n"
         f"{icons.PROMPT} Copy task details: 1\n"
-        f"{icons.NOTIFICATION_ERROR}(task error) Task 1 does not have details.\n"
+        f"{icons.ERROR}(error) Task 1 does not have details.\n"
     )
     assert result.exit_code == 1
     assert result.output == expected
@@ -35,15 +35,12 @@ def test_copy(mocker, cli):
     result = runner.invoke(cli, ["copy", "77"])
 
     assert result.exit_code == 1
-    assert result.output == (
-        f"{icons.NOTIFICATION_ERROR}(task error) " f"Task 77 does not exist.\n"
-    )
+    assert result.output == (f"{icons.ERROR}(error) " f"Task 77 does not exist.\n")
 
     result = runner.invoke(cli, ["copy", "2"])
 
     assert result.exit_code == 0
     assert result.output == (
-        f"{icons.NOTIFICATION_SUCCESS}(success) "
-        f"Task 2 details copied to clipboard.\n"
+        f"{icons.SUCCESS}(success) " f"Task 2 details copied to clipboard.\n"
     )
     pyperclip.copy.assert_called_once_with("foobar")

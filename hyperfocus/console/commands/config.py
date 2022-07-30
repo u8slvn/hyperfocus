@@ -49,4 +49,4 @@ def config(option: str | None, value: str | None, list: bool, unset: bool) -> No
         session.config[option] = value
 
     session.config.save()
-    printer.echo(SuccessNotification("Config updated", event="success"))
+    printer.echo(SuccessNotification("Config updated"))

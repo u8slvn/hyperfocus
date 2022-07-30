@@ -8,14 +8,13 @@ import click
 from hyperfocus.exceptions import HyperfocusException, HyperfocusExit
 from hyperfocus.termui import printer
 from hyperfocus.termui.components import ErrorNotification
-from hyperfocus.utils import un_camel_case
 
 
 class HyfClickExceptionAdapter(HyperfocusException):
     def __init__(
-        self, message: str, event: str, exit_code: int, msg_prefix: str | None = None
+        self, message: str, exit_code: int, msg_prefix: str | None = None
     ) -> None:
-        super().__init__(message, event)
+        super().__init__(message)
         self.exit_code = exit_code
         self.msg_prefix = msg_prefix
 
@@ -26,7 +25,6 @@ class HyfClickExceptionAdapter(HyperfocusException):
     ) -> HyfClickExceptionAdapter:
         return cls(
             message=exception.format_message(),
-            event=un_camel_case(type(exception).__name__),
             exit_code=exception.exit_code,
         )
 
@@ -47,7 +45,6 @@ class HyfClickExceptionAdapter(HyperfocusException):
 
         return cls(
             message=exception.format_message(),
-            event=un_camel_case(type(exception).__name__),
             exit_code=exception.exit_code,
             msg_prefix=f"{usage}{hint}",
         )
@@ -59,15 +56,13 @@ def hyf_error_handler(func):
         try:
             return func(*args, **kwargs)
         except HyperfocusException as error:
-            printer.echo(ErrorNotification(text=error.message, event=error.event))
+            printer.echo(ErrorNotification(text=error.message))
             raise HyperfocusExit(error.exit_code)
         except click.ClickException as error:
             hyf_error = HyfClickExceptionAdapter.adapt_from(error)
             if hyf_error.msg_prefix:
                 printer.echo(hyf_error.msg_prefix)
-            printer.echo(
-                ErrorNotification(text=hyf_error.message, event=hyf_error.event)
-            )
+            printer.echo(ErrorNotification(text=hyf_error.message))
             raise HyperfocusExit(error.exit_code)
 
     return wrapper

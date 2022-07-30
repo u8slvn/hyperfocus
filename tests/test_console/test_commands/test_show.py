@@ -26,7 +26,7 @@ def test_show(cli):
         f"  1   {icons.TASK_STATUS} foo      {icons.NO_DETAILS}     \n"
         "\n"
         f"{icons.PROMPT} Show task details: 2\n"
-        f"{icons.NOTIFICATION_ERROR}(task error) "
+        f"{icons.ERROR}(error) "
         f"Task 2 does not exist.\n"
     )
     assert result.exit_code == 1

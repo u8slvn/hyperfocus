@@ -10,7 +10,7 @@ def test_hyf_error_handler_catch_hyperfocus_exec(mocker):
 
     @hyf_error_handler
     def foobar():
-        raise HyperfocusException("Test exception.", event="error")
+        raise HyperfocusException("Test exception.")
 
     with pytest.raises(HyperfocusExit):
         foobar()

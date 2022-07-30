@@ -71,7 +71,6 @@ class UpdateTasksCmd(TaskCmd):
                 printer.echo(
                     WarningNotification(
                         text=formatter.task(task=task, show_prefix=True),
-                        event="no change",
                     )
                 )
                 continue
@@ -80,7 +79,6 @@ class UpdateTasksCmd(TaskCmd):
             printer.echo(
                 SuccessNotification(
                     text=formatter.task(task=task, show_prefix=True),
-                    event="updated",
                 )
             )
 

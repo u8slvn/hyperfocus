@@ -16,8 +16,8 @@ def test_init(monkeypatch, base_cli, test_dir):
 
     expected = pytest_regex(
         r"\? Database location \[(.*)\]: (.*)test_init_db_.sqlite\n"
-        r"ℹ\(init\) Config file created successfully in (.*)config.ini\n"
-        r"ℹ\(init\) Database initialized successfully in (.*)test_init_db_.sqlite\n"
+        r"ℹ\(info\) Config file created successfully in (.*)config.ini\n"
+        r"ℹ\(info\) Database initialized successfully in (.*)test_init_db_.sqlite\n"
     )
     assert result.exit_code == 0
     assert expected == result.output

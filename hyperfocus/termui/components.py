@@ -40,7 +40,7 @@ class TaskDetails(UIComponent):
             full_details.append(f"[{style.INFO}]{info}[/]: {value}")
 
         task = self._task
-        bullet_point = f" [{style.INFO}]{icons.BULLET_POINT}[/] "
+        bullet_point = f" [{style.INFO}]{icons.LIST}[/] "
         history = [
             f"{bullet_point}{formatter.date_with_time(task.created_at)} " f"- add task"
         ]
@@ -153,20 +153,19 @@ class NewDay(UIComponent):
 
 
 class Notification(UIComponent):
-    level = ""
+    level = "unknown"
 
-    def __init__(self, text: str, event: str):
+    def __init__(self, text: str):
         self._text = text
-        self._event = event
 
     def resolve(self) -> str:
         color, icon = {
-            "success": (style.SUCCESS, icons.NOTIFICATION_SUCCESS),
-            "info": (style.INFO, icons.NOTIFICATION_INFO),
-            "warning": (style.WARNING, icons.NOTIFICATION_WARNING),
-            "error": (style.ERROR, icons.NOTIFICATION_ERROR),
+            "success": (style.SUCCESS, icons.SUCCESS),
+            "info": (style.INFO, icons.INFO),
+            "warning": (style.WARNING, icons.WARNING),
+            "error": (style.ERROR, icons.ERROR),
         }.get(self.level, (style.DEFAULT, icons.NOTIFICATION))
-        prefix = f"[{color}]{icon}({self._event})[/]"
+        prefix = f"[{color}]{icon}({self.level})[/]"
 
         return f"{prefix} {self._text}"
 

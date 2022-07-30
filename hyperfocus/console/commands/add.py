@@ -16,7 +16,6 @@ def add(title: str, add_details: bool) -> None:
     task = session.daily_tracker.add_task(title=title, details=details)
     printer.echo(
         SuccessNotification(
-            text=formatter.task(task=task, show_prefix=True),
-            event="created",
+            text=f"{formatter.task(task=task, show_prefix=True)} created",
         )
     )

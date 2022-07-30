@@ -18,7 +18,7 @@ def test_config(cli):
     result = runner.invoke(cli, ["config", "alias.st", "status"])
 
     assert result.exit_code == 0
-    assert result.output == f"{icons.NOTIFICATION_SUCCESS}(success) Config updated\n"
+    assert result.output == f"{icons.SUCCESS}(success) Config updated\n"
 
     result = runner.invoke(cli, ["config", "--list"])
 
@@ -28,7 +28,7 @@ def test_config(cli):
     result = runner.invoke(cli, ["config", "alias.st", "--unset"])
 
     assert result.exit_code == 0
-    assert result.output == f"{icons.NOTIFICATION_SUCCESS}(success) Config updated\n"
+    assert result.output == f"{icons.SUCCESS}(success) Config updated\n"
 
     result = runner.invoke(cli, ["config", "--list"])
 

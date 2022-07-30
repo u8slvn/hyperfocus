@@ -74,15 +74,15 @@ def test_new_day(capsys):
 @pytest.mark.parametrize(
     "notification, expected",
     [
-        (Notification, f"{icons.NOTIFICATION}(bar) foo\n"),
-        (SuccessNotification, f"{icons.NOTIFICATION_SUCCESS}(bar) foo\n"),
-        (InfoNotification, f"{icons.NOTIFICATION_INFO}(bar) foo\n"),
-        (WarningNotification, f"{icons.NOTIFICATION_WARNING}(bar) foo\n"),
-        (ErrorNotification, f"{icons.NOTIFICATION_ERROR}(bar) foo\n"),
+        (Notification, f"{icons.NOTIFICATION}(unknown) foo\n"),
+        (SuccessNotification, f"{icons.SUCCESS}(success) foo\n"),
+        (InfoNotification, f"{icons.INFO}(info) foo\n"),
+        (WarningNotification, f"{icons.WARNING}(warning) foo\n"),
+        (ErrorNotification, f"{icons.ERROR}(error) foo\n"),
     ],
 )
 def test_notification(capsys, notification, expected):
-    printer.echo(notification(text="foo", event="bar"))
+    printer.echo(notification(text="foo"))
 
     captured = capsys.readouterr()
     assert captured.out == expected
