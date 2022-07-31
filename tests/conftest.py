@@ -8,8 +8,8 @@ from hyperfocus.config.config import Config
 from hyperfocus.database import database
 from hyperfocus.database._database import Database
 from hyperfocus.database.models import MODELS
-from hyperfocus.services import DailyTracker
-from hyperfocus.session import Session
+from hyperfocus.services.daily_tracker import DailyTracker
+from hyperfocus.services.session import Session
 
 
 TEST_DIR = Path(__file__).parent.resolve()

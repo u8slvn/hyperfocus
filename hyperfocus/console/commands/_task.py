@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 import click
 
+from hyperfocus.console.exceptions import HyperfocusExit, TaskError
 from hyperfocus.database.models import TaskStatus
-from hyperfocus.exceptions import HyperfocusExit, TaskError
 from hyperfocus.termui import formatter, printer, prompt
 from hyperfocus.termui.components import (
     SuccessNotification,
@@ -16,7 +16,7 @@ from hyperfocus.termui.components import (
 
 if TYPE_CHECKING:
     from hyperfocus.database.models import Task
-    from hyperfocus.session import Session
+    from hyperfocus.services.session import Session
 
 
 def _show_tasks(session: Session):

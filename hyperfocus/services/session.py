@@ -6,8 +6,8 @@ import click
 
 from hyperfocus.config.config import Config
 from hyperfocus.database import database
-from hyperfocus.exceptions import SessionError
-from hyperfocus.services import DailyTracker
+from hyperfocus.services.daily_tracker import DailyTracker
+from hyperfocus.services.exceptions import SessionError
 
 
 class Session:

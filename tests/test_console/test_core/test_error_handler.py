@@ -2,7 +2,8 @@ import click.exceptions
 import pytest
 
 from hyperfocus.console.core.error_handler import hyf_error_handler
-from hyperfocus.exceptions import HyperfocusException, HyperfocusExit
+from hyperfocus.console.exceptions import HyperfocusExit
+from hyperfocus.exceptions import HyperfocusException
 
 
 def test_hyf_error_handler_catch_hyperfocus_exec(mocker):

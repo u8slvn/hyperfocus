@@ -4,8 +4,8 @@ import click
 import pyperclip
 
 from hyperfocus.console.commands._task import get_task
-from hyperfocus.exceptions import TaskError
-from hyperfocus.session import get_current_session
+from hyperfocus.console.exceptions import TaskError
+from hyperfocus.services.session import get_current_session
 from hyperfocus.termui import printer
 from hyperfocus.termui.components import SuccessNotification
 

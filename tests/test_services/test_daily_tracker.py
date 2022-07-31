@@ -2,7 +2,7 @@ import datetime
 from datetime import date
 
 from hyperfocus.database.models import Task, TaskStatus, WorkingDay
-from hyperfocus.services import DailyTracker
+from hyperfocus.services.daily_tracker import DailyTracker
 
 
 def test_daily_tracker_new_day(test_database):

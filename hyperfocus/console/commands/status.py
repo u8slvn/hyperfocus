@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import click
 
-from hyperfocus.session import get_current_session
+from hyperfocus.services.session import get_current_session
 from hyperfocus.termui import printer
 from hyperfocus.termui.components import ProgressBar, TasksTable
 

@@ -5,7 +5,8 @@ from typing import Callable
 
 import click
 
-from hyperfocus.exceptions import HyperfocusException, HyperfocusExit
+from hyperfocus.console.exceptions import HyperfocusExit
+from hyperfocus.exceptions import HyperfocusException
 from hyperfocus.termui import printer
 from hyperfocus.termui.components import ErrorNotification
 

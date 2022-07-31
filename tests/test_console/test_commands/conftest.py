@@ -4,7 +4,7 @@ from hyperfocus.config.config import Config
 from hyperfocus.console.cli import hyf
 from hyperfocus.database import database
 from hyperfocus.database.models import MODELS, Task, WorkingDay
-from hyperfocus.services import DailyTracker
+from hyperfocus.services.daily_tracker import DailyTracker
 
 
 @pytest.fixture(scope="session")

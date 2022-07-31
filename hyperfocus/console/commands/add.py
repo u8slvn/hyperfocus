@@ -1,6 +1,6 @@
 import click
 
-from hyperfocus.session import get_current_session
+from hyperfocus.services.session import get_current_session
 from hyperfocus.termui import formatter, printer, prompt
 from hyperfocus.termui.components import SuccessNotification
 

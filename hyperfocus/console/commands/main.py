@@ -7,7 +7,7 @@ import click
 from hyperfocus import __app_name__, __version__
 from hyperfocus.console.core.decorators import hyperfocus
 from hyperfocus.database.models import TaskStatus
-from hyperfocus.session import Session
+from hyperfocus.services.session import Session
 from hyperfocus.termui import formatter, printer, prompt, style
 from hyperfocus.termui.components import NewDay, ProgressBar, TasksTable
 

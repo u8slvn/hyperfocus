@@ -5,15 +5,17 @@ import pytest
 from freezegun import freeze_time
 
 from hyperfocus.config.config import Config
-from hyperfocus.exceptions import SessionError
-from hyperfocus.services import DailyTracker
-from hyperfocus.session import Session, get_current_session
+from hyperfocus.services.daily_tracker import DailyTracker
+from hyperfocus.services.exceptions import SessionError
+from hyperfocus.services.session import Session, get_current_session
 
 
 def test_get_current_session(mocker):
     ctx = mocker.Mock(spec=click.Context, instance=True)
     ctx.obj = mocker.Mock(spec=Session, instance=True)
-    mocker.patch("hyperfocus.session.click.get_current_context", return_value=ctx)
+    mocker.patch(
+        "hyperfocus.services.session.click.get_current_context", return_value=ctx
+    )
 
     session = get_current_session()
 
@@ -21,7 +23,7 @@ def test_get_current_session(mocker):
 
 
 def test_get_current_session_with_no_click_context(mocker):
-    mocker.patch("hyperfocus.session.click.get_current_context")
+    mocker.patch("hyperfocus.services.session.click.get_current_context")
 
     with pytest.raises(
         SessionError,
@@ -43,11 +45,15 @@ def test_session_teardown(session):
 def test_session_create(mocker):
     config = mocker.MagicMock(spec=Config, instance=True)
     mocker.patch(
-        "hyperfocus.session.Config", spec=Config, **{"load.return_value": config}
+        "hyperfocus.services.session.Config",
+        spec=Config,
+        **{"load.return_value": config}
     )
-    daily_tracker = mocker.patch("hyperfocus.session.DailyTracker", spec=DailyTracker)
+    daily_tracker = mocker.patch(
+        "hyperfocus.services.session.DailyTracker", spec=DailyTracker
+    )
     daily_tracker.from_date.return_value.date = mocker.sentinel.date
-    database = mocker.patch("hyperfocus.session.Session._database")
+    database = mocker.patch("hyperfocus.services.session.Session._database")
 
     session = Session.create()
 
