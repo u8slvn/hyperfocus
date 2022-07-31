@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import click
 
-from hyperfocus.exceptions import HyperfocusExit, TaskError
+from hyperfocus.console.commands._task import get_task
 from hyperfocus.session import get_current_session
-from hyperfocus.termui import printer, prompt
-from hyperfocus.termui.components import TaskDetails, TasksTable
+from hyperfocus.termui import printer
+from hyperfocus.termui.components import TaskDetails
 
 
 @click.command(help="Show task details")
@@ -13,19 +13,6 @@ from hyperfocus.termui.components import TaskDetails, TasksTable
 def show(task_id: int | None) -> None:
     session = get_current_session()
 
-    if task_id is None:
-        tasks = session.daily_tracker.get_tasks()
-
-        if not tasks:
-            printer.echo("No tasks for today...")
-            raise HyperfocusExit()
-
-        printer.echo(TasksTable(tasks))
-        task_id = prompt.prompt("Show task details", type=click.INT)
-
-    task = session.daily_tracker.get_task(task_id)
-
-    if not task:
-        raise TaskError(f"Task {task_id} does not exist.")
+    task = get_task(session=session, task_id=task_id, prompt_text="Show task details")
 
     printer.echo(TaskDetails(task))

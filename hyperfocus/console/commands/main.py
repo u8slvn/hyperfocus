@@ -55,10 +55,9 @@ def hyf(ctx: click.Context) -> None:
 
     if previous_day:
         previous_day.locked()
-
     tasks = session.daily_tracker.get_tasks()
     if tasks:
         printer.echo(TasksTable(tasks))
         printer.echo(ProgressBar(tasks))
     else:
-        printer.echo("No tasks yet for today...")
+        printer.echo("No tasks for today...")

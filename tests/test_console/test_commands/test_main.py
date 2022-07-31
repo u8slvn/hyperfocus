@@ -22,7 +22,7 @@ def test_hyf(cli_new_day):
 
         expected = (
             "> ✨ Sat, 01 January 2022: A new day starts, good luck!\n"
-            "No tasks yet for today...\n"
+            "No tasks for today...\n"
         )
         assert result.exit_code == 0
         assert result.output == expected
@@ -56,7 +56,7 @@ def test_hyf(cli_new_day):
             "> ✨ Sun, 02 January 2022: A new day starts, good luck!\n"
             "> You have 2 unfinished task(s) from Sat, 01 January 2022, run 'hyf' "
             "to review.\n"
-            "No tasks for today...\n"
+            "No tasks found...\n"
         )
         assert result.exit_code == 0
         assert result.output == expected

@@ -1,15 +1,13 @@
 from __future__ import annotations
 
-from abc import ABC
 from typing import TYPE_CHECKING
 
 import click
 
-from hyperfocus.console.commands import SessionHyperfocusCommand
+from hyperfocus.database.models import TaskStatus
 from hyperfocus.exceptions import HyperfocusExit, TaskError
 from hyperfocus.termui import formatter, printer, prompt
 from hyperfocus.termui.components import (
-    ProgressBar,
     SuccessNotification,
     TasksTable,
     WarningNotification,
@@ -17,72 +15,61 @@ from hyperfocus.termui.components import (
 
 
 if TYPE_CHECKING:
-    from hyperfocus.database.models import Task, TaskStatus
+    from hyperfocus.database.models import Task
     from hyperfocus.session import Session
 
 
-class TaskCmd(SessionHyperfocusCommand, ABC):
-    def __init__(self, session: Session) -> None:
-        super().__init__(session=session)
+def _show_tasks(session: Session):
+    tasks = session.daily_tracker.get_tasks()
 
-    def check_task_id_or_ask(
-        self, task_id: int | None, text: str, exclude: list[TaskStatus] | None = None
-    ) -> int:
-        if task_id:
-            return task_id
-        return self.ask_task_id(text=text, exclude=exclude)
+    if not tasks:
+        printer.echo("No tasks for today...")
+        raise HyperfocusExit()
 
-    def ask_task_id(self, text: str, exclude: list[TaskStatus] | None = None) -> int:
-        self.show_tasks(exclude=exclude)
+    printer.echo(TasksTable(tasks))
 
-        return prompt.prompt(text, type=click.INT)
 
-    def show_tasks(
-        self, exclude: list[TaskStatus] | None = None, progress_bar: bool = False
-    ) -> None:
-        exclude = exclude or []
-        tasks = self._session.daily_tracker.get_tasks(exclude=exclude)
+def get_task(session: Session, task_id: int | None, prompt_text: str) -> Task:
+    if task_id is None:
+        _show_tasks(session)
 
-        if not tasks:
-            printer.echo("No tasks for today...")
-            raise HyperfocusExit()
+        task_id = prompt.prompt(prompt_text, type=click.INT)
 
-        printer.echo(TasksTable(tasks))
-        if progress_bar:
-            printer.echo(ProgressBar(tasks))
+    task = session.daily_tracker.get_task(task_id)
 
-    def get_task(self, task_id: int) -> Task:
-        task = self._session.daily_tracker.get_task(task_id=task_id)
+    if not task:
+        raise TaskError(f"Task {task_id} does not exist.")
+
+    return task
+
+
+def update_tasks(
+    session: Session, task_ids: tuple[int, ...], status: TaskStatus, prompt_text: str
+) -> None:
+    if not task_ids:
+        _show_tasks(session)
+
+        task_id = prompt.prompt(prompt_text, type=click.INT)
+        task_ids = (task_id,)
+
+    for task_id in task_ids:
+        task = session.daily_tracker.get_task(task_id)
         if not task:
             raise TaskError(f"Task {task_id} does not exist.")
 
-        return task
-
-
-class UpdateTasksCmd(TaskCmd):
-    def execute(self, task_ids: tuple[int, ...], status: TaskStatus, text: str) -> None:
-        if not task_ids:
-            task_id = self.ask_task_id(text=text, exclude=[status])
-            task_ids = (task_id,)
-
-        for task_id in task_ids:
-            task = self.get_task(task_id=task_id)
-            if task.status == status.value:
-                printer.echo(
-                    WarningNotification(
-                        text=formatter.task(task=task, show_prefix=True),
-                    )
-                )
-                continue
-
-            self._session.daily_tracker.update_task(task=task, status=status)
+        if task.status == status.value:
             printer.echo(
-                SuccessNotification(
-                    text=formatter.task(task=task, show_prefix=True),
+                WarningNotification(
+                    f"{formatter.task(task=task, show_prefix=True)} unchanged."
                 )
             )
+            continue
 
+        session.daily_tracker.update_task(task=task, status=status)
 
-class ListTaskCmd(TaskCmd):
-    def execute(self) -> None:
-        self.show_tasks(progress_bar=True)
+        text_suffix = "reset" if status == TaskStatus.TODO else status.name.lower()
+        printer.echo(
+            SuccessNotification(
+                f"{formatter.task(task=task, show_prefix=True)} {text_suffix}."
+            )
+        )
