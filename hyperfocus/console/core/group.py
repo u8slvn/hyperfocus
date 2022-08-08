@@ -10,7 +10,7 @@ from hyperfocus.utils import wrap_methods
 
 @wrap_methods(hyf_error_handler, ["make_context", "invoke"])
 class AliasGroup(click.Group):
-    def get_command(self, ctx: click.Context, cmd_name: str):
+    def get_command(self, ctx: click.Context, cmd_name: str) -> Command | None:
         cmd = click.Group.get_command(self, ctx=ctx, cmd_name=cmd_name)
         if cmd is not None:
             return cmd

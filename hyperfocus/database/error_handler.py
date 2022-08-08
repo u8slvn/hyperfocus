@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 import functools
+from typing import Any, Callable
 
 import peewee
 
 from hyperfocus.database.exceptions import DatabaseError
 
 
-def db_error_handler(func):
+def db_error_handler(func: Callable) -> Callable:
     @functools.wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args, **kwargs) -> Any:
         try:
             return func(*args, **kwargs)
         except peewee.DatabaseError as error:

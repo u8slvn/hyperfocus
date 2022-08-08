@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import functools
-from typing import Callable
+from typing import Any, Callable
 
 import click
 
@@ -51,9 +51,9 @@ class HyfClickExceptionAdapter(HyperfocusException):
         )
 
 
-def hyf_error_handler(func):
+def hyf_error_handler(func: Callable) -> Callable:
     @functools.wraps(func)
-    def wrapper(*args, **kwargs) -> Callable:
+    def wrapper(*args, **kwargs) -> Any:
         try:
             return func(*args, **kwargs)
         except HyperfocusException as error:
