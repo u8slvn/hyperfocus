@@ -13,7 +13,7 @@ def add(title: str, add_details: bool) -> None:
 
     details = prompt.prompt("Task details") if add_details else ""
 
-    task = session.daily_tracker.add_task(title=title, details=details)
+    task = session.daily_tracker.create_task(title=title, details=details)
     printer.echo(
         SuccessNotification(
             text=f"{formatter.task(task=task, show_prefix=True)} created",

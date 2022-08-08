@@ -43,13 +43,13 @@ class Task(BaseModel):
     details = peewee.TextField(null=True)
     status = peewee.IntegerField(default=TaskStatus.TODO)
     parent_task = peewee.ForeignKeyField("self", null=True)
-    daily_tracker = peewee.ForeignKeyField(WorkingDay, backref="tasks", null=True)
+    working_day = peewee.ForeignKeyField(WorkingDay, backref="tasks", null=True)
     created_at = peewee.DateTimeField(default=datetime.datetime.now)
     updated_at = peewee.DateTimeField(default=datetime.datetime.now)
 
     class Meta:
         table_name = "tasks"
-        indexes = ((("uuid", "daily_tracker"), True),)
+        indexes = ((("uuid", "working_day"), True),)
 
     def save(self, *args, **kwargs) -> Task:
         self.updated_at = datetime.datetime.now()

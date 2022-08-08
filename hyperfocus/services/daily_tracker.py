@@ -12,6 +12,24 @@ class DailyTracker:
         self._new_day = new_day
         self._previous_day: DailyTracker | None = None
 
+    @property
+    def working_day(self) -> WorkingDay:
+        return self._working_day
+
+    @property
+    def date(self) -> datetime.date:
+        return self._working_day.date
+
+    def is_a_new_day(self):
+        return self._new_day
+
+    def is_locked(self):
+        return self._working_day.locked
+
+    def locked(self):
+        self._working_day.locked = True
+        self._working_day.save()
+
     @classmethod
     def from_date(cls, date: datetime.date) -> DailyTracker:
         working_day, new_day = WorkingDay.get_or_create(date=date)
@@ -29,28 +47,14 @@ class DailyTracker:
 
         return self._previous_day
 
-    @property
-    def date(self) -> datetime.date:
-        return self._working_day.date
-
-    def is_a_new_day(self):
-        return self._new_day
-
-    def is_locked(self):
-        return self._working_day.locked
-
-    def locked(self):
-        self._working_day.locked = True
-        self._working_day.save()
-
-    def add_task(self, title: str, details: str | None = None) -> Task:
+    def create_task(self, title: str, details: str | None = None) -> Task:
         details = details.strip() if isinstance(details, str) else details
         task = Task.create(
             id=self._working_day.next_task_id,
             title=title.strip(),
             details=details,
             status=TaskStatus.TODO,
-            daily_tracker=self._working_day,
+            working_day=self._working_day,
         )
         self._working_day.save()
 
@@ -62,7 +66,7 @@ class DailyTracker:
             title=task.title,
             details=task.details,
             status=TaskStatus.TODO,
-            daily_tracker=self._working_day,
+            working_day=self._working_day,
             parent_task=task,
         )
         self._working_day.save()
@@ -71,7 +75,7 @@ class DailyTracker:
 
     def get_task(self, task_id: int) -> Task | None:
         return Task.get_or_none(
-            Task.id == task_id, Task.daily_tracker == self._working_day
+            Task.id == task_id, Task.working_day == self._working_day
         )
 
     def get_tasks(self, exclude: list[TaskStatus] | None = None) -> List[Task]:
