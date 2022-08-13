@@ -15,7 +15,7 @@ def test_stash_add_with_id(cli):
     assert result.output == "✔(success) Task: #1 ⬢ foo stashed.\n"
 
 
-def test_stash_add_with_wrong_id(cli):
+def test_stash_add_fails_with_wrong_id(cli):
     runner.invoke(cli, ["add", "foo"])
 
     result = runner.invoke(cli, ["stash", "add", "11"])

@@ -13,10 +13,6 @@ class DailyTracker:
         self._previous_day: DailyTracker | None = None
 
     @property
-    def working_day(self) -> WorkingDay:
-        return self._working_day
-
-    @property
     def date(self) -> datetime.date:
         return self._working_day.date
 
@@ -56,6 +52,15 @@ class DailyTracker:
             status=TaskStatus.TODO,
             working_day=self._working_day,
         )
+        self._working_day.save()
+
+        return task
+
+    def add_task(self, task: Task) -> Task:
+        task.working_day = self._working_day
+        task.id = self._working_day.next_task_id
+        task.status = TaskStatus.TODO
+        task.save()
         self._working_day.save()
 
         return task

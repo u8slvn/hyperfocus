@@ -2,24 +2,27 @@ from __future__ import annotations
 
 from hyperfocus.database.models import Task, TaskStatus
 from hyperfocus.services.daily_tracker import DailyTracker
+from hyperfocus.services.exceptions import StashBoxError
 
 
 class StashBox:
     def __init__(self, daily_tracker: DailyTracker):
         self._daily_tracker = daily_tracker
-        self._tasks: list[Task] | None = None
 
-    @property
-    def tasks(self) -> list[Task]:
-        if self._tasks is None:
-            query = Task.select().where(Task.status == TaskStatus.STASHED)
-            self._tasks = list(query.execute())
+    @staticmethod
+    def get_tasks() -> list[Task]:
+        query = Task.select().where(Task.status == TaskStatus.STASHED)
+        tasks = list(query.execute())
 
-        return self._tasks
+        for i, task in enumerate(tasks):
+            task.id = i + 1
+            task.save()
+
+        return tasks
 
     @property
     def tasks_count(self) -> int:
-        return len(self.tasks)
+        return len(self.get_tasks())
 
     def add(self, task: Task) -> None:
         task.working_day = None
@@ -27,27 +30,21 @@ class StashBox:
         task.status = TaskStatus.STASHED
         task.save()
 
-        self.tasks.append(task)
+    def pop(self, task_id: int) -> Task:
+        tasks = self.get_tasks()
+        try:
+            task = tasks[task_id - 1]
+        except IndexError:
+            raise StashBoxError(f"Task {task_id} does not exist in stash box.")
 
-    def pop(self, task: Task, refresh_tasks: bool = True) -> None:
-        task.working_day = self._daily_tracker.working_day
-        task.status = TaskStatus.TODO
-        task.save()
+        self._daily_tracker.add_task(task)
 
-        if refresh_tasks:
-            self.tasks.pop(task.id - 1)
-            for i, task in enumerate(self.tasks):
-                task.id = i + 1
-                task.save()
+        return task
 
     def apply(self) -> None:
-        for task in self.tasks:
-            self.pop(task, refresh_tasks=False)
-
-        self._tasks = []
+        for task in self.get_tasks():
+            self._daily_tracker.add_task(task)
 
     def clear(self) -> None:
-        for task in self.tasks:
+        for task in self.get_tasks():
             task.delete().execute()
-
-        self._tasks = []
