@@ -11,7 +11,7 @@ def test_add(test_database):
     task = daily_tracker.create_task("foo")
     stash_box = StashBox(daily_tracker)
 
-    task = stash_box.add(task.id)
+    stash_box.add(task)
 
     assert len(daily_tracker.get_tasks()) == 0
     assert task.working_day is None
@@ -24,17 +24,53 @@ def test_pop(test_database):
     daily_tracker = DailyTracker.from_date(date=date)
     stash_box = StashBox(daily_tracker)
     task1 = daily_tracker.create_task("foo")
-    stash_box.add(task1.id)
+    stash_box.add(task1)
     task2 = daily_tracker.create_task("bar")
-    stash_box.add(task2.id)
+    stash_box.add(task2)
 
     assert len(daily_tracker.get_tasks()) == 0
     assert stash_box.tasks_count == 2
     assert task2.id == 2
 
-    stash_box.pop(1)
+    stash_box.pop(task1)
 
     assert len(daily_tracker.get_tasks()) == 1
     assert stash_box.tasks_count == 1
     assert stash_box.tasks[0].uuid == task2.uuid
     assert stash_box.tasks[0].id == 1
+
+
+def test_apply(test_database):
+    date = datetime.date(2022, 1, 1)
+    daily_tracker = DailyTracker.from_date(date=date)
+    stash_box = StashBox(daily_tracker)
+    task1 = daily_tracker.create_task("foo")
+    stash_box.add(task1)
+    task2 = daily_tracker.create_task("bar")
+    stash_box.add(task2)
+
+    assert len(daily_tracker.get_tasks()) == 0
+    assert stash_box.tasks_count == 2
+
+    stash_box.apply()
+
+    assert len(daily_tracker.get_tasks()) == 2
+    assert stash_box.tasks_count == 0
+
+
+def test_clear(test_database):
+    date = datetime.date(2022, 1, 1)
+    daily_tracker = DailyTracker.from_date(date=date)
+    stash_box = StashBox(daily_tracker)
+    task1 = daily_tracker.create_task("foo")
+    stash_box.add(task1)
+    task2 = daily_tracker.create_task("bar")
+    stash_box.add(task2)
+
+    assert len(daily_tracker.get_tasks()) == 0
+    assert stash_box.tasks_count == 2
+
+    stash_box.clear()
+
+    assert len(daily_tracker.get_tasks()) == 0
+    assert stash_box.tasks_count == 0

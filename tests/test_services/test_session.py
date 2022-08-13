@@ -8,6 +8,7 @@ from hyperfocus.config.config import Config
 from hyperfocus.services.daily_tracker import DailyTracker
 from hyperfocus.services.exceptions import SessionError
 from hyperfocus.services.session import Session, get_current_session
+from hyperfocus.services.stash_box import StashBox
 
 
 def test_get_current_session(mocker):
@@ -71,3 +72,13 @@ def test_session_bind_context(mocker):
 
     assert context.obj == session
     context.call_on_close.assert_called_once_with(session.teardown)
+
+
+def test_session_stash_box(mocker):
+    daily_tracker = mocker.create_autospec(DailyTracker)
+    session = Session(mocker.MagicMock(), daily_tracker)
+
+    stash_box = session.stash_box
+
+    assert isinstance(stash_box, StashBox)
+    assert stash_box._daily_tracker == daily_tracker

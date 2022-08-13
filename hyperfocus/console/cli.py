@@ -7,6 +7,7 @@ from hyperfocus.console.commands.init import init
 from hyperfocus.console.commands.main import hyf
 from hyperfocus.console.commands.reset import reset
 from hyperfocus.console.commands.show import show
+from hyperfocus.console.commands.stash import stash
 from hyperfocus.console.commands.status import status
 
 
@@ -20,6 +21,7 @@ hyf.add_commands(
         init,
         reset,
         show,
+        stash,
         status,
     ]
 )

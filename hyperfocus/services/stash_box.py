@@ -21,29 +21,33 @@ class StashBox:
     def tasks_count(self) -> int:
         return len(self.tasks)
 
-    def add(self, task_id: int) -> Task | None:
-        task = self._daily_tracker.get_task(task_id)
+    def add(self, task: Task) -> None:
+        task.working_day = None
+        task.id = self.tasks_count + 1
+        task.status = TaskStatus.STASHED
+        task.save()
 
-        if task is not None:
-            task.working_day = None
-            task.id = self.tasks_count + 1
-            task.status = TaskStatus.STASHED
-            task.save()
+        self.tasks.append(task)
 
-        self._tasks = None  # Reset tasks
+    def pop(self, task: Task, refresh_tasks: bool = True) -> None:
+        task.working_day = self._daily_tracker.working_day
+        task.status = TaskStatus.TODO
+        task.save()
 
-        return task
+        if refresh_tasks:
+            self.tasks.pop(task.id - 1)
+            for i, task in enumerate(self.tasks):
+                task.id = i + 1
+                task.save()
 
-    def pop(self, task_id: int) -> Task | None:
-        task = self.tasks.pop(task_id - 1)
+    def apply(self) -> None:
+        for task in self.tasks:
+            self.pop(task, refresh_tasks=False)
 
-        if task is not None:
-            task.working_day = self._daily_tracker.working_day
-            task.status = TaskStatus.TODO
-            task.save()
+        self._tasks = []
 
-        for i, task in enumerate(self.tasks):
-            task.id = i + 1
-            task.save()
+    def clear(self) -> None:
+        for task in self.tasks:
+            task.delete().execute()
 
-        return task
+        self._tasks = []

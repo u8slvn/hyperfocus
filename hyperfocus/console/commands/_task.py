@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from hyperfocus.services.session import Session
 
 
-def _show_tasks(session: Session):
+def show_tasks(session: Session):
     tasks = session.daily_tracker.get_tasks()
 
     if not tasks:
@@ -31,7 +31,7 @@ def _show_tasks(session: Session):
 
 def get_task(session: Session, task_id: int | None, prompt_text: str) -> Task:
     if task_id is None:
-        _show_tasks(session)
+        show_tasks(session)
 
         task_id = prompt.prompt(prompt_text, type=click.INT)
 
@@ -47,7 +47,7 @@ def update_tasks(
     session: Session, task_ids: tuple[int, ...], status: TaskStatus, prompt_text: str
 ) -> None:
     if not task_ids:
-        _show_tasks(session)
+        show_tasks(session)
 
         task_id = prompt.prompt(prompt_text, type=click.INT)
         task_ids = (task_id,)
