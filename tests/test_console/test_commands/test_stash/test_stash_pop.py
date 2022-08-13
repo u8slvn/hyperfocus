@@ -13,7 +13,7 @@ def test_stash_pop_with_id(cli):
     result = runner.invoke(cli, ["stash", "pop", "1"])
 
     assert result.exit_code == 0
-    assert result.output == "✔(success) Task: #2 ⬢ foo added from stash box.\n"
+    assert result.output == "✔(success) Task: #1 ⬢ foo added from stash box.\n"
 
 
 def test_stash_pop_fails_with_wrong_id(cli):
@@ -39,8 +39,8 @@ def test_stash_pop_with_ids(cli):
 
     assert result.exit_code == 0
     assert result.output == (
-        "✔(success) Task: #3 ⬢ foo added from stash box.\n"
-        "✔(success) Task: #4 ⬢ bar added from stash box.\n"
+        "✔(success) Task: #1 ⬢ foo added from stash box.\n"
+        "✔(success) Task: #2 ⬢ bar added from stash box.\n"
     )
 
 
@@ -58,5 +58,5 @@ def test_stash_add_without_id(cli):
         f"  1   {icons.TASK_STATUS} foo      {icons.NO_DETAILS}     \n"
         "\n"
         "? Stash task: 1\n"
-        "✔(success) Task: #2 ⬢ foo added from stash box.\n"
+        "✔(success) Task: #1 ⬢ foo added from stash box.\n"
     )

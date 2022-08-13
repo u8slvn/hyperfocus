@@ -40,9 +40,17 @@ def test_formatter_task_status(status, expected):
 def test_task(kwargs, expected):
     task = Task(id=1, title="foo", details="bar")
 
-    pretty_task = formatter.task(task=task, **kwargs)
+    formatted_task = formatter.task(task=task, **kwargs)
 
-    assert pretty_task == expected
+    assert formatted_task == expected
+
+
+def test_stashed_task():
+    task = Task(id=3, title="foo", details="bar")
+
+    formatted_task = formatter.stashed_task(old_task_id=1, task=task)
+
+    assert formatted_task == f"Task: #1 [{style.DEFAULT}]⬢[/] foo"
 
 
 def test_config():

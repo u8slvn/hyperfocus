@@ -26,6 +26,11 @@ def task(task: Task, show_prefix: bool = False) -> str:
     return f"{prefix}{task_status(task.status)} {title}"
 
 
+def stashed_task(old_task_id: int, task: Task) -> str:
+    prefix = f"Task: #{str(old_task_id)} "
+    return f"{prefix}{task_status(task.status)} {task.title}"
+
+
 def task_status(status: TaskStatus) -> str:
     color = {
         TaskStatus.TODO: style.DEFAULT,

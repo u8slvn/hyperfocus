@@ -39,7 +39,7 @@ def add(task_ids: tuple[int, ...] | None) -> None:
 
         printer.echo(
             SuccessNotification(
-                f"{formatter.task(task=task, show_prefix=True)} stashed."
+                f"{formatter.stashed_task(task_id, task=task)} stashed."
             )
         )
 
@@ -71,6 +71,6 @@ def pop(task_ids: tuple[int, ...] | None) -> None:
 
         printer.echo(
             SuccessNotification(
-                f"{formatter.task(task=task, show_prefix=True)} added from stash box."
+                f"{formatter.stashed_task(task_id, task=task)} added from stash box."
             )
         )
