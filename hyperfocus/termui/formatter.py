@@ -31,6 +31,7 @@ def task_status(status: TaskStatus) -> str:
         TaskStatus.TODO: style.DEFAULT,
         TaskStatus.DELETED: style.ERROR,
         TaskStatus.DONE: style.SUCCESS,
+        TaskStatus.STASHED: style.STASHED,
     }.get(status, style.UNKNOWN)
 
     return f"[{color}]{icons.TASK_STATUS}[/]"

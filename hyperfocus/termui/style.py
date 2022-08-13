@@ -1,6 +1,7 @@
 DEFAULT = "bright_white"
 INFO = "steel_blue1"
 SUCCESS = "chartreuse3"
+STASHED = "purple4"
 WARNING = "orange1"
 ERROR = "red"
 UNKNOWN = "bright_black"
