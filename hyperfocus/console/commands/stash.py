@@ -97,3 +97,12 @@ def clear() -> None:
     session.stash_box.clear()
 
     printer.echo(SuccessNotification("Stash box cleared."))
+
+
+@stash.command(help="Pop all tasks in stash box")
+def apply() -> None:
+    session = get_current_session()
+
+    session.stash_box.apply()
+
+    printer.echo(SuccessNotification("All tasks in stash box added for today."))
