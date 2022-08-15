@@ -88,3 +88,12 @@ def list() -> None:
         raise HyperfocusExit()
 
     printer.echo(TasksTable(stashed_tasks))
+
+
+@stash.command(help="Clear stashed task")
+def clear() -> None:
+    session = get_current_session()
+
+    session.stash_box.clear()
+
+    printer.echo(SuccessNotification("Stash box cleared."))
