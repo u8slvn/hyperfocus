@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any, Callable, overload
+
 import click
 from click import Command
 
@@ -36,3 +38,45 @@ class AliasGroup(click.Group):
 
     def get_commands(self) -> list[str]:
         return [command for command in self.commands.keys()]
+
+
+class DefaultCommandGroup(click.Group):
+    def __init__(self, *args, **kwargs) -> None:
+        self.default_command = None
+        super().__init__(*args, **kwargs)
+
+    @overload
+    def command(self, __func: Callable[..., Any]) -> Command:
+        ...
+
+    @overload
+    def command(
+        self, *args: Any, **kwargs: Any
+    ) -> Callable[[Callable[..., Any]], Command]:
+        ...
+
+    def command(
+        self, *args: Any, **kwargs: Any
+    ) -> Callable[[Callable[..., Any]], Command]:
+        default_command = kwargs.pop("default_command", False)
+        decorator = super().command(*args, **kwargs)
+
+        if default_command:
+
+            def new_decorator(f):
+                command = decorator(f)
+                self.default_command = command.name
+                return command
+
+            return new_decorator
+
+        return decorator
+
+    def resolve_command(
+        self, ctx: click.Context, args: Any
+    ) -> tuple[str | None, Command | None, list[str]]:
+        try:
+            return super().resolve_command(ctx, args)
+        except click.UsageError:
+            args.insert(0, self.default_command)
+            return super().resolve_command(ctx, args)

@@ -3,18 +3,19 @@ from __future__ import annotations
 import click
 
 from hyperfocus.console.commands._task import show_tasks
+from hyperfocus.console.core.group import DefaultCommandGroup
 from hyperfocus.console.exceptions import HyperfocusExit, TaskError
 from hyperfocus.services.session import get_current_session
 from hyperfocus.termui import formatter, printer, prompt
 from hyperfocus.termui.components import SuccessNotification, TasksTable
 
 
-@click.group(help="Task stash box")
+@click.group(cls=DefaultCommandGroup, help="Task stash box")
 def stash() -> None:
     ...
 
 
-@stash.command(help="Stash task")
+@stash.command(default_command=True, help="Stash task")
 @click.argument(
     "task_ids",
     metavar="<id>",
