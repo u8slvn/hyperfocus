@@ -45,6 +45,6 @@ class StashBox:
         for task in self.get_tasks():
             self._daily_tracker.add_task(task)
 
-    def clear(self) -> None:
-        for task in self.get_tasks():
-            task.delete().execute()
+    @staticmethod
+    def clear() -> None:
+        Task.delete().where(Task.status == TaskStatus.STASHED).execute()
