@@ -93,6 +93,10 @@ class DailyTracker:
         return query.execute()
 
     @staticmethod
+    def delete_task(task: Task) -> None:
+        task.delete_instance()
+
+    @staticmethod
     def update_task(task: Task, status: TaskStatus) -> None:
         task.status = status
         task.save()
