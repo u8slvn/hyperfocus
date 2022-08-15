@@ -21,7 +21,7 @@ def stash() -> None:
     nargs=-1,
     type=click.INT,
 )
-def add(task_ids: tuple[int, ...] | None) -> None:
+def push(task_ids: tuple[int, ...] | None) -> None:
     session = get_current_session()
 
     if not task_ids:

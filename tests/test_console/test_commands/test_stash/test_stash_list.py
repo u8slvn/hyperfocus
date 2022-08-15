@@ -8,7 +8,7 @@ runner = CliRunner()
 
 def test_stash_list(cli):
     runner.invoke(cli, ["add", "foo"])
-    runner.invoke(cli, ["stash", "add", "1"])
+    runner.invoke(cli, ["stash", "push", "1"])
 
     result = runner.invoke(cli, ["stash", "list"])
 

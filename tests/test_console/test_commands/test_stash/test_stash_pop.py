@@ -8,7 +8,7 @@ runner = CliRunner()
 
 def test_stash_pop_with_id(cli):
     runner.invoke(cli, ["add", "foo"])
-    runner.invoke(cli, ["stash", "add", "1"])
+    runner.invoke(cli, ["stash", "push", "1"])
 
     result = runner.invoke(cli, ["stash", "pop", "1"])
 
@@ -33,7 +33,7 @@ def test_stash_pop_with_no_task_in_stash_box(cli):
 def test_stash_pop_with_ids(cli):
     runner.invoke(cli, ["add", "foo"])
     runner.invoke(cli, ["add", "bar"])
-    runner.invoke(cli, ["stash", "add", "1", "2"])
+    runner.invoke(cli, ["stash", "push", "1", "2"])
 
     result = runner.invoke(cli, ["stash", "pop", "1", "2"])
 
@@ -46,7 +46,7 @@ def test_stash_pop_with_ids(cli):
 
 def test_stash_add_without_id(cli):
     runner.invoke(cli, ["add", "foo"])
-    runner.invoke(cli, ["stash", "add", "1"])
+    runner.invoke(cli, ["stash", "push", "1"])
 
     result = runner.invoke(cli, ["stash", "pop"], input="1\n")
 
