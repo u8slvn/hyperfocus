@@ -74,3 +74,16 @@ def pop(task_ids: tuple[int, ...] | None) -> None:
                 f"{formatter.stashed_task(task_id, task=task)} added from stash box."
             )
         )
+
+
+@stash.command(help="List stashed task")
+def list() -> None:
+    session = get_current_session()
+
+    stashed_tasks = session.stash_box.get_tasks()
+
+    if not stashed_tasks:
+        printer.echo("No tasks in stash box...")
+        raise HyperfocusExit()
+
+    printer.echo(TasksTable(stashed_tasks))
