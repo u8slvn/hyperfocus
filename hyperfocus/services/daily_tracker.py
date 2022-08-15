@@ -85,8 +85,12 @@ class DailyTracker:
 
     def get_tasks(self, exclude: list[TaskStatus] | None = None) -> List[Task]:
         exclude = exclude or []
-        tasks = [task for task in self._working_day.tasks if task.status not in exclude]
-        return tasks
+
+        query = self._working_day.tasks
+        query = query.where(Task.status.not_in(exclude))
+        query = query.order_by(Task.id.asc())
+
+        return query.execute()
 
     @staticmethod
     def update_task(task: Task, status: TaskStatus) -> None:
