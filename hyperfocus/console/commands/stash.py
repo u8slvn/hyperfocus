@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import click
 
-from hyperfocus.console.commands._task import show_tasks
+from hyperfocus.console.commands._task import pick_task
 from hyperfocus.console.core.group import DefaultCommandGroup
 from hyperfocus.console.exceptions import HyperfocusExit, TaskError
 from hyperfocus.services.session import get_current_session
@@ -26,9 +26,7 @@ def push(task_ids: tuple[int, ...] | None) -> None:
     session = get_current_session()
 
     if not task_ids:
-        show_tasks(session)
-
-        task_id = prompt.prompt("Stash task", type=click.INT)
+        task_id = pick_task(session=session, prompt_text="Stash task")
         task_ids = (task_id,)
 
     for task_id in task_ids:
