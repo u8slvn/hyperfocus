@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0-alpha.1 (unreleased)
+## 1.0.0-alpha.1 (2022-08-16)
 
 ### Added:
 
