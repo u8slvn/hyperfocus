@@ -1,5 +1,28 @@
 # Changelog
 
+## 1.0.0-alpha.1 (unreleased)
+
+### Added:
+
+* New style management with markup.
+* Colored design for `config --list`.
+* Add `stash` command group to manage tasks into stash box.
+  * Add `stash pop` command.
+  * Add `stash apply` command.
+  * Add `stash list` command.
+  * Add `stash clear` command.
+* Add `--force` option to delete command to allow force deletion.
+
+### Changed:
+
+* Improved global architecture.
+* New daily tasks progress bar style.
+* Tasks are now listed by task id.
+
+### Fixed:
+
+* `hyf init` initialize the whole config path and create missing directory.
+
 ## 1.0.0-alpha.0 (2022-07-17)
 
 * Add task details with history in `show` command.
