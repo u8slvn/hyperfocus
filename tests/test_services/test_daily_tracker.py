@@ -1,5 +1,4 @@
 import datetime
-from datetime import date
 
 from hyperfocus.database.models import Task, TaskStatus, WorkingDay
 from hyperfocus.services.daily_tracker import DailyTracker
@@ -98,7 +97,7 @@ def test_daily_tracker_service_update_task(test_database):
 def test_daily_tracker_service_get_date(test_database):
     daily_tracker = DailyTracker.from_date(datetime.date(2022, 1, 6))
 
-    assert daily_tracker.date == date(2022, 1, 6)
+    assert daily_tracker.date == datetime.date(2022, 1, 6)
 
 
 def test_daily_tracker_service_get_previous_day(test_database):
@@ -109,7 +108,7 @@ def test_daily_tracker_service_get_previous_day(test_database):
 
     previous_day = daily_tracker.get_previous_day()
 
-    assert previous_day.date == date(2022, 2, 1)
+    assert previous_day.date == datetime.date(2022, 2, 1)
     assert len(previous_day.get_tasks()) == 2
 
 
@@ -119,3 +118,15 @@ def test_daily_tracker_service_get_previous_day_return_none(test_database):
     previous_day = daily_tracker.get_previous_day()
 
     assert previous_day is None
+
+
+def test_daily_tracker_delete_task(test_database):
+    date = datetime.date(2022, 2, 1)
+    daily_tracker = DailyTracker.from_date(date)
+    task = daily_tracker.create_task("foo")
+
+    assert len(daily_tracker.get_tasks()) == 1
+
+    daily_tracker.delete_task(task)
+
+    assert len(daily_tracker.get_tasks()) == 0
