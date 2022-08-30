@@ -5,11 +5,12 @@ import sys
 import click
 
 from hyperfocus import __app_name__, __version__
+from hyperfocus.console.commands.status import status
 from hyperfocus.console.core.decorators import hyperfocus
 from hyperfocus.database.models import TaskStatus
 from hyperfocus.services.session import Session
 from hyperfocus.termui import formatter, printer, prompt, style
-from hyperfocus.termui.components import NewDay, ProgressBar, TasksTable
+from hyperfocus.termui.components import NewDay
 
 
 @hyperfocus(invoke_without_command=True, help="Minimalist task manager")
@@ -55,9 +56,5 @@ def hyf(ctx: click.Context) -> None:
 
     if previous_day:
         previous_day.locked()
-    tasks = session.daily_tracker.get_tasks()
-    if tasks:
-        printer.echo(TasksTable(tasks))
-        printer.echo(ProgressBar(tasks))
-    else:
-        printer.echo("No tasks for today...")
+
+    ctx.invoke(status)

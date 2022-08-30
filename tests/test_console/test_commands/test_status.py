@@ -10,7 +10,7 @@ def test_status(cli):
     result = runner.invoke(cli, ["status"])
 
     assert result.exit_code == 0
-    assert result.output == "No tasks found...\n"
+    assert result.output == "No tasks for today...\n"
 
     runner.invoke(cli, ["add", "foo"])
     runner.invoke(cli, ["add", "bar"])

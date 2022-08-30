@@ -16,4 +16,4 @@ def status() -> None:
         printer.echo(TasksTable(tasks))
         printer.echo(ProgressBar(tasks))
     else:
-        printer.echo("No tasks found...")
+        printer.echo("No tasks for today...")
