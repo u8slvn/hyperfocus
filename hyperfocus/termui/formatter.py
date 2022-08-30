@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import datetime
+from typing import Generator
 
 from hyperfocus.database.models import Task, TaskStatus
+from hyperfocus.services.history import History
 from hyperfocus.termui import icons, style
 
 
@@ -44,3 +46,11 @@ def task_status(status: TaskStatus) -> str:
 
 def config(config: dict[str, str]) -> str:
     return "\n".join([f"[{style.INFO}]{k}[/] = {v}" for k, v in config.items()])
+
+
+def history(history: History) -> Generator[str, None, None]:
+    for data in history():
+        if isinstance(data, Task):
+            yield f"  {(task(data))}\n"
+        if isinstance(data, datetime.date):
+            yield f"\n{date(data)}\n"

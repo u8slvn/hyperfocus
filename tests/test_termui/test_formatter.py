@@ -3,6 +3,7 @@ import datetime
 import pytest
 
 from hyperfocus.database.models import Task, TaskStatus
+from hyperfocus.services.history import History
 from hyperfocus.termui import formatter, icons, style
 
 
@@ -66,3 +67,32 @@ def test_config():
         f"[{style.INFO}]alias.st[/] = status"
     )
     assert result == expected
+
+
+def test_history(mocker):
+    history = mocker.Mock(
+        **{
+            "return_value": iter(
+                [
+                    datetime.date(2022, 1, 1),
+                    Task(title="task1"),
+                    Task(title="task2"),
+                    datetime.date(2022, 1, 2),
+                    Task(title="task3"),
+                    Task(title="task4"),
+                ]
+            ),
+        },
+        spec=History,
+    )
+
+    result = [line for line in formatter.history(history)]
+
+    assert result == [
+        "\nSat, 01 January 2022\n",
+        "  [bright_white]⬢[/] task1\n",
+        "  [bright_white]⬢[/] task2\n",
+        "\nSun, 02 January 2022\n",
+        "  [bright_white]⬢[/] task3\n",
+        "  [bright_white]⬢[/] task4\n",
+    ]

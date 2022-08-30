@@ -4,6 +4,7 @@ from hyperfocus.console.commands.copy import copy
 from hyperfocus.console.commands.delete import delete
 from hyperfocus.console.commands.done import done
 from hyperfocus.console.commands.init import init
+from hyperfocus.console.commands.log import log
 from hyperfocus.console.commands.main import hyf
 from hyperfocus.console.commands.reset import reset
 from hyperfocus.console.commands.show import show
@@ -19,6 +20,7 @@ hyf.add_commands(
         delete,
         done,
         init,
+        log,
         reset,
         show,
         stash,
