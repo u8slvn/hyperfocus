@@ -10,7 +10,6 @@ from hyperfocus.console.core.error_handler import hyf_error_handler
 from hyperfocus.utils import wrap_methods
 
 
-@wrap_methods(hyf_error_handler, ["make_context", "invoke"])
 class AliasGroup(click.Group):
     def get_command(self, ctx: click.Context, cmd_name: str) -> Command | None:
         cmd = click.Group.get_command(self, ctx=ctx, cmd_name=cmd_name)
@@ -31,13 +30,6 @@ class AliasGroup(click.Group):
         _, cmd, args = super().resolve_command(ctx, args)
         cmd_name = cmd if cmd is None else cmd.name
         return cmd_name, cmd, args
-
-    def add_commands(self, commands: list[Command]) -> None:
-        for command in commands:
-            self.add_command(command)
-
-    def get_commands(self) -> list[str]:
-        return [command for command in self.commands.keys()]
 
 
 class DefaultCommandGroup(click.Group):
@@ -80,3 +72,13 @@ class DefaultCommandGroup(click.Group):
         except click.UsageError:
             args.insert(0, self.default_command)
             return super().resolve_command(ctx, args)
+
+
+@wrap_methods(hyf_error_handler, ["make_context", "invoke"])
+class HyperFocus(AliasGroup):
+    def add_commands(self, commands: list[Command]) -> None:
+        for command in commands:
+            self.add_command(command)
+
+    def get_commands(self) -> list[str]:
+        return [command for command in self.commands.keys()]

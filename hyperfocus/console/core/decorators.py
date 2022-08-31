@@ -4,9 +4,9 @@ from typing import Any, cast
 
 import click
 
-from hyperfocus.console.core.group import AliasGroup
+from hyperfocus.console.core.group import HyperFocus
 
 
-def hyperfocus(**kwargs: Any) -> AliasGroup:
-    cli = click.group(cls=AliasGroup, **kwargs)
-    return cast(AliasGroup, cli)
+def hyperfocus(**kwargs: Any) -> HyperFocus:
+    cli = click.group(cls=HyperFocus, **kwargs)
+    return cast(HyperFocus, cli)
