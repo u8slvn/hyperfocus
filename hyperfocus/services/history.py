@@ -16,7 +16,7 @@ class History:
     def __init__(self, daily_tracker: DailyTracker) -> None:
         self.start = daily_tracker.date
 
-    def __call__(self) -> Generator[datetime.date | Task, None, None]:
+    def __call__(self) -> Generator[tuple[bool, datetime.date | Task], None, None]:
         query = WorkingDay.select()
         query = query.where(WorkingDay.date < self.start)
         query = query.order_by(WorkingDay.date.desc())
@@ -24,7 +24,10 @@ class History:
 
         for previous_day in previous_days:
             daily_tracker = DailyTracker(previous_day)
-            yield previous_day.date
+            yield False, previous_day.date
 
-            for task in daily_tracker.get_tasks():
-                yield task
+            tasks = daily_tracker.get_tasks()
+
+            for i, task in enumerate(tasks):
+                last_element = i == len(tasks) - 1
+                yield last_element, task

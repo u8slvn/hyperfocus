@@ -74,12 +74,12 @@ def test_history(mocker):
         **{
             "return_value": iter(
                 [
-                    datetime.date(2022, 1, 1),
-                    Task(title="task1"),
-                    Task(title="task2"),
-                    datetime.date(2022, 1, 2),
-                    Task(title="task3"),
-                    Task(title="task4"),
+                    (False, datetime.date(2022, 1, 1)),
+                    (False, Task(title="task1")),
+                    (True, Task(title="task2")),
+                    (False, datetime.date(2022, 1, 2)),
+                    (False, Task(title="task3")),
+                    (True, Task(title="task4")),
                 ]
             ),
         },
@@ -89,10 +89,10 @@ def test_history(mocker):
     result = [line for line in formatter.history(history)]
 
     assert result == [
-        "\nSat, 01 January 2022\n",
-        "  [bright_white]⬢[/] task1\n",
-        "  [bright_white]⬢[/] task2\n",
-        "\nSun, 02 January 2022\n",
-        "  [bright_white]⬢[/] task3\n",
-        "  [bright_white]⬢[/] task4\n",
+        f"{icons.LIST} Sat, 01 January 2022\n",
+        f"{icons.HISTORY_NODE} [bright_white]⬢[/] task1\n",
+        f"{icons.HISTORY_END_NODE} [bright_white]⬢[/] task2\n\n",
+        f"{icons.LIST} Sun, 02 January 2022\n",
+        f"{icons.HISTORY_NODE} [bright_white]⬢[/] task3\n",
+        f"{icons.HISTORY_END_NODE} [bright_white]⬢[/] task4\n\n",
     ]

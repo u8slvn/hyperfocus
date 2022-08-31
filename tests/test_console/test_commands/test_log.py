@@ -1,6 +1,8 @@
 from click.testing import CliRunner
 from freezegun import freeze_time
 
+from hyperfocus.termui import icons
+
 
 runner = CliRunner()
 
@@ -25,10 +27,10 @@ def test_done(cli):
         assert result.output == (
             "> You have 1 unfinished task(s) from Sun, 02 January 2022,"
             " run 'hyf' to review.\n"
-            "\nSun, 02 January 2022\n"
-            "  ⬢ baz\n"
-            "\nSat, 01 January 2022\n"
-            "  ⬢ foo\n"
-            "  ⬢ bar\n"
-            "\n"
+            f"{icons.LIST} Sun, 02 January 2022\n"
+            f"{icons.HISTORY_END_NODE} ⬢ baz\n\n"
+            f"{icons.LIST} Sat, 01 January 2022\n"
+            f"{icons.HISTORY_NODE} ⬢ foo\n"
+            f"{icons.HISTORY_END_NODE} ⬢ bar\n"
+            "\n\n"
         )

@@ -49,8 +49,11 @@ def config(config: dict[str, str]) -> str:
 
 
 def history(history: History) -> Generator[str, None, None]:
-    for data in history():
+    for last_element, data in history():
         if isinstance(data, Task):
-            yield f"  {(task(data))}\n"
+            icon = icons.HISTORY_END_NODE if last_element else icons.HISTORY_NODE
+            end = "\n\n" if last_element else "\n"
+            yield f"{icon} {(task(data))}{end}"
+
         if isinstance(data, datetime.date):
-            yield f"\n{date(data)}\n"
+            yield f"{icons.LIST} {date(data)}\n"

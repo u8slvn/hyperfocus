@@ -18,9 +18,15 @@ def test_history(test_database):
     result = [data for data in history()]
 
     assert len(result) == 6
-    assert isinstance(result[0], datetime.date)
-    assert isinstance(result[1], Task)
-    assert isinstance(result[2], Task)
-    assert isinstance(result[3], datetime.date)
-    assert isinstance(result[4], Task)
-    assert isinstance(result[5], Task)
+    assert result[0][0] is False
+    assert isinstance(result[0][1], datetime.date)
+    assert result[1][0] is False
+    assert isinstance(result[1][1], Task)
+    assert result[2][0] is True
+    assert isinstance(result[2][1], Task)
+    assert result[3][0] is False
+    assert isinstance(result[3][1], datetime.date)
+    assert result[4][0] is False
+    assert isinstance(result[4][1], Task)
+    assert result[5][0] is True
+    assert isinstance(result[5][1], Task)
