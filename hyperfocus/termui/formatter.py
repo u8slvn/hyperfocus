@@ -29,6 +29,7 @@ def task(task: Task, show_prefix: bool = False) -> str:
 
 
 def stashed_task(old_task_id: int, task: Task) -> str:
+    # TODO: find a way to merge with classic task formatter.
     prefix = f"Task: #{str(old_task_id)} "
     return f"{prefix}{task_status(task.status)} {task.title}"
 

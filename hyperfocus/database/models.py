@@ -52,6 +52,7 @@ class Task(BaseModel):
         indexes = ((("uuid", "working_day"), True),)
 
     def save(self, *args, **kwargs) -> Task:
+        # Auto update 'updated_at' field at each save.
         self.updated_at = datetime.datetime.now()
         return super(Task, self).save(*args, **kwargs)
 

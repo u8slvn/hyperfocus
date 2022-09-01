@@ -9,6 +9,15 @@ from hyperfocus.termui.exceptions import TermUIError
 
 
 class Markup:
+    """
+    Manage console text style as markup.
+
+    Example:
+        bold and red text: "[bold red]my text[/]"
+
+    Limitation: Markup cannot be nested.
+    """
+
     _text_styles = [
         "bold",
         "dim",
@@ -250,6 +259,9 @@ class Markup:
         return click.style(text=text, **tags)
 
     def resolve(self, text: str) -> str:
+        """
+        Resolve markup in text with matching style.
+        """
         return re.sub(self._re_markup, self._parse_markup, text)
 
     def _remove_markup(self, match: Match) -> str:
@@ -259,6 +271,9 @@ class Markup:
         return text
 
     def remove(self, text: str) -> str:
+        """
+        Remove markup from a text.
+        """
         return re.sub(self._re_markup, self._remove_markup, text)
 
 

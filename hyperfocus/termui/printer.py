@@ -24,8 +24,10 @@ def pager_echo(text: Generator) -> None:
 
 
 def banner(text: str) -> None:
+    # TODO: move to components
     echo(f"[{style.BANNER}]> {text}[/]")
 
 
 def config(config: dict[str, str]) -> None:
+    # TODO: move to components
     echo(formatter.config(config))

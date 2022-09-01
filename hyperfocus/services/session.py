@@ -12,6 +12,14 @@ from hyperfocus.services.stash_box import StashBox
 
 
 class Session:
+    """
+    Manage the session of the whole CLI.
+
+    A new session is created each time a command is called. It primarily handles
+    database connexion and daily tracker service (which is the main service of
+    the CLI).
+    """
+
     _database = database
 
     def __init__(self, config: Config, daily_tracker: DailyTracker) -> None:
@@ -21,6 +29,9 @@ class Session:
 
     @classmethod
     def create(cls) -> Session:
+        """
+        Instantiate a new session.
+        """
         config = Config.load()
         cls._database.connect(config["core.database"])
 
@@ -35,6 +46,7 @@ class Session:
 
     @property
     def date(self) -> datetime.date:
+        """Return the current date of the working day."""
         return self._daily_tracker.date
 
     @property
@@ -49,14 +61,23 @@ class Session:
         return self._stash_box
 
     def bind_context(self, ctx: click.Context) -> None:
+        """
+        Register the current session into Click context.
+        """
         ctx.obj = self
         ctx.call_on_close(self.teardown)
 
     def teardown(self) -> None:
+        """
+        Close the database connexion at Click teardown.
+        """
         self._database.close()
 
 
 def get_current_session() -> Session:
+    """
+    Get the current session from the Click context.
+    """
     ctx = click.get_current_context()
     if not isinstance(ctx.obj, Session):
         raise SessionError(

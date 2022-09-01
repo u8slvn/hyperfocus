@@ -13,10 +13,19 @@ if TYPE_CHECKING:
 
 
 class History:
+    """
+    Retrieve all tasks from the past days as history log.
+    """
+
     def __init__(self, daily_tracker: DailyTracker) -> None:
         self.start = daily_tracker.date
 
     def __call__(self) -> Generator[tuple[bool, datetime.date | Task], None, None]:
+        """
+        Return all date followed by tasks, all prefixed with a boolean which specify if
+        the element is the last element of the list for the given date. This boolean
+        is used later to manage pretty display.
+        """
         query = WorkingDay.select()
         query = query.where(WorkingDay.date < self.start)
         query = query.order_by(WorkingDay.date.desc())

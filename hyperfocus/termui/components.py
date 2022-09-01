@@ -15,6 +15,12 @@ if TYPE_CHECKING:
 
 
 class UIComponent(ABC):
+    """
+    Base class of UIComponent all components must inherit from it.
+
+    An UIComponent is a formatter with much more complex logic.
+    """
+
     @abstractmethod
     def resolve(self) -> str:
         raise NotImplementedError
