@@ -57,3 +57,6 @@ warn_unused_ignores = false
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
+markers = [
+    "functional: marks as functional tests (deselect with '-m \"not functional\"')",
+]

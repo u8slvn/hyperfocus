@@ -1,3 +1,4 @@
+import pytest
 from click.testing import CliRunner
 
 from hyperfocus.termui import icons
@@ -6,6 +7,7 @@ from hyperfocus.termui import icons
 runner = CliRunner()
 
 
+@pytest.mark.functional
 def test_copy(mocker, cli):
     pyperclip = mocker.patch("hyperfocus.console.commands.copy.pyperclip")
 

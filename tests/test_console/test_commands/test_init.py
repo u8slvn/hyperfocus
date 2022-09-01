@@ -1,3 +1,4 @@
+import pytest
 from click.testing import CliRunner
 
 from hyperfocus.config.config import Config
@@ -7,6 +8,7 @@ from tests.conftest import pytest_regex
 runner = CliRunner()
 
 
+@pytest.mark.functional
 def test_init(monkeypatch, base_cli, test_dir):
     monkeypatch.setattr(Config, "_dir", test_dir)
     config_path = test_dir / Config._filename

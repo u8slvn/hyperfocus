@@ -1,3 +1,4 @@
+import pytest
 from click.testing import CliRunner
 
 from hyperfocus.termui import icons
@@ -6,6 +7,7 @@ from hyperfocus.termui import icons
 runner = CliRunner()
 
 
+@pytest.mark.functional
 def test_add(cli):
     result = runner.invoke(cli, ["add", "foo"])
 

@@ -1,3 +1,4 @@
+import pytest
 from click.testing import CliRunner
 from freezegun import freeze_time
 
@@ -7,6 +8,7 @@ from hyperfocus.termui import icons
 runner = CliRunner()
 
 
+@pytest.mark.functional
 def test_done(cli):
     with freeze_time("2022-01-01"):
         result = runner.invoke(cli, ["log"])

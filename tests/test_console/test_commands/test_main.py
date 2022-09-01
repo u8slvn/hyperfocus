@@ -1,3 +1,4 @@
+import pytest
 from click.testing import CliRunner
 from freezegun import freeze_time
 
@@ -9,13 +10,15 @@ from hyperfocus.termui.components import ProgressBar
 runner = CliRunner()
 
 
-def test_main_cmd_version(cli):
+@pytest.mark.functional
+def test_hyf_version(cli):
     result = runner.invoke(cli, ["--version"])
 
     expected = f"{__app_name__}, version {__version__}\n"
     assert expected == result.stdout
 
 
+@pytest.mark.functional
 def test_hyf(cli_new_day):
     with freeze_time("2022-01-01"):
         result = runner.invoke(cli_new_day, [])

@@ -1,3 +1,4 @@
+import pytest
 from click.testing import CliRunner
 from freezegun import freeze_time
 
@@ -8,6 +9,7 @@ from tests.conftest import pytest_regex
 runner = CliRunner()
 
 
+@pytest.mark.functional
 @freeze_time("2022-01-01")
 def test_show(cli):
     result = runner.invoke(cli, ["show"])
