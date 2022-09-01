@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "hyperfocus"
 version = "1.0.0-alpha.1"
-description = "Minimalist task manager."
+description = "Minimalist daily task manager."
 authors = ["u8slvn <u8slvn@gmail.com>"]
 license = "MIT"
 readme = "README.md"
