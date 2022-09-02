@@ -26,7 +26,7 @@ def test_pager_echo(capsys):
     printer.pager_echo(text())
 
     captured = capsys.readouterr()
-    assert captured.out == ("foo\n" "bar\n" "baz\n" "\n")
+    assert captured.out == "foo\nbar\nbaz\n\n"
 
 
 def test_banner(capsys):

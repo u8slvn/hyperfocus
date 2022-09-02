@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import click
 
-from hyperfocus.console.commands._task import update_tasks
+from hyperfocus.console.commands._helpers import TaskHelper
 from hyperfocus.database.models import TaskStatus
 from hyperfocus.services.session import get_current_session
 
@@ -11,9 +11,9 @@ from hyperfocus.services.session import get_current_session
 @click.argument("task_ids", metavar="<id>", required=False, nargs=-1, type=click.INT)
 def done(task_ids: tuple[int, ...]) -> None:
     session = get_current_session()
+    task_helper = TaskHelper(session)
 
-    update_tasks(
-        session=session,
+    task_helper.update_tasks(
         task_ids=task_ids,
         status=TaskStatus.DONE,
         prompt_text="Validate task",
