@@ -6,6 +6,7 @@ from hyperfocus.console.commands._shortcodes import TaskCommands
 from hyperfocus.console.core.group import DefaultCommandGroup
 from hyperfocus.console.exceptions import HyperfocusExit, TaskError
 from hyperfocus.services.session import get_current_session
+from hyperfocus.services.stash_box import StashBox
 from hyperfocus.termui import formatter, printer, prompt
 from hyperfocus.termui.components import SuccessNotification, TasksTable
 
@@ -25,6 +26,7 @@ def stash() -> None:
 def push(task_ids: tuple[int, ...] | None) -> None:
     session = get_current_session()
     task_cmd = TaskCommands(session)
+    stash_box = StashBox(session.daily_tracker)
 
     if not task_ids:
         task_id = task_cmd.pick_task(prompt_text="Stash task")
@@ -35,7 +37,7 @@ def push(task_ids: tuple[int, ...] | None) -> None:
         if not task:
             raise TaskError(f"Task {task_id} does not exist.")
 
-        session.stash_box.add(task)
+        stash_box.add(task)
 
         printer.echo(
             SuccessNotification(
@@ -53,9 +55,10 @@ def push(task_ids: tuple[int, ...] | None) -> None:
 )
 def pop(task_ids: tuple[int, ...] | None) -> None:
     session = get_current_session()
+    stash_box = StashBox(session.daily_tracker)
 
     if not task_ids:
-        stashed_tasks = session.stash_box.get_tasks()
+        stashed_tasks = stash_box.get_tasks()
         if not stashed_tasks:
             printer.echo("No tasks in stash box...")
             raise HyperfocusExit()
@@ -67,7 +70,7 @@ def pop(task_ids: tuple[int, ...] | None) -> None:
 
     for i, task_id in enumerate(task_ids):
         # Decrease task_id because pop remove tasks from task from stash box
-        task = session.stash_box.pop(task_id - i)
+        task = stash_box.pop(task_id - i)
 
         printer.echo(
             SuccessNotification(
@@ -79,8 +82,9 @@ def pop(task_ids: tuple[int, ...] | None) -> None:
 @stash.command(help="List stashed task")
 def list() -> None:
     session = get_current_session()
+    stash_box = StashBox(session.daily_tracker)
 
-    stashed_tasks = session.stash_box.get_tasks()
+    stashed_tasks = stash_box.get_tasks()
 
     if not stashed_tasks:
         printer.echo("No tasks in stash box...")
@@ -92,8 +96,9 @@ def list() -> None:
 @stash.command(help="Clear stashed task")
 def clear() -> None:
     session = get_current_session()
+    stash_box = StashBox(session.daily_tracker)
 
-    session.stash_box.clear()
+    stash_box.clear()
 
     printer.echo(SuccessNotification("Stash box cleared."))
 
@@ -101,7 +106,8 @@ def clear() -> None:
 @stash.command(help="Pop all tasks in stash box")
 def apply() -> None:
     session = get_current_session()
+    stash_box = StashBox(session.daily_tracker)
 
-    session.stash_box.apply()
+    stash_box.apply()
 
     printer.echo(SuccessNotification("All tasks in stash box added for today."))

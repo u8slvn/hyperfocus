@@ -8,7 +8,6 @@ from hyperfocus.config.config import Config
 from hyperfocus.database import database
 from hyperfocus.services.daily_tracker import DailyTracker
 from hyperfocus.services.exceptions import SessionError
-from hyperfocus.services.stash_box import StashBox
 
 
 class Session:
@@ -25,7 +24,6 @@ class Session:
     def __init__(self, config: Config, daily_tracker: DailyTracker) -> None:
         self._config = config
         self._daily_tracker = daily_tracker
-        self._stash_box: StashBox | None = None
 
     @classmethod
     def create(cls) -> Session:
@@ -52,13 +50,6 @@ class Session:
     @property
     def daily_tracker(self) -> DailyTracker:
         return self._daily_tracker
-
-    @property
-    def stash_box(self) -> StashBox:
-        if self._stash_box is None:
-            self._stash_box = StashBox(self._daily_tracker)
-
-        return self._stash_box
 
     def bind_context(self, ctx: click.Context) -> None:
         """
