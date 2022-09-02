@@ -6,7 +6,7 @@ import click
 
 from hyperfocus.console.exceptions import HyperfocusExit, TaskError
 from hyperfocus.database.models import TaskStatus
-from hyperfocus.termui import formatter, printer, prompt
+from hyperfocus.termui import formatter, printer, prompt, style
 from hyperfocus.termui.components import (
     SuccessNotification,
     TasksTable,
@@ -16,10 +16,11 @@ from hyperfocus.termui.components import (
 
 if TYPE_CHECKING:
     from hyperfocus.database.models import Task
+    from hyperfocus.services.daily_tracker import DailyTracker
     from hyperfocus.services.session import Session
 
 
-class TaskHelper:
+class TaskCommands:
     def __init__(self, session: Session) -> None:
         self.session = session
 
@@ -69,3 +70,45 @@ class TaskHelper:
                     f"{formatter.task(task=task, show_prefix=True)} {text_suffix}."
                 )
             )
+
+
+class TasksReviewer:
+    def __init__(self, session: Session) -> None:
+        self.session = session
+
+    @staticmethod
+    def _get_unfinished_task(previous_day: DailyTracker):
+        unfinished_tasks = []
+        if previous_day and not previous_day.is_locked():
+            finished_status = [TaskStatus.DELETED, TaskStatus.DONE]
+            unfinished_tasks = previous_day.get_tasks(exclude=finished_status)
+
+        return unfinished_tasks
+
+    def show_review_reminder(self):
+        previous_day = self.session.daily_tracker.get_previous_day()
+        unfinished_tasks = self._get_unfinished_task(previous_day)
+
+        if len(unfinished_tasks) > 0 and previous_day:
+            printer.banner(
+                f"You have {len(unfinished_tasks)} unfinished task(s) from "
+                f"{formatter.date(date=previous_day.date)}, run 'hyf' "
+                f"to review."
+            )
+
+    def review_tasks(self):
+        previous_day = self.session.daily_tracker.get_previous_day()
+        unfinished_tasks = self._get_unfinished_task(previous_day)
+
+        if len(unfinished_tasks) > 0 and previous_day:
+            if prompt.confirm(
+                f"Review [{style.INFO}]{len(unfinished_tasks)}[/] unfinished task(s) "
+                f"from {formatter.date(date=previous_day.date)}",
+                default=True,
+            ):
+                for task in unfinished_tasks:
+                    if prompt.confirm(f'Continue "[{style.INFO}]{task.title}[/]"'):
+                        self.session.daily_tracker.copy_task(task)
+
+        if previous_day:
+            previous_day.locked()

@@ -5,11 +5,11 @@ import sys
 import click
 
 from hyperfocus import __app_name__, __version__
+from hyperfocus.console.commands._shortcodes import TasksReviewer
 from hyperfocus.console.commands.status import status
 from hyperfocus.console.core.decorators import hyperfocus
-from hyperfocus.database.models import TaskStatus
 from hyperfocus.services.session import Session
-from hyperfocus.termui import formatter, printer, prompt, style
+from hyperfocus.termui import printer
 from hyperfocus.termui.components import NewDay
 
 
@@ -28,33 +28,12 @@ def hyf(ctx: click.Context) -> None:
     if session.daily_tracker.is_a_new_day():
         printer.echo(NewDay(session.date))
 
-    previous_day = session.daily_tracker.get_previous_day()
-
-    unfinished_tasks = []
-    if previous_day and not previous_day.is_locked():
-        finished_status = [TaskStatus.DELETED, TaskStatus.DONE]
-        unfinished_tasks = previous_day.get_tasks(exclude=finished_status)
+    tasks_reviewer = TasksReviewer(session)
 
     if ctx.invoked_subcommand is not None:
-        if len(unfinished_tasks) > 0 and previous_day:
-            printer.banner(
-                f"You have {len(unfinished_tasks)} unfinished task(s) from "
-                f"{formatter.date(date=previous_day.date)}, run 'hyf' "
-                f"to review."
-            )
+        tasks_reviewer.show_review_reminder()
         return
 
-    if len(unfinished_tasks) > 0 and previous_day:
-        if prompt.confirm(
-            f"Review [{style.INFO}]{len(unfinished_tasks)}[/] unfinished task(s) "
-            f"from {formatter.date(date=previous_day.date)}",
-            default=True,
-        ):
-            for task in unfinished_tasks:
-                if prompt.confirm(f'Continue "[{style.INFO}]{task.title}[/]"'):
-                    session.daily_tracker.copy_task(task)
-
-    if previous_day:
-        previous_day.locked()
+    tasks_reviewer.review_tasks()
 
     ctx.invoke(status)
