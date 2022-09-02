@@ -60,7 +60,7 @@ def test_session_create(mocker):
 
     database.connect.assert_called_once()
     daily_tracker.from_date.assert_called_once_with(datetime.datetime(2022, 1, 1))
-    assert session._config == config
+    assert session.config == config
     assert session.date == mocker.sentinel.date
 
 
