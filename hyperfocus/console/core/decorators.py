@@ -8,5 +8,8 @@ from hyperfocus.console.core.group import HyperFocus
 
 
 def hyperfocus(**kwargs: Any) -> HyperFocus:
-    cli = click.group(cls=HyperFocus, **kwargs)
+    context_settings = {
+        "help_option_names": ["-h", "--help"],
+    }
+    cli = click.group(cls=HyperFocus, context_settings=context_settings, **kwargs)
     return cast(HyperFocus, cli)
