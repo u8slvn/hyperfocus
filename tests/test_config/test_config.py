@@ -70,7 +70,7 @@ def test_update_config_options(mocker, fixtures_dir, test_dir):
     config = Config.load(config_path, reload=True)
 
     config["core.database"] = str(test_dir / "new_config.ini")
-    config.update_option("alias.st", "test")
+    config["alias.st"] = "test"
 
     expected_config = {
         "core": {
@@ -105,7 +105,7 @@ def test_get_config_options(fixtures_dir):
     config = Config.load(config_path, reload=True)
 
     database = config["core.database"]
-    alias_st = config.get_option("alias.st")
+    alias_st = config["alias.st"]
 
     assert database == "/test/database.sqlite"
     assert alias_st == "status"
@@ -131,7 +131,7 @@ def test_delete_config_options(fixtures_dir):
     config_path = fixtures_dir / "config.ini"
     config = Config.load(config_path, reload=True)
 
-    config.delete_option("alias.st")
+    del config["alias.st"]
 
     expected_config = {
         "core": {

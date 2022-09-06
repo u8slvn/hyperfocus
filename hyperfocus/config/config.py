@@ -80,7 +80,7 @@ class Config:
 
         return _loaded_config
 
-    def save(self):
+    def save(self) -> None:
         try:
             self._config_file.write(self._config)
         except ConfigFileError as error:
@@ -95,28 +95,19 @@ class Config:
             options.update({f"{section}.{i}": v for i, v in settings.items()})
         return options
 
-    def get_option(self, option: str) -> str:
+    def __getitem__(self, option: str) -> str:
         with self.secured_option(option=option) as opt:
             return self._config[opt.section][opt.key]
 
-    def update_option(self, option: str, value: str) -> None:
+    def __setitem__(self, option: str, value: str) -> None:
         with self.secured_option(option=option) as opt:
             self._policies.check_input(section=opt.section, key=opt.key, value=value)
             self._config[opt.section][opt.key] = value
 
-    def delete_option(self, option: str) -> None:
+    def __delitem__(self, option: str) -> None:
         with self.secured_option(option=option) as opt:
             self._policies.check_deletion(section=opt.section, key=opt.key)
             del self._config[opt.section][opt.key]
-
-    def __getitem__(self, option: str) -> str:
-        return self.get_option(option=option)
-
-    def __setitem__(self, option: str, value: str) -> None:
-        self.update_option(option=option, value=value)
-
-    def __delitem__(self, option: str) -> None:
-        self.delete_option(option=option)
 
     def __contains__(self, option: str) -> bool:
         return option in self.options
