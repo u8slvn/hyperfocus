@@ -73,6 +73,14 @@ def test_alias_policy_fails_with_non_existing_command(mocker):
     alias_policy = AliasPolicy("bar")
 
     with pytest.raises(
-        ConfigError, match="Alias must referred to an existing command name."
+        ConfigError, match="Alias must referred to an existing command."
     ):
         alias_policy.check_input("foobar")
+
+
+def test_alias_policy_fails_overriding_an_existing_command(mocker):
+    mocker.patch("hyperfocus.console.cli.hyf.get_commands", return_value=["foo", "bar"])
+    alias_policy = AliasPolicy("foo")
+
+    with pytest.raises(ConfigError, match="Alias cannot override an existing command."):
+        alias_policy.check_input("bar")
