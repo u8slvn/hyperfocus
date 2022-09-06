@@ -7,7 +7,7 @@ import click
 from hyperfocus import __app_name__, __version__
 from hyperfocus.console.commands._shortcodes import TasksReviewer
 from hyperfocus.console.commands.status import status
-from hyperfocus.console.core.decorators import hyperfocus
+from hyperfocus.console.core.hyperfocus import hyperfocus
 from hyperfocus.services.session import Session
 from hyperfocus.termui import printer
 from hyperfocus.termui.components import NewDay
