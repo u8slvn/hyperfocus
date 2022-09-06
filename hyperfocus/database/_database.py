@@ -4,7 +4,11 @@ from typing import Type
 
 from peewee import Model, SqliteDatabase
 
+from hyperfocus.database.error_handler import db_error_handler
+from hyperfocus.utils import wrap_methods
 
+
+@wrap_methods(db_error_handler, ["connect", "init_models", "close"])
 class Database:
     def __init__(self) -> None:
         self._engine = SqliteDatabase(None)
