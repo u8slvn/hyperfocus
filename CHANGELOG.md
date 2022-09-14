@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.0.0-alpha.2 (2022-09-14)
+
+### Added:
+
+* Add `-h` option for help.
+* Add `log` command to show task log history.
+
+### Changed:
+
+* Improved global architecture.
+
+### Fixed:
+
+* Handle database connexion errors.
+* Alias cannot overwrite other commands.
+
 ## 1.0.0-alpha.1 (2022-08-16)
 
 ### Added:
