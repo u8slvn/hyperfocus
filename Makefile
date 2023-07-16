@@ -1,4 +1,4 @@
-.PHONY: help tests quality coverage coverage-html
+.PHONY: help tests tests-tox tests-coverage lint coverage coverage-html ci
 
 .DEFAULT_GOAL := help
 
@@ -8,6 +8,9 @@ help: ## List all the command helps.
 tests: ## Run tests.
 	@poetry run pytest tests/ -x -vv
 	@poetry run mypy hyperfocus
+
+tests-tox: ## Run tests on all python versions.
+	@poetry run tox
 
 tests-coverage: coverage ## Run tests.
 	@poetry run mypy hyperfocus
