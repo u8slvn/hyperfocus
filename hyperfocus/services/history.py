@@ -2,14 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Generator
 
-from hyperfocus.database.models import WorkingDay
+from hyperfocus.database.models import Task, WorkingDay
 from hyperfocus.services.daily_tracker import DailyTracker
 
 
 if TYPE_CHECKING:
     import datetime
-
-    from hyperfocus.database.models import Task
 
 
 class History:
@@ -33,9 +31,12 @@ class History:
 
         for previous_day in previous_days:
             daily_tracker = DailyTracker(previous_day)
-            yield False, previous_day.date
-
             tasks = daily_tracker.get_tasks()
+
+            if not tasks:
+                continue
+
+            yield False, previous_day.date
 
             for i, task in enumerate(tasks):
                 last_element = i == len(tasks) - 1
