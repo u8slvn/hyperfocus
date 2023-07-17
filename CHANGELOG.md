@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0-beta.0 (2023-07-17)
+
+### Fixed:
+
+* Log command must not show empty working days.
+
 ## 1.0.0-alpha.2 (2022-09-14)
 
 ### Added:
