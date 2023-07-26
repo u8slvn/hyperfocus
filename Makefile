@@ -12,7 +12,8 @@ tests: ## Run tests.
 tests-tox: ## Run tests on all python versions.
 	@poetry run tox
 
-tests-coverage: coverage ## Run tests.
+tests-coverage: coverage ## Run tests with coverage.
+	@poetry run pytest tests/ --cov=hyperfocus
 	@poetry run mypy hyperfocus
 
 lint: ## Check linter.

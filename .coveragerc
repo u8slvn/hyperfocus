@@ -1,6 +1,5 @@
 [report]
 exclude_lines =
     raise NotImplementedError
-    pass
     if TYPE_CHECKING:
     @overload

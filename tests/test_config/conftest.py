@@ -5,4 +5,4 @@ import pytest
 
 @pytest.fixture
 def dummy_dir():
-    return Path("/dummy")
+    return Path("/:dummy")

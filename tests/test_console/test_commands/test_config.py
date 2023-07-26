@@ -25,7 +25,12 @@ def test_config(cli):
     result = runner.invoke(cli, ["config", "--list"])
 
     assert result.exit_code == 0
-    assert pytest_regex("core.database = (.*)\n" "alias.st = status\n") == result.output
+    assert (
+        pytest_regex(
+            "core.database = (.*)\ncore.force_color = (.*)\nalias.st = status\n"
+        )
+        == result.output
+    )
 
     result = runner.invoke(cli, ["config", "alias.st", "--unset"])
 

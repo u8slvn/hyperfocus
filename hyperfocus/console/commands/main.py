@@ -25,6 +25,9 @@ def hyf(ctx: click.Context) -> None:
     session = Session.create()
     session.bind_context(ctx=ctx)
 
+    if session.config["core.force_color"] is True:
+        click.utils.auto_wrap_for_ansi = None
+
     if session.daily_tracker.is_a_new_day():
         printer.echo(NewDay(session.date))
 

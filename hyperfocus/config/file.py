@@ -1,17 +1,20 @@
 from __future__ import annotations
 
+from collections import defaultdict
 from configparser import ConfigParser
 from pathlib import Path
+from typing import Any
 
 from hyperfocus.config.exceptions import ConfigFileError
 
 
 class ConfigFile:
-    def __init__(self, path: str | Path) -> None:
+    def __init__(self, path: str | Path, model: dict[str, dict[str, Any]]) -> None:
         if isinstance(path, str):
             path = Path(path)
         self._path = path
         self._parser = ConfigParser()
+        self._model = model
 
     @property
     def path(self) -> str:
@@ -22,7 +25,21 @@ class ConfigFile:
 
     def read(self) -> dict[str, dict]:
         self._parser.read(self._path)
-        return {s: dict(self._parser.items(s)) for s in self._parser.sections()}
+        config: dict[str, dict[str, Any]] = defaultdict(dict)
+
+        for section in self._parser.sections():
+            for option in self._parser.options(section=section):
+                value_type = type(self._model.get(section, {}).get(option, ""))
+
+                value: Any
+                if value_type is bool:
+                    value = self._parser.getboolean(section=section, option=option)
+                else:
+                    value = self._parser.get(section=section, option=option)
+
+                config[section][option] = value
+
+        return config
 
     def write(self, config: dict[str, dict]) -> None:
         for section, items in config.items():

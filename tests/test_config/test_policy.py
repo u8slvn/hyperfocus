@@ -54,6 +54,20 @@ def test_core_policy_fails_with_bad_db_path(dummy_dir):
         core_policy.check_input(str(db_path))
 
 
+def test_core_policy_fails_with_bad_force_color_value(dummy_dir):
+    force_color = "TrVe"
+    core_policy = CorePolicy("force_color")
+
+    with pytest.raises(
+        ConfigError,
+        match=(
+            "Config option core.force_color must be one of the "
+            "following value: True, true, 1, False, false, 0."
+        ),
+    ):
+        core_policy.check_input(force_color)
+
+
 def test_core_policy_fails_with_unknown_option():
     core_policy = CorePolicy("foo")
 

@@ -10,10 +10,16 @@ from hyperfocus.database._database import Database
 from hyperfocus.database.models import MODELS
 from hyperfocus.services.daily_tracker import DailyTracker
 from hyperfocus.services.session import Session
+from hyperfocus.termui import printer
 
 
 TEST_DIR = Path(__file__).parent.resolve()
 FIXTURES_DIR = TEST_DIR / "fixtures"
+
+
+@pytest.fixture(autouse=True)
+def deactivate_color(monkeypatch):
+    monkeypatch.setattr(printer, "COLOR", False)
 
 
 @pytest.fixture

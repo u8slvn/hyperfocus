@@ -9,10 +9,13 @@ from hyperfocus.termui.components import UIComponent
 from hyperfocus.termui.markup import markup
 
 
+COLOR = True
+
+
 def echo(text: str | UIComponent, nl: bool = True) -> None:
     if isinstance(text, UIComponent):
         text = cast(str, text.resolve())
-    click.echo(markup.resolve(text), nl=nl)
+    click.echo(markup.resolve(text), nl=nl, color=COLOR)
 
 
 def pager_echo(text: Generator) -> None:

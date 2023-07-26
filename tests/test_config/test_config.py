@@ -5,7 +5,7 @@ from hyperfocus.config.exceptions import ConfigError
 from tests.conftest import pytest_regex
 
 
-def test_config_make_directory(monkeypatch, test_dir):
+def test_config_make_directory(test_dir):
     config_dir = test_dir / "test_mkdir"
     Config._dir = config_dir
     Config.make_directory()
@@ -13,7 +13,7 @@ def test_config_make_directory(monkeypatch, test_dir):
     assert config_dir.exists()
 
 
-def test_config_make_directory_fails(monkeypatch, dummy_dir):
+def test_config_make_directory_fails(dummy_dir):
     config_dir = dummy_dir / "test_mkdir"
     Config._dir = config_dir
 
@@ -75,6 +75,7 @@ def test_update_config_options(mocker, fixtures_dir, test_dir):
     expected_config = {
         "core": {
             "database": str(test_dir / "new_config.ini"),
+            "force_color": True,
         },
         "alias": {
             "st": "test",
@@ -136,6 +137,7 @@ def test_delete_config_options(fixtures_dir):
     expected_config = {
         "core": {
             "database": "/test/database.sqlite",
+            "force_color": True,
         },
         "alias": {
             "del": "delete",

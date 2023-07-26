@@ -17,9 +17,10 @@ _loaded_config: Config | None = None
 
 
 class Config:
-    default_config: dict[str, dict] = {
+    default_config: dict[str, dict[str, Any]] = {
         "core": {
             "database": "",
+            "force_color": False,
         },
         "alias": {},
     }
@@ -35,7 +36,7 @@ class Config:
     def __init__(self) -> None:
         self._config = deepcopy(self.default_config)
         config_path = self._build_config_path()
-        self._config_file: ConfigFile = ConfigFile(config_path)
+        self._config_file = ConfigFile(config_path, model=self.default_config)
 
     @classmethod
     def _build_config_path(cls) -> Path:
@@ -68,7 +69,7 @@ class Config:
 
         if _loaded_config is None or reload:
             config_path = config_path or cls._build_config_path()
-            config_file = ConfigFile(config_path)
+            config_file = ConfigFile(config_path, model=cls.default_config)
             if not config_file.exists():
                 raise ConfigError(
                     "Config does not exist, please run init command first."
@@ -115,7 +116,7 @@ class Config:
     @staticmethod
     @contextlib.contextmanager
     def secured_option(option: str) -> Generator:
-        match = re.match(r"^(?P<section>[A-Za-z0-9]+).(?P<key>[A-Za-z0-9]+)$", option)
+        match = re.match(r"^(?P<section>[A-Za-z0-9]+).(?P<key>\w+)$", option)
         if match is None:
             raise ConfigError(f"Bad format config option '{option}'.")
 
