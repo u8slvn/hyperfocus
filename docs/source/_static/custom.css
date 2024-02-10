@@ -1,0 +1,24 @@
+@import url("alabaster.css");
+
+.hide-header h1:first-child {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+div.sphinxsidebar #searchbox input[type="text"] {
+    outline: none;
+}
+
+div.sphinxsidebar .project-links {
+    margin-top: 10px;
+}
+
+a:visited {
+    color: #004B6B;
+}
