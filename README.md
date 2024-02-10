@@ -1,6 +1,6 @@
 <p align="center">
     <a href="#readme">
-        <img alt="HyperFocus logo" src="https://raw.githubusercontent.com/u8slvn/hyperfocus/main/_statics/logo.png">
+        <img alt="HyperFocus logo" src="https://raw.githubusercontent.com/u8slvn/hyperfocus/main/docs/source/_static/logo.png">
     </a>
 </p>
 <p align="center">
