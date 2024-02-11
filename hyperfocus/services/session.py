@@ -15,7 +15,7 @@ class Session:
     Manage the session of the whole CLI.
 
     A new session is created each time a command is called. It primarily handles
-    database connexion and daily tracker service (which is the main service of
+    database connection and daily tracker service (which is the main service of
     the CLI).
     """
 
@@ -60,7 +60,7 @@ class Session:
 
     def teardown(self) -> None:
         """
-        Close the database connexion at Click teardown.
+        Close the database connection at Click teardown.
         """
         self._database.close()
 

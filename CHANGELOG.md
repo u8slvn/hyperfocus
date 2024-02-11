@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed:
 
-* Handle database connexion errors.
+* Handle database connection errors.
 * Alias cannot overwrite other commands.
 
 ## Version 1.0.0-alpha.1 (2022-08-16)
