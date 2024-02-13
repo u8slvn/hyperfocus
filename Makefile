@@ -1,28 +1,38 @@
-.PHONY: help tests tests-tox tests-coverage lint coverage coverage-html ci
-
-.DEFAULT_GOAL := help
-
+.PHONY: help
 help: ## List all the command helps.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-tests: ## Run tests.
-	@poetry run pytest tests/ -x -vv
-	@poetry run mypy hyperfocus
+.PHONY: init-pre-commit
+init-pre-commit: ## Init pre-commit.
+	@pre-commit install
+	@pre-commit install --hook-type commit-msg
 
-tests-tox: ## Run tests on all python versions.
-	@poetry run tox
+.PHONY: test
+test: ## Run tests.
+	@pytest -vv
+	@mypy
 
-tests-coverage: coverage ## Run tests with coverage.
-	@poetry run pytest tests/ --cov=hyperfocus
-	@poetry run mypy hyperfocus
+.PHONY: tox
+tox: ## Run tests on all python versions.
+	@tox
 
+.PHONY: lint
 lint: ## Check linter.
-	@poetry run pre-commit run --all-files
+	@pre-commit run --all-files
 
-coverage: ## Run tests with coverage.
-	@poetry run pytest tests/ --cov=hyperfocus
+.PHONY: coverage-html
+coverage-html: ## Run pytest with html output coverage.
+	@pytest --cov-report html
 
-coverage-html: ## Run tests with html output coverage.
-	@poetry run pytest tests/ --cov=hyperfocus --cov-report html
+.PHONY: ci
+ci: lint test ## Run CI.
 
-ci: lint tests-coverage ## Run CI.
+.PHONY: bump-version
+bump-version: check-version ## Bump version, define target version with "VERSION=*.*.*".
+	@sed -i "s/^\(version = \"\)\(.\)*\"/\1${VERSION}\"/" pyproject.toml
+	@echo "Version replaced by ${VERSION} in 'pyproject.toml'"
+
+check-version:
+ifndef VERSION
+	$(error VERSION is undefined)
+endif

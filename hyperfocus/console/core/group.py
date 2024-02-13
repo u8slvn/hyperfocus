@@ -39,14 +39,12 @@ class DefaultCommandGroup(Group):
         super().__init__(*args, **kwargs)
 
     @overload
-    def command(self, __func: Callable[..., Any]) -> Command:
-        ...
+    def command(self, __func: Callable[..., Any]) -> Command: ...
 
     @overload
     def command(
         self, *args: Any, **kwargs: Any
-    ) -> Callable[[Callable[..., Any]], Command]:
-        ...
+    ) -> Callable[[Callable[..., Any]], Command]: ...
 
     def command(
         self, *args: Any, **kwargs: Any

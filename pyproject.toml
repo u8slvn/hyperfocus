@@ -49,11 +49,25 @@ hyf = "hyperfocus.console.cli:run"
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.isort]
-profile = "black"
-combine_as_imports = true
-lines_after_imports = 2
-src_paths = ["hyperfocus", "tests"]
+[tool.black]
+line_length = 88
+
+[tool.ruff]
+fix = true
+line-length = 88
+extend-select = [
+    "I",   # isort
+    "N",   # pep8-naming
+]
+
+[tool.ruff.isort]
+force-single-line = true
+lines-between-types = 1
+lines-after-imports = 2
+required-imports = [
+    "from __future__ import annotations",
+]
+
 
 [[tool.mypy.overrides]]
 module=["peewee", "pyperclip"]
@@ -63,4 +77,9 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 markers = [
     "functional: marks as functional tests (deselect with '-m \"not functional\"')",
+]
+testpaths = ["tests"]
+addopts = [
+    "--cov=hyperfocus/",
+    "--import-mode=importlib",
 ]

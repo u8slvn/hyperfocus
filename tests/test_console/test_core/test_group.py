@@ -23,8 +23,7 @@ def test_group_command_handle_alias(mocker, hyf_group):
 
 
 @click.group(cls=DefaultCommandGroup)
-def default_command_group():
-    ...
+def default_command_group(): ...
 
 
 @default_command_group.command(default_command=True)

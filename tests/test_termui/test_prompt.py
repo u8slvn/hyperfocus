@@ -8,8 +8,7 @@ runner = CliRunner()
 
 
 @click.group()
-def prompt_cli():
-    ...
+def prompt_cli(): ...
 
 
 @prompt_cli.command()

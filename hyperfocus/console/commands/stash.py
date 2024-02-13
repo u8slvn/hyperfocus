@@ -12,8 +12,7 @@ from hyperfocus.termui.components import SuccessNotification, TasksTable
 
 
 @click.group(cls=DefaultCommandGroup, help="Task stash box")
-def stash() -> None:
-    ...
+def stash() -> None: ...
 
 
 @stash.command(default_command=True, help="Stash task")
