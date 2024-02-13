@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import click.exceptions
 import pytest
 
 from hyperfocus.console.core.error_handler import hyf_error_handler
 from hyperfocus.console.exceptions import HyperfocusExit
-from hyperfocus.exceptions import HyperfocusException
+from hyperfocus.exceptions import HyperfocusError
 
 
 def test_hyf_error_handler_catch_hyperfocus_exec(mocker):
@@ -11,7 +13,7 @@ def test_hyf_error_handler_catch_hyperfocus_exec(mocker):
 
     @hyf_error_handler
     def foobar():
-        raise HyperfocusException("Test exception.")
+        raise HyperfocusError("Test exception.")
 
     with pytest.raises(HyperfocusExit):
         foobar()

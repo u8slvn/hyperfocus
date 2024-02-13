@@ -1,14 +1,19 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Callable, overload
+from typing import TYPE_CHECKING
+from typing import Any
+from typing import Callable
+from typing import overload
 
-from click import Group, UsageError
+from click import Group
+from click import UsageError
 
 from hyperfocus.config.config import Config
 
 
 if TYPE_CHECKING:
-    from click import Command, Context
+    from click import Command
+    from click import Context
 
 
 class AliasGroup(Group):

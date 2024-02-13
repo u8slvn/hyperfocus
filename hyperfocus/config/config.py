@@ -2,14 +2,19 @@ from __future__ import annotations
 
 import contextlib
 import re
+
 from copy import deepcopy
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Any, Generator
+from typing import Any
+from typing import Generator
 
-from hyperfocus.config.exceptions import ConfigError, ConfigFileError
+from hyperfocus.config.exceptions import ConfigError
+from hyperfocus.config.exceptions import ConfigFileError
 from hyperfocus.config.file import ConfigFile
-from hyperfocus.config.policy import AliasPolicy, ConfigPolicies, CorePolicy
+from hyperfocus.config.policy import AliasPolicy
+from hyperfocus.config.policy import ConfigPolicies
+from hyperfocus.config.policy import CorePolicy
 from hyperfocus.locations import CONFIG_DIR
 
 

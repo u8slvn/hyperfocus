@@ -68,6 +68,13 @@ required-imports = [
     "from __future__ import annotations",
 ]
 
+[tool.mypy]
+files = "hyperfocus/"
+mypy_path = "hyperfocus/"
+namespace_packages = true
+show_error_codes = true
+ignore_missing_imports = true
+#strict = true
 
 [[tool.mypy.overrides]]
 module=["peewee", "pyperclip"]

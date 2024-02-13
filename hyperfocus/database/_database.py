@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from typing import Type
 
-from peewee import Model, SqliteDatabase
+from peewee import Model
+from peewee import SqliteDatabase
 
 from hyperfocus.database.error_handler import db_error_handler
 from hyperfocus.utils import wrap_methods

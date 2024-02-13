@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 NEW_DAY = "✨"
 DETAILS = "■"
 NO_DETAILS = "□"

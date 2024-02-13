@@ -4,11 +4,15 @@ import click
 
 from hyperfocus.console.commands._shortcodes import TaskCommands
 from hyperfocus.console.core.group import DefaultCommandGroup
-from hyperfocus.console.exceptions import HyperfocusExit, TaskError
+from hyperfocus.console.exceptions import HyperfocusExit
+from hyperfocus.console.exceptions import TaskError
 from hyperfocus.services.session import get_current_session
 from hyperfocus.services.stash_box import StashBox
-from hyperfocus.termui import formatter, printer, prompt
-from hyperfocus.termui.components import SuccessNotification, TasksTable
+from hyperfocus.termui import formatter
+from hyperfocus.termui import printer
+from hyperfocus.termui import prompt
+from hyperfocus.termui.components import SuccessNotification
+from hyperfocus.termui.components import TasksTable
 
 
 @click.group(cls=DefaultCommandGroup, help="Task stash box")

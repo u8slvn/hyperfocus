@@ -1,10 +1,15 @@
+from __future__ import annotations
+
 import datetime
 
 import pytest
 
-from hyperfocus.database.models import Task, TaskStatus
+from hyperfocus.database.models import Task
+from hyperfocus.database.models import TaskStatus
 from hyperfocus.services.history import History
-from hyperfocus.termui import formatter, icons, style
+from hyperfocus.termui import formatter
+from hyperfocus.termui import icons
+from hyperfocus.termui import style
 
 
 def test_formatter_date():

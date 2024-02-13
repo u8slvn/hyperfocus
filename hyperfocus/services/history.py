@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING
+from typing import Generator
 
-from hyperfocus.database.models import Task, WorkingDay
+from hyperfocus.database.models import Task
+from hyperfocus.database.models import WorkingDay
 from hyperfocus.services.daily_tracker import DailyTracker
 
 

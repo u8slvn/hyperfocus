@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from hyperfocus.database.models import Task, TaskStatus
+from hyperfocus.database.models import Task
+from hyperfocus.database.models import TaskStatus
 from hyperfocus.services.daily_tracker import DailyTracker
 from hyperfocus.services.exceptions import StashBoxError
 

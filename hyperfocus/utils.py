@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, Callable
+from typing import Any
+from typing import Callable
 
 
 def wrap_methods(decorator: Callable, methods: list[str]) -> Callable:

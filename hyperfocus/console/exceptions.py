@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import click
 
-from hyperfocus.exceptions import HyperfocusException
+from hyperfocus.exceptions import HyperfocusError
 
 
-class TaskError(HyperfocusException):
+class TaskError(HyperfocusError):
     pass
 
 

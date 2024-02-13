@@ -1,7 +1,11 @@
+from __future__ import annotations
+
 import click
 
 from hyperfocus.services.session import get_current_session
-from hyperfocus.termui import formatter, printer, prompt
+from hyperfocus.termui import formatter
+from hyperfocus.termui import printer
+from hyperfocus.termui import prompt
 from hyperfocus.termui.components import SuccessNotification
 
 

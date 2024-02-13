@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 DEFAULT = "bright_white"
 INFO = "steel_blue1"
 SUCCESS = "chartreuse3"

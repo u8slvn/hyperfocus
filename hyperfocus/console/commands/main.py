@@ -4,7 +4,8 @@ import sys
 
 import click
 
-from hyperfocus import __app_name__, __version__
+from hyperfocus import __app_name__
+from hyperfocus import __version__
 from hyperfocus.console.commands._shortcodes import TasksReviewer
 from hyperfocus.console.commands.status import status
 from hyperfocus.console.core.hyperfocus import hyperfocus

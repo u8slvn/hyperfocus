@@ -1,17 +1,19 @@
 from __future__ import annotations
 
 import functools
-from typing import Any, Callable
+
+from typing import Any
+from typing import Callable
 
 import click
 
 from hyperfocus.console.exceptions import HyperfocusExit
-from hyperfocus.exceptions import HyperfocusException
+from hyperfocus.exceptions import HyperfocusError
 from hyperfocus.termui import printer
 from hyperfocus.termui.components import ErrorNotification
 
 
-class HyfClickExceptionAdapter(HyperfocusException):
+class HyfClickAdapterError(HyperfocusError):
     def __init__(
         self, message: str, exit_code: int, msg_prefix: str | None = None
     ) -> None:
@@ -23,7 +25,7 @@ class HyfClickExceptionAdapter(HyperfocusException):
     @classmethod
     def adapt_from(
         cls, exception: click.exceptions.ClickException
-    ) -> HyfClickExceptionAdapter:
+    ) -> HyfClickAdapterError:
         return cls(
             message=exception.format_message(),
             exit_code=exception.exit_code,
@@ -31,7 +33,7 @@ class HyfClickExceptionAdapter(HyperfocusException):
 
     @adapt_from.register(click.exceptions.UsageError)
     @classmethod
-    def _(cls, exception: click.exceptions.UsageError) -> HyfClickExceptionAdapter:
+    def _(cls, exception: click.exceptions.UsageError) -> HyfClickAdapterError:
         hint = ""
         usage = ""
         if (
@@ -56,11 +58,11 @@ def hyf_error_handler(func: Callable) -> Callable:
     def wrapper(*args, **kwargs) -> Any:
         try:
             return func(*args, **kwargs)
-        except HyperfocusException as error:
+        except HyperfocusError as error:
             printer.echo(ErrorNotification(text=error.message))
             raise HyperfocusExit(error.exit_code)
         except click.ClickException as error:
-            hyf_error = HyfClickExceptionAdapter.adapt_from(error)
+            hyf_error = HyfClickAdapterError.adapt_from(error)
             if hyf_error.msg_prefix:
                 printer.echo(hyf_error.msg_prefix)
             printer.echo(ErrorNotification(text=hyf_error.message))

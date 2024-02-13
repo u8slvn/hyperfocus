@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import datetime
 import uuid
-from enum import IntEnum, auto
+
+from enum import IntEnum
+from enum import auto
 
 import peewee
 

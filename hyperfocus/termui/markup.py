@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Match
+
+from typing import Any
+from typing import Match
 
 import click
 

@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 import click
 import pytest
 
 from hyperfocus.console.core.group import AliasGroup
-from hyperfocus.exceptions import HyperfocusException
+from hyperfocus.exceptions import HyperfocusError
 
 
 @pytest.fixture(scope="session")
@@ -11,7 +13,7 @@ def hyf_group():
     @click.pass_context
     def test_cli(ctx):
         if not ctx.invoked_subcommand:
-            raise HyperfocusException("Test group error")
+            raise HyperfocusError("Test group error")
 
     @test_cli.command()
     def alias():

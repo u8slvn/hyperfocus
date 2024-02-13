@@ -4,7 +4,8 @@ import click
 
 from hyperfocus.services.session import get_current_session
 from hyperfocus.termui import printer
-from hyperfocus.termui.components import ProgressBar, TasksTable
+from hyperfocus.termui.components import ProgressBar
+from hyperfocus.termui.components import TasksTable
 
 
 @click.command(help="Show current working day status")

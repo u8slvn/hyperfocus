@@ -1,20 +1,22 @@
+from __future__ import annotations
+
 import datetime
 
 import pytest
 
-from hyperfocus.database.models import Task, TaskStatus
-from hyperfocus.termui import icons, printer
-from hyperfocus.termui.components import (
-    ErrorNotification,
-    InfoNotification,
-    NewDay,
-    Notification,
-    ProgressBar,
-    SuccessNotification,
-    TaskDetails,
-    TasksTable,
-    WarningNotification,
-)
+from hyperfocus.database.models import Task
+from hyperfocus.database.models import TaskStatus
+from hyperfocus.termui import icons
+from hyperfocus.termui import printer
+from hyperfocus.termui.components import ErrorNotification
+from hyperfocus.termui.components import InfoNotification
+from hyperfocus.termui.components import NewDay
+from hyperfocus.termui.components import Notification
+from hyperfocus.termui.components import ProgressBar
+from hyperfocus.termui.components import SuccessNotification
+from hyperfocus.termui.components import TaskDetails
+from hyperfocus.termui.components import TasksTable
+from hyperfocus.termui.components import WarningNotification
 
 
 def test_tasks_table(capsys):

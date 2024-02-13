@@ -1,13 +1,17 @@
+from __future__ import annotations
+
 import datetime
 
 import click
 import pytest
+
 from freezegun import freeze_time
 
 from hyperfocus.config.config import Config
 from hyperfocus.services.daily_tracker import DailyTracker
 from hyperfocus.services.exceptions import SessionError
-from hyperfocus.services.session import Session, get_current_session
+from hyperfocus.services.session import Session
+from hyperfocus.services.session import get_current_session
 
 
 def test_get_current_session(mocker):
@@ -47,7 +51,7 @@ def test_session_create(mocker):
     mocker.patch(
         "hyperfocus.services.session.Config",
         spec=Config,
-        **{"load.return_value": config}
+        **{"load.return_value": config},
     )
     daily_tracker = mocker.patch(
         "hyperfocus.services.session.DailyTracker", spec=DailyTracker

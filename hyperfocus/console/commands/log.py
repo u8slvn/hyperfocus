@@ -4,7 +4,8 @@ import click
 
 from hyperfocus.services.history import History
 from hyperfocus.services.session import get_current_session
-from hyperfocus.termui import formatter, printer
+from hyperfocus.termui import formatter
+from hyperfocus.termui import printer
 
 
 @click.command(help="Show tasks history")

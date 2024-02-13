@@ -1,6 +1,10 @@
+from __future__ import annotations
+
 import datetime
 
-from hyperfocus.database.models import Task, TaskStatus, WorkingDay
+from hyperfocus.database.models import Task
+from hyperfocus.database.models import TaskStatus
+from hyperfocus.database.models import WorkingDay
 from hyperfocus.services.daily_tracker import DailyTracker
 
 

@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from typing import Generator, cast
+from typing import Generator
+from typing import cast
 
 import click
 
-from hyperfocus.termui import formatter, style
+from hyperfocus.termui import formatter
+from hyperfocus.termui import style
 from hyperfocus.termui.components import UIComponent
 from hyperfocus.termui.markup import markup
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from peewee import Model
 
 from hyperfocus.database._database import Database

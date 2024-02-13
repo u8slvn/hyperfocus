@@ -4,7 +4,8 @@ from typing import Any
 
 import click
 
-from hyperfocus.termui import icons, style
+from hyperfocus.termui import icons
+from hyperfocus.termui import style
 from hyperfocus.termui.markup import markup
 
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from hyperfocus.console.commands.add import add
 from hyperfocus.console.commands.config import config
 from hyperfocus.console.commands.copy import copy

@@ -1,12 +1,12 @@
+from __future__ import annotations
+
 import pytest
 
 from hyperfocus.config.exceptions import ConfigError
-from hyperfocus.config.policy import (
-    AliasPolicy,
-    ConfigPolicies,
-    ConfigPolicy,
-    CorePolicy,
-)
+from hyperfocus.config.policy import AliasPolicy
+from hyperfocus.config.policy import ConfigPolicies
+from hyperfocus.config.policy import ConfigPolicy
+from hyperfocus.config.policy import CorePolicy
 
 
 def test_option_policies(mocker):

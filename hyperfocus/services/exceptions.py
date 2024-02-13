@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from hyperfocus.exceptions import HyperfocusException
+from hyperfocus.exceptions import HyperfocusError
 
 
-class SessionError(HyperfocusException):
+class SessionError(HyperfocusError):
     pass
 
 
-class StashBoxError(HyperfocusException):
+class StashBoxError(HyperfocusError):
     pass

@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 import datetime
-from abc import ABC, abstractmethod
+
+from abc import ABC
+from abc import abstractmethod
 from typing import TYPE_CHECKING
 
 from hyperfocus.database.models import TaskStatus
-from hyperfocus.termui import formatter, icons, style
+from hyperfocus.termui import formatter
+from hyperfocus.termui import icons
+from hyperfocus.termui import style
 from hyperfocus.termui.formatter import task_status
 from hyperfocus.termui.markup import markup
 

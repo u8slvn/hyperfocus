@@ -1,10 +1,13 @@
+from __future__ import annotations
+
 import click
 
 from hyperfocus.config.config import Config
 from hyperfocus.database import database
 from hyperfocus.database.models import MODELS
 from hyperfocus.locations import DEFAULT_DB_PATH
-from hyperfocus.termui import printer, prompt
+from hyperfocus.termui import printer
+from hyperfocus.termui import prompt
 from hyperfocus.termui.components import InfoNotification
 
 

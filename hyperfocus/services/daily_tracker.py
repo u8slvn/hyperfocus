@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import datetime
+
 from typing import List
 
-from hyperfocus.database.models import Task, TaskStatus, WorkingDay
+from hyperfocus.database.models import Task
+from hyperfocus.database.models import TaskStatus
+from hyperfocus.database.models import WorkingDay
 
 
 class DailyTracker:

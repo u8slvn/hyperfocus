@@ -5,7 +5,8 @@ import click
 from hyperfocus.console.commands._shortcodes import TaskCommands
 from hyperfocus.database.models import TaskStatus
 from hyperfocus.services.session import get_current_session
-from hyperfocus.termui import formatter, printer
+from hyperfocus.termui import formatter
+from hyperfocus.termui import printer
 from hyperfocus.termui.components import SuccessNotification
 
 

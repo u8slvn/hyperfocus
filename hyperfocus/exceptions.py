@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 
-class HyperfocusException(Exception):
+class HyperfocusError(Exception):
     """Hyperfocus base class exception."""
 
     exit_code = 1

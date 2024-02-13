@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import click
 
-from hyperfocus.console.core.parameters import NotRequired, NotRequiredIf
+from hyperfocus.console.core.parameters import NotRequired
+from hyperfocus.console.core.parameters import NotRequiredIf
 from hyperfocus.services.session import get_current_session
 from hyperfocus.termui import printer
 from hyperfocus.termui.components import SuccessNotification

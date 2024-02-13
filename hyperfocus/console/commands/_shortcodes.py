@@ -4,14 +4,16 @@ from typing import TYPE_CHECKING
 
 import click
 
-from hyperfocus.console.exceptions import HyperfocusExit, TaskError
+from hyperfocus.console.exceptions import HyperfocusExit
+from hyperfocus.console.exceptions import TaskError
 from hyperfocus.database.models import TaskStatus
-from hyperfocus.termui import formatter, printer, prompt, style
-from hyperfocus.termui.components import (
-    SuccessNotification,
-    TasksTable,
-    WarningNotification,
-)
+from hyperfocus.termui import formatter
+from hyperfocus.termui import printer
+from hyperfocus.termui import prompt
+from hyperfocus.termui import style
+from hyperfocus.termui.components import SuccessNotification
+from hyperfocus.termui.components import TasksTable
+from hyperfocus.termui.components import WarningNotification
 
 
 if TYPE_CHECKING:

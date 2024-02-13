@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import datetime
+
 from typing import Generator
 
-from hyperfocus.database.models import Task, TaskStatus
+from hyperfocus.database.models import Task
+from hyperfocus.database.models import TaskStatus
 from hyperfocus.services.history import History
-from hyperfocus.termui import icons, style
+from hyperfocus.termui import icons
+from hyperfocus.termui import style
 
 
 def date(date: datetime.date) -> str:
