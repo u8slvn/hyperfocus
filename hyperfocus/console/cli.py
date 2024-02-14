@@ -14,6 +14,8 @@ from hyperfocus.console.commands.stash import stash
 from hyperfocus.console.commands.status import status
 
 
+__all__ = ["hyf"]
+
 hyf.add_commands(
     [
         add,

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Any
+from typing import Mapping
 
 import click
 
@@ -8,11 +9,13 @@ from click import Parameter
 
 
 class NotRequiredIf(click.Argument):
-    def __init__(self, *args, not_required_if: list[str], **kwargs) -> None:
+    def __init__(self, *args: Any, not_required_if: list[str], **kwargs: Any) -> None:
         self.not_required_if = not_required_if
         super().__init__(*args, **kwargs)
 
-    def handle_parse_result(self, ctx, opts, args) -> tuple[Any, list[str]]:
+    def handle_parse_result(
+        self, ctx: click.Context, opts: Mapping[str, Any], args: list[str]
+    ) -> tuple[Any, list[str]]:
         current_opt: bool = self.name in opts
 
         for not_required_opt in self.not_required_if:
@@ -24,11 +27,13 @@ class NotRequiredIf(click.Argument):
 
 
 class NotRequired(click.Option):
-    def __init__(self, *args, not_required: list[str], **kwargs) -> None:
+    def __init__(self, *args: Any, not_required: list[str], **kwargs: Any) -> None:
         self.not_required = not_required
         super().__init__(*args, **kwargs)
 
-    def handle_parse_result(self, ctx, opts, args) -> tuple[Any, list[str]]:
+    def handle_parse_result(
+        self, ctx: click.Context, opts: Mapping[str, Any], args: list[str]
+    ) -> tuple[Any, list[str]]:
         params = {p.name: p for p in ctx.command.get_params(ctx)}
         current_opt: bool = self.name in opts
 

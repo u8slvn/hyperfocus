@@ -253,7 +253,7 @@ class Markup:
 
         return tags
 
-    def _parse_markup(self, match: Match) -> str:
+    def _parse_markup(self, match: Match[str]) -> str:
         tags = self._resolve_style(match.group("style"))
         text = match.group("text")
         text = self.resolve(text)
@@ -266,7 +266,7 @@ class Markup:
         """
         return re.sub(self._re_markup, self._parse_markup, text)
 
-    def _remove_markup(self, match: Match) -> str:
+    def _remove_markup(self, match: Match[str]) -> str:
         text = match.group("text")
         text = self.remove(text)
 

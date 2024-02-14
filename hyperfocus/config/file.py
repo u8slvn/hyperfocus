@@ -23,7 +23,7 @@ class ConfigFile:
     def exists(self) -> bool:
         return self._path.exists()
 
-    def read(self) -> dict[str, dict]:
+    def read(self) -> dict[str, dict[str, Any]]:
         self._parser.read(self._path)
         config: dict[str, dict[str, Any]] = defaultdict(dict)
 
@@ -41,7 +41,7 @@ class ConfigFile:
 
         return config
 
-    def write(self, config: dict[str, dict]) -> None:
+    def write(self, config: dict[str, dict[str, Any]]) -> None:
         for section, items in config.items():
             self._parser[section] = items
 

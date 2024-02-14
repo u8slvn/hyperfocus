@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+from typing import cast
 
 import click
 
@@ -26,7 +27,7 @@ class TaskCommands:
     def __init__(self, session: Session) -> None:
         self.session = session
 
-    def show_tasks(self):
+    def show_tasks(self) -> None:
         tasks = self.session.daily_tracker.get_tasks()
 
         if not tasks:
@@ -37,7 +38,7 @@ class TaskCommands:
 
     def pick_task(self, prompt_text: str) -> int:
         self.show_tasks()
-        return prompt.prompt(prompt_text, type=click.INT)
+        return cast(int, prompt.prompt(prompt_text, type=click.INT))
 
     def get_task(self, task_id: int) -> Task:
         task = self.session.daily_tracker.get_task(task_id)
@@ -79,7 +80,7 @@ class TasksReviewer:
         self.session = session
 
     @staticmethod
-    def _get_unfinished_task(previous_day: DailyTracker):
+    def _get_unfinished_task(previous_day: DailyTracker) -> list[Task]:
         unfinished_tasks = []
         if previous_day and not previous_day.is_locked():
             finished_status = [TaskStatus.DELETED, TaskStatus.DONE]
@@ -87,10 +88,12 @@ class TasksReviewer:
 
         return unfinished_tasks
 
-    def show_review_reminder(self):
+    def show_review_reminder(self) -> None:
         previous_day = self.session.daily_tracker.get_previous_day()
-        unfinished_tasks = self._get_unfinished_task(previous_day)
+        if previous_day is None:
+            return
 
+        unfinished_tasks = self._get_unfinished_task(previous_day)
         if len(unfinished_tasks) > 0 and previous_day:
             printer.banner(
                 f"You have {len(unfinished_tasks)} unfinished task(s) from "
@@ -98,8 +101,11 @@ class TasksReviewer:
                 f"to review."
             )
 
-    def review_tasks(self):
+    def review_tasks(self) -> None:
         previous_day = self.session.daily_tracker.get_previous_day()
+        if previous_day is None:
+            return
+
         unfinished_tasks = self._get_unfinished_task(previous_day)
 
         if len(unfinished_tasks) > 0 and previous_day:

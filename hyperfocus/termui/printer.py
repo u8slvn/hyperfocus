@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import Generator
-from typing import cast
 
 import click
 
@@ -16,12 +15,12 @@ COLOR = True
 
 def echo(text: str | UIComponent, nl: bool = True) -> None:
     if isinstance(text, UIComponent):
-        text = cast(str, text.resolve())
+        text = text.resolve()
     click.echo(markup.resolve(text), nl=nl, color=COLOR)
 
 
-def pager_echo(text: Generator) -> None:
-    def echo(text: Generator) -> Generator[str, None, None]:
+def pager_echo(text: Generator[str, None, None]) -> None:
+    def echo(text: Generator[str, None, None]) -> Generator[str, None, None]:
         for line in text:
             yield markup.resolve(line)
 

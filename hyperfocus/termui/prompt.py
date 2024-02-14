@@ -12,7 +12,7 @@ from hyperfocus.termui.markup import markup
 _prompt_prefix = markup.resolve(f"[{style.SUCCESS}]{icons.PROMPT}[/]")
 
 
-def _prompt_suffix(choice: str):
+def _prompt_suffix(choice: str) -> str:
     return markup.resolve(f" [[{style.INFO}]{choice}[/]]: ")
 
 

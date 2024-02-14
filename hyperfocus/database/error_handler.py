@@ -10,9 +10,9 @@ import peewee
 from hyperfocus.database.exceptions import DatabaseError
 
 
-def db_error_handler(func: Callable) -> Callable:
+def db_error_handler(func: Callable[[Any, Any], Any]) -> Callable[[Any, Any], Any]:
     @functools.wraps(func)
-    def wrapper(*args, **kwargs) -> Any:
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         try:
             return func(*args, **kwargs)
         except peewee.DatabaseError as error:

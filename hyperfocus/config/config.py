@@ -8,6 +8,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 from typing import Generator
+from typing import cast
 
 from hyperfocus.config.exceptions import ConfigError
 from hyperfocus.config.exceptions import ConfigFileError
@@ -58,7 +59,7 @@ class Config:
         self._config.update(config)
 
     @property
-    def config(self) -> dict[str, dict]:
+    def config(self) -> dict[str, dict[str, Any]]:
         return self._config
 
     @property
@@ -101,9 +102,9 @@ class Config:
             options.update({f"{section}.{i}": v for i, v in settings.items()})
         return options
 
-    def __getitem__(self, option: str) -> str:
+    def __getitem__(self, option: str) -> Any:
         with self.secured_option(option=option) as opt:
-            return self._config[opt.section][opt.key]
+            return cast(str, self._config[opt.section][opt.key])
 
     def __setitem__(self, option: str, value: str) -> None:
         with self.secured_option(option=option) as opt:
@@ -120,7 +121,7 @@ class Config:
 
     @staticmethod
     @contextlib.contextmanager
-    def secured_option(option: str) -> Generator:
+    def secured_option(option: str) -> Generator[SimpleNamespace, None, None]:
         match = re.match(r"^(?P<section>[A-Za-z0-9]+).(?P<key>\w+)$", option)
         if match is None:
             raise ConfigError(f"Bad format config option '{option}'.")

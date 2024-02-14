@@ -5,6 +5,7 @@ import datetime
 from abc import ABC
 from abc import abstractmethod
 from typing import TYPE_CHECKING
+from typing import Any
 
 from hyperfocus.database.models import TaskStatus
 from hyperfocus.termui import formatter
@@ -75,7 +76,7 @@ class TasksTable(UIComponent):
         self._columns = [[h] for h in self._headers]
         self._alignments = ["right", "", "center"]
 
-    def _add_cells(self, *values) -> None:
+    def _add_cells(self, *values: Any) -> None:
         for i, value in enumerate(values):
             self._columns[i].append(value)
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime
 
 from typing import List
+from typing import cast
 
 from hyperfocus.database.models import Task
 from hyperfocus.database.models import TaskStatus
@@ -25,21 +26,21 @@ class DailyTracker:
 
     @property
     def date(self) -> datetime.date:
-        return self._working_day.date
+        return cast(datetime.date, self._working_day.date)
 
-    def is_a_new_day(self):
+    def is_a_new_day(self) -> bool | None:
         """
         Check if it is the first time that the CLI is called this day.
         """
         return self._new_day
 
-    def is_locked(self):
+    def is_locked(self) -> bool:
         """
         Check if the daily tracker is locked.
         """
-        return self._working_day.locked
+        return cast(bool, self._working_day.locked)
 
-    def locked(self):
+    def locked(self) -> None:
         """
         Locked the daily tracker. It is used to prevent modification on past
         working day.
@@ -84,7 +85,7 @@ class DailyTracker:
         )
         self._working_day.save()
 
-        return task
+        return cast(Task, task)
 
     def add_task(self, task: Task) -> Task:
         """
@@ -119,11 +120,16 @@ class DailyTracker:
         """
         Retrieve a task by id from the working day.
         """
-        return Task.get_or_none(
+        task = Task.get_or_none(
             Task.id == task_id, Task.working_day == self._working_day
         )
 
-    def get_tasks(self, exclude: list[TaskStatus] | None = None) -> List[Task]:
+        if task is not None:
+            return cast(Task, task)
+
+        return None
+
+    def get_tasks(self, exclude: list[TaskStatus] | None = None) -> list[Task]:
         """
         Get all tasks of the working day.
         """
@@ -133,7 +139,7 @@ class DailyTracker:
         query = query.where(Task.status.not_in(exclude))
         query = query.order_by(Task.id.asc())
 
-        return query.execute()
+        return cast(List[Task], query.execute())
 
     @staticmethod
     def delete_task(task: Task) -> None:

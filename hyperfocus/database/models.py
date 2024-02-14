@@ -5,6 +5,8 @@ import uuid
 
 from enum import IntEnum
 from enum import auto
+from typing import Any
+from typing import cast
 
 import peewee
 
@@ -20,7 +22,7 @@ class TaskStatus(IntEnum):
     DONE = auto()
 
 
-class BaseModel(peewee.Model):
+class BaseModel(peewee.Model):  # type: ignore
     class Meta:
         database = database()
 
@@ -32,7 +34,7 @@ class WorkingDay(BaseModel):
     locked = peewee.BooleanField(default=False)
 
     @property
-    def next_task_id(self):
+    def next_task_id(self) -> peewee.IntegerField:
         self.task_increment += 1
         return self.task_increment
 
@@ -53,10 +55,10 @@ class Task(BaseModel):
         table_name = "tasks"
         indexes = ((("uuid", "working_day"), True),)
 
-    def save(self, *args, **kwargs) -> Task:
+    def save(self, *args: Any, **kwargs: Any) -> Task:
         # Auto update 'updated_at' field at each save.
         self.updated_at = datetime.datetime.now()
-        return super(Task, self).save(*args, **kwargs)
+        return cast(Task, super(Task, self).save(*args, **kwargs))
 
 
 MODELS = [WorkingDay, Task]
