@@ -6,7 +6,6 @@ import click
 import pytest
 
 from freezegun import freeze_time
-
 from hyperfocus.config.config import Config
 from hyperfocus.services.daily_tracker import DailyTracker
 from hyperfocus.services.exceptions import SessionError

@@ -3,8 +3,8 @@ from __future__ import annotations
 import pytest
 
 from click.testing import CliRunner
-
 from hyperfocus.config.config import Config
+
 from tests.conftest import pytest_regex
 
 

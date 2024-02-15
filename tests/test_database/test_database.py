@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from peewee import Model
-
 from hyperfocus.database._database import Database
+from peewee import Model
 
 
 def test_database_with_models(test_dir):

@@ -3,7 +3,6 @@ from __future__ import annotations
 import click
 
 from click.testing import CliRunner
-
 from hyperfocus.console.core.group import DefaultCommandGroup
 
 
