@@ -20,7 +20,7 @@ class Markup:
     Limitation: Markup cannot be nested.
     """
 
-    _text_styles = [
+    _text_styles: list[str] = [
         "bold",
         "dim",
         "underline",
@@ -30,23 +30,25 @@ class Markup:
         "reverse",
         "strikethrough",
     ]
-    _ansi_colors = {
-        "black": 0,
-        "red": 1,
-        "green": 2,
-        "yellow": 3,
-        "blue": 4,
-        "magenta": 5,
-        "cyan": 6,
-        "white": 7,
-        "bright_black": 8,
-        "bright_red": 9,
-        "bright_green": 10,
-        "bright_yellow": 11,
-        "bright_blue": 12,
-        "bright_magenta": 13,
-        "bright_cyan": 14,
-        "bright_white": 15,
+    # Sixteen first ones are write in plain text in order to be compatible
+    # with colorama on Windows.
+    _ansi_colors: dict[str, str | int] = {
+        "black": "black",
+        "red": "red",
+        "green": "green",
+        "yellow": "yellow",
+        "blue": "blue",
+        "magenta": "magenta",
+        "cyan": "cyan",
+        "white": "white",
+        "bright_black": "bright_black",
+        "bright_red": "bright_red",
+        "bright_green": "bright_green",
+        "bright_yellow": "bright_yellow",
+        "bright_blue": "bright_blue",
+        "bright_magenta": "bright_magenta",
+        "bright_cyan": "bright_cyan",
+        "bright_white": "bright_white",
         "grey0": 16,
         "navy_blue": 17,
         "dark_blue": 18,
@@ -239,7 +241,7 @@ class Markup:
     _re_markup = re.compile(r"(\[(?P<style>[a-z][^[]*?)](?P<text>.[^[]*|.*)(\[/]))")
 
     def _resolve_style(self, style: str) -> Any:
-        tags: dict[str, int | None] = {}
+        tags: dict[str, int | str | None] = {}
 
         for tag in style.split(" "):
             if tag in self._text_styles:

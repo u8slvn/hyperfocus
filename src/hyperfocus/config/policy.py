@@ -58,18 +58,11 @@ class CorePolicy(ConfigPolicy):
                 raise ConfigError(
                     f"Config option '{self.option}' must be a valid path."
                 )
-        elif self.key == "force_color":
-            valid_values = ["True", "true", "1", "False", "false", "0"]
-            if value not in valid_values:
-                raise ConfigError(
-                    f"Config option {self.option} must be one of "
-                    f"the following value: {', '.join(valid_values)}."
-                )
         else:
             raise ConfigError(f"Unknown config option '{self.option}'.")
 
     def check_deletion(self) -> None:
-        if self.key in ["database", "force_color"]:
+        if self.key in ["database"]:
             raise ConfigError(
                 f"Deletion of config option '{self.option}' is forbidden."
             )
