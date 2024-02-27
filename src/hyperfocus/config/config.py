@@ -26,7 +26,6 @@ class Config:
     default_config: dict[str, dict[str, Any]] = {
         "core": {
             "database": "",
-            "force_color": False,
         },
         "alias": {},
     }
@@ -42,7 +41,7 @@ class Config:
     def __init__(self) -> None:
         self._config = deepcopy(self.default_config)
         config_path = self._build_config_path()
-        self._config_file = ConfigFile(config_path, model=self.default_config)
+        self._config_file = ConfigFile(config_path)
 
     @classmethod
     def _build_config_path(cls) -> Path:
@@ -75,7 +74,7 @@ class Config:
 
         if _loaded_config is None or reload:
             config_path = config_path or cls._build_config_path()
-            config_file = ConfigFile(config_path, model=cls.default_config)
+            config_file = ConfigFile(config_path)
             if not config_file.exists():
                 raise ConfigError(
                     "Config does not exist, please run init command first."

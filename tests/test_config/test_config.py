@@ -78,7 +78,6 @@ def test_update_config_options(mocker, fixtures_dir, test_dir):
     expected_config = {
         "core": {
             "database": str(test_dir / "new_config.ini"),
-            "force_color": True,
         },
         "alias": {
             "st": "test",
@@ -140,7 +139,6 @@ def test_delete_config_options(fixtures_dir):
     expected_config = {
         "core": {
             "database": "/test/database.sqlite",
-            "force_color": True,
         },
         "alias": {
             "del": "delete",

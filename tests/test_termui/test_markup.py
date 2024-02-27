@@ -9,8 +9,8 @@ from hyperfocus.termui.markup import markup
 @pytest.mark.parametrize(
     "markup_text, expected",
     [
-        ("[red]foo[/]", "\x1b[38;5;1mfoo\x1b[0m"),
-        ("[red]foo[/] [blue]bar[/]", "\x1b[38;5;1mfoo\x1b[0m \x1b[38;5;4mbar\x1b[0m"),
+        ("[red]foo[/]", "\x1b[31mfoo\x1b[0m"),
+        ("[red]foo[/] [blue]bar[/]", "\x1b[31mfoo\x1b[0m \x1b[34mbar\x1b[0m"),
     ],
 )
 def test_resolve_markup(markup_text, expected):
