@@ -30,4 +30,4 @@ class Hyperfocus(AliasGroup):
             self.add_command(command)
 
     def get_commands(self) -> list[str]:
-        return [command for command in self.commands.keys()]
+        return [command for command in self.commands]

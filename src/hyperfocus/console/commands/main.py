@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import sys
 
-from functools import partial
-
 import click
 
 from hyperfocus import __app_name__

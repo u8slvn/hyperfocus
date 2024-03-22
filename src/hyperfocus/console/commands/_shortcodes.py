@@ -108,15 +108,18 @@ class TasksReviewer:
 
         unfinished_tasks = self._get_unfinished_task(previous_day)
 
-        if len(unfinished_tasks) > 0 and previous_day:
-            if prompt.confirm(
+        if (
+            len(unfinished_tasks) > 0
+            and previous_day
+            and prompt.confirm(
                 f"Review [{style.INFO}]{len(unfinished_tasks)}[/] unfinished task(s) "
                 f"from {formatter.date(date=previous_day.date)}",
                 default=True,
-            ):
-                for task in unfinished_tasks:
-                    if prompt.confirm(f'Continue "[{style.INFO}]{task.title}[/]"'):
-                        self.session.daily_tracker.copy_task(task)
+            )
+        ):
+            for task in unfinished_tasks:
+                if prompt.confirm(f'Continue "[{style.INFO}]{task.title}[/]"'):
+                    self.session.daily_tracker.copy_task(task)
 
         if previous_day:
             previous_day.locked()

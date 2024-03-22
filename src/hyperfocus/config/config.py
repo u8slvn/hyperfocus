@@ -7,6 +7,7 @@ from copy import deepcopy
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
+from typing import ClassVar
 from typing import Generator
 from typing import cast
 
@@ -23,7 +24,7 @@ _loaded_config: Config | None = None
 
 
 class Config:
-    default_config: dict[str, dict[str, Any]] = {
+    default_config: ClassVar[dict[str, dict[str, Any]]] = {
         "core": {
             "database": "",
         },

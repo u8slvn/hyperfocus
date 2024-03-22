@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 
 from typing import Any
+from typing import ClassVar
 from typing import Match
 
 import click
@@ -20,7 +21,7 @@ class Markup:
     Limitation: Markup cannot be nested.
     """
 
-    _text_styles: list[str] = [
+    _text_styles: ClassVar[list[str]] = [
         "bold",
         "dim",
         "underline",
@@ -32,7 +33,7 @@ class Markup:
     ]
     # Sixteen first ones are write in plain text in order to be compatible
     # with colorama on Windows.
-    _ansi_colors: dict[str, str | int] = {
+    _ansi_colors: ClassVar[dict[str, str | int]] = {
         "black": "black",
         "red": "red",
         "green": "green",
