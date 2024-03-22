@@ -24,12 +24,12 @@ Example:
 .. code-block:: bash
     :caption: Add a simple task
 
-    $ hyf add "Call John Doe."
+    hyf add "Call John Doe."
 
 .. code-block:: bash
     :caption: Add a task with details
 
-    $ hyf add "Read the article about cats" -d
+    hyf add "Read the article about cats" -d
     >>> ? Task details: https://catsfunfacts.pet
 
 config
@@ -57,12 +57,12 @@ Example:
 .. code-block:: shell
     :caption: Add an alias del for command delete
 
-    $ hyf config alias.del delete
+    hyf config alias.del delete
 
 .. code-block:: shell
     :caption: Show the config
 
-    $ hyf config --list
+    hyf config --list
 
 copy
 ----
@@ -86,7 +86,7 @@ Example:
 .. code-block:: bash
     :caption: Copy details from task #3 into clipboard
 
-    $ hyf copy 3
+    hyf copy 3
 
 delete
 ------
@@ -111,27 +111,159 @@ Example:
 .. code-block:: bash
     :caption: Delete task #3.
 
-    $ hyf delete 3
+    hyf delete 3
+
+.. code-block:: bash
+    :caption: Delete tasks #3 and #4.
+
+    hyf delete 3 4
 
 .. code-block:: bash
     :caption: Hard delete task #3.
 
-    $ hyf delete 3 --force
+    hyf delete 3 --force
 
 init
 ----
 
+Initialize **Hyperfocus** config ad database. This command is mandatory if you want to be able to use **Hyperfocus***. It can also be used as a reset.
+
+Usage:
+
+.. code-block:: bash
+
+    $ hyf init [OPTIONS]
+
+Options:
+
+- ``-h``, ``help`` Command help.
+
+Example:
+
+.. code-block:: bash
+    :caption: Initialize Hyperfocus
+
+    hyf init
+
 log
 ---
+
+Show the whole tasks history.
+
+Usage:
+
+.. code-block:: bash
+
+    hyf log [OPTIONS]
+
+Options:
+
+- ``-h``, ``help`` Command help.
+
+Example:
+
+.. code-block:: bash
+    :caption: Add a simple task
+
+    $ hyf log
 
 reset
 -----
 
+Reset a task status. Reset task will be set to *TODO*.
+
+Usage:
+
+.. code-block:: bash
+
+    hyf reset [OPTIONS] <id>
+
+- **<id>** The id of the task you want to reset.
+
+Options:
+
+- ``-h``, ``help`` Command help.
+
+Example:
+
+.. code-block:: bash
+    :caption: Reset task #1
+
+    $ hyf reset 1
+
+.. code-block:: bash
+    :caption: Reset tasks #1 and #2
+
+    $ hyf reset 1 2
+
 show
 ----
+
+Show a task in detail with its history.
+
+Usage:
+
+.. code-block:: bash
+
+    hyf show [OPTIONS] <id>
+
+- **<id>** The id of the task you want to show.
+
+Options:
+
+- ``-h``, ``help`` Command help.
+
+Example:
+
+.. code-block:: bash
+    :caption: Show task #1 details and history.
+
+    $ hyf show
 
 stash
 -----
 
+Postpone a task by saving it in for later.
+
+apply
+^^^^^
+
+clear
+^^^^^
+
+list
+^^^^
+
+pop
+^^^
+
+push
+^^^^
+
 status
 ------
+
+Show **Hyperfocus** current working day status. The is the main command, it does the same than calling just `hyf`.
+
+Usage:
+
+.. code-block:: bash
+
+    hyf status
+
+Options:
+
+- ``-h``, ``help`` Command help.
+
+Example:
+
+.. code-block:: bash
+    :caption: Show working day status
+
+    $ hyf status
+
+
+.. code-block:: bash
+    :caption: Show working day status
+
+    $ hyf
