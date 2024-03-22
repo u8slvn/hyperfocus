@@ -6,7 +6,6 @@ import pytest
 
 from hyperfocus.config.exceptions import ConfigFileError
 from hyperfocus.config.file import ConfigFile
-
 from tests.conftest import pytest_regex
 
 

@@ -4,6 +4,7 @@ import pytest
 
 from click.testing import CliRunner
 from freezegun import freeze_time
+
 from hyperfocus.termui import icons
 
 

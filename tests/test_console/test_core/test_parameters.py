@@ -5,9 +5,9 @@ import re
 import click
 
 from click.testing import CliRunner
+
 from hyperfocus.console.core.parameters import NotRequired
 from hyperfocus.console.core.parameters import NotRequiredIf
-
 from tests.conftest import pytest_regex
 
 
