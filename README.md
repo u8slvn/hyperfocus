@@ -17,12 +17,21 @@
 
 ## Quickstart
 
-### Python Version
-
-HyperFocus supports Python 3.8 and newer.
-
 ### Installation
 
 ```bash
-$ pipx install hyperfocus --pip-args="--pre"
+pipx install hyperfocus
+```
+
+### Initialization
+
+```bash
+hyf init
+```
+
+### Usage
+
+```bash
+hyf add "My first task"
+hyf
 ```

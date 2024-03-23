@@ -19,7 +19,7 @@ Options:
 - ``-d``, ``--details``  Allows to add some details to the task.
 - ``-h``, ``help`` Command help.
 
-Example:
+Examples:
 
 .. code-block:: bash
     :caption: Add a simple task
@@ -35,7 +35,7 @@ Example:
 config
 ------
 
-Manage hyf configuration. It's currently used only to set up aliases, see the examples below.
+Manage hyf configuration. It's currently used to set up aliases only, see the examples below.
 
 Usage:
 
@@ -52,7 +52,7 @@ Options:
 - ``--list``  Show the whole config.
 - ``-h``, ``help`` Command help.
 
-Example:
+Examples:
 
 .. code-block:: shell
     :caption: Add an alias del for command delete
@@ -126,24 +126,17 @@ Example:
 init
 ----
 
-Initialize **Hyperfocus** config ad database. This command is mandatory if you want to be able to use **Hyperfocus***. It can also be used as a reset.
+Initialize **Hyperfocus** config and database. This command is mandatory if you want to be able to use **Hyperfocus**. It can also be used as a reset.
 
 Usage:
 
 .. code-block:: bash
 
-    $ hyf init [OPTIONS]
+    hyf init [OPTIONS]
 
 Options:
 
 - ``-h``, ``help`` Command help.
-
-Example:
-
-.. code-block:: bash
-    :caption: Initialize Hyperfocus
-
-    hyf init
 
 log
 ---
@@ -159,13 +152,6 @@ Usage:
 Options:
 
 - ``-h``, ``help`` Command help.
-
-Example:
-
-.. code-block:: bash
-    :caption: Add a simple task
-
-    $ hyf log
 
 reset
 -----
@@ -189,12 +175,12 @@ Example:
 .. code-block:: bash
     :caption: Reset task #1
 
-    $ hyf reset 1
+    hyf reset 1
 
 .. code-block:: bash
     :caption: Reset tasks #1 and #2
 
-    $ hyf reset 1 2
+    hyf reset 1 2
 
 show
 ----
@@ -218,32 +204,96 @@ Example:
 .. code-block:: bash
     :caption: Show task #1 details and history.
 
-    $ hyf show
+    hyf show
 
 stash
 -----
 
-Postpone a task by saving it in for later.
+Postpone a task by saving it for later.
 
 apply
 ^^^^^
 
+Pop all the stashed tasks to the current working day.
+
+Usage:
+
+.. code-block:: bash
+
+    hyf stash apply [OPTIONS]
+
+Options:
+
+- ``-h``, ``help`` Command help.
+
 clear
 ^^^^^
+
+Cleared the stashed tasks. All the removed tasks will be deleted.
+
+Usage:
+
+.. code-block:: bash
+
+    hyf stash clear [OPTIONS]
+
+Options:
+
+- ``-h``, ``help`` Command help.
 
 list
 ^^^^
 
+List all the stashed tasks.
+
+Usage:
+
+.. code-block:: bash
+
+    hyf stash list [OPTIONS]
+
+Options:
+
+- ``-h``, ``help`` Command help.
+
 pop
 ^^^
+
+Pop a stashed task into the current working day.
+
+Usage:
+
+.. code-block:: bash
+
+    hyf stash pop [OPTIONS] <id>
+
+- **<id>** The id of the stashed task you want to pop.
+
+Options:
+
+- ``-h``, ``help`` Command help.
 
 push
 ^^^^
 
+Push a task from the current working day into the stashed list.
+
+Usage:
+
+.. code-block:: bash
+
+    hyf stash pop [OPTIONS] <id>
+
+- **<id>** The id of the task you want to stash.
+
+Options:
+
+- ``-h``, ``help`` Command help.
+
 status
 ------
 
-Show **Hyperfocus** current working day status. The is the main command, it does the same than calling just `hyf`.
+Show **Hyperfocus** current working day status. The is the default command called when calling `hyf`.
 
 Usage:
 
@@ -260,10 +310,10 @@ Example:
 .. code-block:: bash
     :caption: Show working day status
 
-    $ hyf status
+    hyf status
 
 
 .. code-block:: bash
     :caption: Show working day status
 
-    $ hyf
+    hyf
