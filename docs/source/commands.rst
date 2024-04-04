@@ -211,8 +211,8 @@ stash
 
 Postpone a task by saving it for later.
 
-apply
-^^^^^
+stash apply
+^^^^^^^^^^^
 
 Pop all the stashed tasks to the current working day.
 
@@ -226,8 +226,8 @@ Options:
 
 - ``-h``, ``help`` Command help.
 
-clear
-^^^^^
+stash clear
+^^^^^^^^^^^
 
 Cleared the stashed tasks. All the removed tasks will be deleted.
 
@@ -241,8 +241,8 @@ Options:
 
 - ``-h``, ``help`` Command help.
 
-list
-^^^^
+stash list
+^^^^^^^^^^
 
 List all the stashed tasks.
 
@@ -256,8 +256,8 @@ Options:
 
 - ``-h``, ``help`` Command help.
 
-pop
-^^^
+stash pop
+^^^^^^^^^
 
 Pop a stashed task into the current working day.
 
@@ -273,8 +273,8 @@ Options:
 
 - ``-h``, ``help`` Command help.
 
-push
-^^^^
+stash push
+^^^^^^^^^^
 
 Push a task from the current working day into the stashed list.
 
@@ -308,12 +308,12 @@ Options:
 Example:
 
 .. code-block:: bash
-    :caption: Show working day status
+    :caption: Show current working day status
 
     hyf status
 
 
 .. code-block:: bash
-    :caption: Show working day status
+    :caption: Show current working day status
 
     hyf
