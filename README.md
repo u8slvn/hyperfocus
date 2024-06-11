@@ -15,23 +15,60 @@
 
 ---
 
-## Quickstart
+**HyperFocus** is a minimalist CLI daily tasks manager that helps you stay focused on your work by avoiding distraction.
+
+## 📜 Philosophy
+
+You won't anticipate further than your daily goal with **HyperFocus**. No tasks prepared for the next week or month, the workflow is designed around the idea that every day you will review your unfinished tasks from the past day and choose if you want to continue each task or not. Then you'll be able to prepare all your tasks for the day and update them to follow your work. The intention is really to don't overwhelm yourself and focus only on what you have prepared to do for you and only you.
+
+## 🚀 Quickstart
 
 ### Installation
+
+The library [pipx](https://pypa.github.io/pipx/) allows to install and run Python applications in isolated environments so it wont mess around with your local installed library versions by keeping your local machine clean even after an uninstallation.
 
 ```bash
 pipx install hyperfocus
 ```
 
+Test your installation:
+
+```bash
+hyf --version
+```
+
 ### Initialization
+
+In order to work properly, **HyperFocus** needs to initialize a database and a config file. Both are generated into your home, unless you specified another location.
 
 ```bash
 hyf init
 ```
 
-### Usage
+### Example Usage
+
+Add a new task:
 
 ```bash
-hyf add "My first task"
+hyf add "Implement the new super feature"
+```
+
+Add a new task with details:
+
+```bash
+hyf add "Read the great article about Python" -d "https://python-article.com"
+```
+
+Follow your daily tasks:
+
+```bash
+hyf status
+```
+
+or:
+
+```bash
 hyf
 ```
+
+Find more information about all the commands in the documentation: [hyperfocus.readthedocs.io](https://hyperfocus.readthedocs.io)
