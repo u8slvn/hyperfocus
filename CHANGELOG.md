@@ -7,32 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## Version 1.0.0-beta.0 (2023-07-17)
-
-### Fixed:
-
-* Log command must not show empty working days.
-
-## Version 1.0.0-alpha.2 (2022-09-14)
+## Version 1.0.0 (2024-06-12)
 
 ### Added:
 
 * Add `-h` option for help.
 * Add `log` command to show task log history.
-
-### Changed:
-
-* Improved global architecture.
-
-### Fixed:
-
-* Handle database connection errors.
-* Alias cannot overwrite other commands.
-
-## Version 1.0.0-alpha.1 (2022-08-16)
-
-### Added:
-
 * New style management with markup.
 * Colored design for `config --list`.
 * Add `stash` command group to manage tasks into stash box.
@@ -41,25 +21,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * Add `stash list` command.
   * Add `stash clear` command.
 * Add `--force` option to delete command to allow force deletion.
+* Add task details with history in `show` command.
+* Add progress bar to working day status.
+* Add security check preventing bad config deletion.
+* Commands `done`, `block`, `reset` and `delete` accept task id batches.
+* Force color option for Windows.
 
 ### Changed:
 
 * Improved global architecture.
 * New daily tasks progress bar style.
 * Tasks are now listed by task id.
+* Rework unfinished tasks review system.
+* Minor design modifications on `new day` and `unfinished tasks` events.
 
 ### Fixed:
 
+* Log command must not show empty working days.
+* Handle database connection errors.
+* Alias cannot overwrite other commands.
 * `hyf init` initialize the whole config path and create missing directory.
-
-## Version 1.0.0-alpha.0 (2022-07-17)
-
-* Add task details with history in `show` command.
-* Rework unfinished tasks review system.
-* Add progress bar to working day status.
-* Minor design modifications on `new day` and `unfinished tasks` events.
-* Add security check preventing bad config deletion.
-* Commands `done`, `block`, `reset` and `delete` accept task id batches.
 
 ## Version 0.2.1 (2022-07-12)
 
