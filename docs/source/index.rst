@@ -1,6 +1,6 @@
 .. rst-class:: hide-header
 
-HyperFocus: a minimalist daily task manager
+HyperFocus: a minimalist daily tasks manager
 ============================================
 
 .. include:: ../../README.md

@@ -35,7 +35,7 @@ Examples:
 config
 ------
 
-Manage hyf configuration. It's currently used to set up aliases only, see the examples below.
+Manage hyf configuration. It is currently exclusively meant to set up aliases, see the examples below.
 
 Usage:
 
@@ -91,7 +91,7 @@ Example:
 delete
 ------
 
-Delete a task from the current day. **Hyperfocus** uses soft deletion by default, if you want to formally remove a task you need to use the `--force` option.
+Delete one or more tasks from the current day. **Hyperfocus** uses soft deletion by default, if you are sure you want to remove a task, you need to use the `--force` option.
 
 Usage:
 
@@ -293,7 +293,7 @@ Options:
 status
 ------
 
-Show **Hyperfocus** current working day status. The is the default command called when calling `hyf`.
+Show **Hyperfocus** current working day status. This is the default command called when calling `hyf`.
 
 Usage:
 
