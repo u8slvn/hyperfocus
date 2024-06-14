@@ -27,10 +27,16 @@ Examples:
     hyf add "Call John Doe."
 
 .. code-block:: bash
-    :caption: Add a task with details
+    :caption: Add a task with a prompt for details
 
-    hyf add "Read the article about cats" -d
+    hyf add "Read the article about cats" -d -
     >>> ? Task details: https://catsfunfacts.pet
+
+.. code-block:: bash
+    :caption: Add a task with inline details
+
+    hyf add "Read the article about cats" -d "https://catsfunfacts.pet"
+
 
 config
 ------

@@ -11,7 +11,9 @@ from hyperfocus.termui.components import SuccessNotification
 
 @click.command(help="Add task to current working day")
 @click.argument("title", metavar="<title>", type=click.STRING)
-@click.option("-d", "--details", "details", default="", type=click.STRING, help="add task details")
+@click.option(
+    "-d", "--details", "details", default="", type=click.STRING, help="add task details"
+)
 def add(title: str, details: str) -> None:
     session = get_current_session()
 
