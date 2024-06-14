@@ -20,7 +20,7 @@ def test_copy(mocker, cli):
     assert result.output == "No tasks for today...\n"
 
     runner.invoke(cli, ["add", "foo"])
-    runner.invoke(cli, ["add", "bar", "-d"], input="foobar\n")
+    runner.invoke(cli, ["add", "bar", "-d", "foobar" ])
 
     result = runner.invoke(cli, ["copy"], input="1\n")
 
