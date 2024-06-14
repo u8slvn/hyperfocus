@@ -56,7 +56,8 @@ hyf add "Implement the new super feature"
 Add a new task with details:
 
 ```bash
-hyf add "Read the great article about Python" -d "https://python-article.com"
+hyf add "Read the great article about Python" -d
+>>> ? Task details: https://python-article.com
 ```
 
 Follow your daily tasks:

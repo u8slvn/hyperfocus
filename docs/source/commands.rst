@@ -17,7 +17,7 @@ Usage:
 Options:
 
 - ``-d``, ``--details``  Allows to add some details to the task.
-- ``-h``, ``help`` Command help.
+- ``-h``, ``--help`` Command help.
 
 Examples:
 
@@ -50,7 +50,7 @@ Options:
 
 - ``--unset`` Unset an option from the config.
 - ``--list``  Show the whole config.
-- ``-h``, ``help`` Command help.
+- ``-h``, ``--help`` Command help.
 
 Examples:
 
@@ -79,7 +79,7 @@ Usage:
 
 Options:
 
-- ``-h``, ``help`` Command help.
+- ``-h``, ``--help`` Command help.
 
 Example:
 
@@ -104,7 +104,7 @@ Usage:
 Options:
 
 - ``f``, ``--force`` Force a task deletion
-- ``-h``, ``help`` Command help.
+- ``-h``, ``--help`` Command help.
 
 Example:
 
@@ -136,7 +136,7 @@ Usage:
 
 Options:
 
-- ``-h``, ``help`` Command help.
+- ``-h``, ``--help`` Command help.
 
 log
 ---
@@ -151,7 +151,7 @@ Usage:
 
 Options:
 
-- ``-h``, ``help`` Command help.
+- ``-h``, ``--help`` Command help.
 
 reset
 -----
@@ -168,7 +168,7 @@ Usage:
 
 Options:
 
-- ``-h``, ``help`` Command help.
+- ``-h``, ``--help`` Command help.
 
 Example:
 
@@ -197,7 +197,7 @@ Usage:
 
 Options:
 
-- ``-h``, ``help`` Command help.
+- ``-h``, ``--help`` Command help.
 
 Example:
 
@@ -224,7 +224,7 @@ Usage:
 
 Options:
 
-- ``-h``, ``help`` Command help.
+- ``-h``, ``--help`` Command help.
 
 stash clear
 ^^^^^^^^^^^
@@ -239,7 +239,7 @@ Usage:
 
 Options:
 
-- ``-h``, ``help`` Command help.
+- ``-h``, ``--help`` Command help.
 
 stash list
 ^^^^^^^^^^
@@ -254,7 +254,7 @@ Usage:
 
 Options:
 
-- ``-h``, ``help`` Command help.
+- ``-h``, ``--help`` Command help.
 
 stash pop
 ^^^^^^^^^
@@ -271,7 +271,7 @@ Usage:
 
 Options:
 
-- ``-h``, ``help`` Command help.
+- ``-h``, ``--help`` Command help.
 
 stash push
 ^^^^^^^^^^
@@ -288,7 +288,7 @@ Usage:
 
 Options:
 
-- ``-h``, ``help`` Command help.
+- ``-h``, ``--help`` Command help.
 
 status
 ------
@@ -303,7 +303,7 @@ Usage:
 
 Options:
 
-- ``-h``, ``help`` Command help.
+- ``-h``, ``--help`` Command help.
 
 Example:
 
