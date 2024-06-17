@@ -37,7 +37,6 @@ Examples:
 
     hyf add "Read the article about cats" -d "https://catsfunfacts.pet"
 
-
 config
 ------
 
