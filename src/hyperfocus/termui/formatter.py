@@ -31,7 +31,7 @@ def task(task: Task, show_prefix: bool = False) -> str:
     return f"{prefix}{task_status(task.status)} {title}"
 
 
-def details(value: str | None) -> str:
+def task_details(value: str | None) -> str:
     """Format task details.
 
     If no details, return an ellipsis, if details contains a single line, otherwise
@@ -42,12 +42,13 @@ def details(value: str | None) -> str:
 
     lines = value.splitlines()
     if len(lines) > 1:
-        lines[0] = f"{icons.MULTILINES_DETAILS_START} {lines[0]}"
-        for i in range(1, len(lines) - 1):
-            lines[i] = f"{icons.MULTILINES_DETAILS_MIDDLE} {lines[i]}"
-        lines[-1] = f"{icons.MULTILINES_DETAILS_END} {lines[-1]}"
+        start, *middle, end = lines
 
-        return "\n" + "\n".join(lines)
+        start = f"{icons.MULTILINES_DETAILS_START} {start}"
+        middle = [f"{icons.MULTILINES_DETAILS_MIDDLE} {line}" for line in middle]
+        end = f"{icons.MULTILINES_DETAILS_END} {end}"
+
+        return "\n" + "\n".join([start, *middle, end])
     else:
         return value
 

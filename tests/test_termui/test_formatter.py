@@ -75,7 +75,7 @@ def test_task(kwargs, expected):
     ],
 )
 def test_format_details(value, expected):
-    formatted_details = formatter.details(value)
+    formatted_details = formatter.task_details(value)
 
     assert formatted_details == expected
 
