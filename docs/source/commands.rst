@@ -4,7 +4,7 @@
 add
 ---
 
-Add a task to the current working day.
+Add a task to the current working day. You can add a simple task or a task with details. If you want to add a task with details, you can use the `-d` option. If you want to add a task with multiple lines details, you can use the `-d -` option, **Hyperfocus** will open your default editor to write the details.
 
 Usage:
 
@@ -27,20 +27,19 @@ Examples:
     hyf add "Call John Doe."
 
 .. code-block:: bash
-    :caption: Add a task with a prompt for details
+    :caption: Add a task with details
 
-    hyf add "Read the article about cats" -d -
-    >>> ? Task details: https://catsfunfacts.pet
+    hyf add "Read an article about cats" -d "https://catsfunfacts.pet"
 
 .. code-block:: bash
-    :caption: Add a task with inline details
+    :caption: Add a task with multiple lines details
 
-    hyf add "Read the article about cats" -d "https://catsfunfacts.pet"
+    hyf add "Do something with a lot of details" -d -
 
 config
 ------
 
-Manage hyf configuration. It is currently exclusively meant to set up aliases, see the examples below.
+Manage **Hyperfocus** configuration. It is currently exclusively meant to set up aliases, see the examples below.
 
 Usage:
 
