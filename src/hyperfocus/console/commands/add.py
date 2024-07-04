@@ -5,7 +5,6 @@ import click
 from hyperfocus.services.session import get_current_session
 from hyperfocus.termui import formatter
 from hyperfocus.termui import printer
-from hyperfocus.termui import prompt
 from hyperfocus.termui.components import SuccessNotification
 
 
@@ -17,7 +16,7 @@ from hyperfocus.termui.components import SuccessNotification
 def add(title: str, details: str) -> None:
     session = get_current_session()
 
-    details_content = prompt.prompt("Task details") if details == "-" else details
+    details_content = click.edit() if details == "-" else details
 
     task = session.daily_tracker.create_task(title=title, details=details_content)
     printer.echo(

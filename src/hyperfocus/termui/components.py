@@ -43,7 +43,7 @@ class TaskDetails(UIComponent):
                 f"{TaskStatus(self._task.status).name.title()}"
             ),
             "Title": self._task.title,
-            "Details": self._task.details or "...",
+            "Details": formatter.details(self._task.details),
             "History": "",
         }
         full_details = []

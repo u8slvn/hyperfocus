@@ -31,6 +31,27 @@ def task(task: Task, show_prefix: bool = False) -> str:
     return f"{prefix}{task_status(task.status)} {title}"
 
 
+def details(value: str | None) -> str:
+    """Format task details.
+
+    If no details, return an ellipsis, if details contains a single line, otherwise
+    indent each line with an icon prefix and start with a newline.
+    """
+    if not value:
+        return icons.EMPTY_DETAILS
+
+    lines = value.splitlines()
+    if len(lines) > 1:
+        lines[0] = f"{icons.MULTILINES_DETAILS_START} {lines[0]}"
+        for i in range(1, len(lines) - 1):
+            lines[i] = f"{icons.MULTILINES_DETAILS_MIDDLE} {lines[i]}"
+        lines[-1] = f"{icons.MULTILINES_DETAILS_END} {lines[-1]}"
+
+        return "\n" + "\n".join(lines)
+    else:
+        return value
+
+
 def stashed_task(old_task_id: int, task: Task) -> str:
     # TODO: find a way to merge with classic task formatter.
     prefix = f"Task: #{old_task_id!s} "
