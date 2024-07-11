@@ -41,16 +41,17 @@ def task_details(value: str | None) -> str:
         return icons.EMPTY_DETAILS
 
     lines = value.splitlines()
-    if len(lines) > 1:
-        start, *middle, end = lines
 
-        start = f"{icons.MULTILINES_DETAILS_START} {start}"
-        middle = [f"{icons.MULTILINES_DETAILS_MIDDLE} {line}" for line in middle]
-        end = f"{icons.MULTILINES_DETAILS_END} {end}"
-
-        return "\n" + "\n".join([start, *middle, end])
-    else:
+    if len(lines) <= 1:
         return value
+
+    start, *middle, end = lines
+
+    start = f"{icons.MULTILINES_DETAILS_START} {start}"
+    middle = [f"{icons.MULTILINES_DETAILS_MIDDLE} {line}" for line in middle]
+    end = f"{icons.MULTILINES_DETAILS_END} {end}"
+
+    return "\n" + "\n".join([start, *middle, end])
 
 
 def stashed_task(old_task_id: int, task: Task) -> str:
