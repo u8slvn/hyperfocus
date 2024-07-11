@@ -51,6 +51,35 @@ def test_task(kwargs, expected):
     assert formatted_task == expected
 
 
+@pytest.mark.parametrize(
+    "value, expected",
+    [
+        (None, "..."),
+        ("", "..."),
+        ("foo", "foo"),
+        (
+            "foo\nbar",
+            (
+                f"\n{icons.MULTILINES_DETAILS_START} foo"
+                f"\n{icons.MULTILINES_DETAILS_END} bar"
+            ),
+        ),
+        (
+            "foo\nhello world\nbar",
+            (
+                f"\n{icons.MULTILINES_DETAILS_START} foo"
+                f"\n{icons.MULTILINES_DETAILS_MIDDLE} hello world"
+                f"\n{icons.MULTILINES_DETAILS_END} bar"
+            ),
+        ),
+    ],
+)
+def test_format_details(value, expected):
+    formatted_details = formatter.task_details(value)
+
+    assert formatted_details == expected
+
+
 def test_stashed_task():
     task = Task(id=3, title="foo", details="bar")
 

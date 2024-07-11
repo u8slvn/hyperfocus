@@ -35,12 +35,11 @@ def test_add_with_inline_details(cli):
 
 
 @pytest.mark.functional
-def test_add_with_stdin_details(cli):
+def test_add_with_multiple_lines_details(mocker, cli):
+    mocker.patch("click.edit", return_value="foo\nbar")
     result = runner.invoke(cli, ["add", "foo", "-d", "-"], input="bar\n")
 
     assert result.exit_code == 0
     assert result.output == (
-        f"{icons.PROMPT} Task details: bar\n"
-        f"{icons.SUCCESS}(success) "
-        f"Task: #1 {icons.TASK_STATUS} foo created\n"
+        f"{icons.SUCCESS}(success) " f"Task: #1 {icons.TASK_STATUS} foo created\n"
     )
