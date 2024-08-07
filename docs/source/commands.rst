@@ -17,6 +17,7 @@ Usage:
 Options:
 
 - ``-d``, ``--details``  Allows to add some details to the task.
+- ``-b``, ``--bulk`` Open the editor and allows to add multiple tasks at once by writing one title per line. Note that you won't be able to fill details with the bulk mode.
 - ``-h``, ``--help`` Command help.
 
 Examples:
@@ -35,6 +36,15 @@ Examples:
     :caption: Add a task with multiple lines details
 
     hyf add "Do something with a lot of details" -d -
+
+.. code-block:: bash
+    :caption: Add multiple tasks at once
+
+    hyf add --bulk
+
+    # In the editor write one task per line
+    Call John Doe
+    Read some articles about dogs
 
 config
 ------
