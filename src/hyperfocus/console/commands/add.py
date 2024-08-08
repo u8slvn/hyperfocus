@@ -7,6 +7,7 @@ from hyperfocus.console.core.parameters import NotRequiredIf
 from hyperfocus.services.session import get_current_session
 from hyperfocus.termui import formatter
 from hyperfocus.termui import printer
+from hyperfocus.termui import style
 from hyperfocus.termui.components import SuccessNotification
 
 
@@ -54,6 +55,6 @@ def add(title: str, details: str, bulk: bool) -> None:
         task = session.daily_tracker.create_task(title=title, details=details_content)
         printer.echo(
             SuccessNotification(
-                text=f"{formatter.task(task=task, show_prefix=True)} created",
+                text=f"{formatter.task(task=task, show_prefix=True)} [{style.INFO}]created[/]",
             )
         )
