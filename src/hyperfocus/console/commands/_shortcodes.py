@@ -60,7 +60,8 @@ class TaskCommands:
             if task.status == status.value:
                 printer.echo(
                     WarningNotification(
-                        f"{formatter.task(task=task, show_prefix=True)} unchanged."
+                        f"{formatter.task(task=task, show_prefix=True)} "
+                        f"[{style.INFO}]unchanged[/]."
                     )
                 )
                 continue
@@ -70,7 +71,8 @@ class TaskCommands:
             text_suffix = "reset" if status == TaskStatus.TODO else status.name.lower()
             printer.echo(
                 SuccessNotification(
-                    f"{formatter.task(task=task, show_prefix=True)} {text_suffix}."
+                    f"{formatter.task(task=task, show_prefix=True)} "
+                    f"[{style.INFO}]{text_suffix}[/]."
                 )
             )
 

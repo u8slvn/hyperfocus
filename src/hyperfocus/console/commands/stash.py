@@ -11,6 +11,7 @@ from hyperfocus.services.stash_box import StashBox
 from hyperfocus.termui import formatter
 from hyperfocus.termui import printer
 from hyperfocus.termui import prompt
+from hyperfocus.termui import style
 from hyperfocus.termui.components import SuccessNotification
 from hyperfocus.termui.components import TasksTable
 
@@ -44,7 +45,8 @@ def push(task_ids: tuple[int, ...] | None) -> None:
 
         printer.echo(
             SuccessNotification(
-                f"{formatter.stashed_task(task_id, task=task)} stashed."
+                f"{formatter.stashed_task(task_id, task=task)} "
+                f"[{style.INFO}]stashed[/]."
             )
         )
 
@@ -77,7 +79,8 @@ def pop(task_ids: tuple[int, ...] | None) -> None:
 
         printer.echo(
             SuccessNotification(
-                f"{formatter.stashed_task(task_id, task=task)} added from stash box."
+                f"{formatter.stashed_task(task_id, task=task)} "
+                f"[{style.INFO}]added from stash box[/]."
             )
         )
 

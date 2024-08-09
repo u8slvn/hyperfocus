@@ -7,6 +7,7 @@ from hyperfocus.database.models import TaskStatus
 from hyperfocus.services.session import get_current_session
 from hyperfocus.termui import formatter
 from hyperfocus.termui import printer
+from hyperfocus.termui import style
 from hyperfocus.termui.components import SuccessNotification
 
 
@@ -29,7 +30,8 @@ def delete(task_ids: tuple[int, ...], force: bool) -> None:
             task.status = TaskStatus.DELETED
             printer.echo(
                 SuccessNotification(
-                    f"{formatter.task(task=task, show_prefix=True)} force deleted."
+                    f"{formatter.task(task=task, show_prefix=True)} "
+                    f"[{style.INFO}]force deleted[/]."
                 )
             )
     else:
