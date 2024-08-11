@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## Version 1.1.0 (2024-08-11)
+
+### Added:
+
+* Add `--bulk` option for `add` command to add multiple tasks at once.
+
+### Changed:
+
+* Upgrade `add` command to accept inline task details. By @a-delannoy.
+* Improve `add` command to accept multiple line task details.
+* Colorized action in output message to improve readability.
+
 ## Version 1.0.0 (2024-06-12)
 
 ### Added:
