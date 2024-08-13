@@ -31,7 +31,7 @@ def edit(task_ids: tuple[int, ...], title: bool, details: bool) -> None:
     session = get_current_session()
     task_cmd = TaskCommands(session)
 
-    if not all([title, details]):
+    if not any([title, details]):
         title = details = True
 
     tasks = task_cmd.get_tasks(task_ids=task_ids, prompt_text="Edit task")
@@ -58,6 +58,6 @@ def edit(task_ids: tuple[int, ...], title: bool, details: bool) -> None:
         session.daily_tracker.update_task(task=task)
         printer.echo(
             SuccessNotification(
-                text=f"{formatter.task(task=task, show_prefix=True)} [{style.INFO}]edited[/]",
+                text=f"{formatter.task(task=task, show_prefix=True)} [{style.INFO}]edited[/].",
             )
         )
