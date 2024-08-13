@@ -137,6 +137,35 @@ Example:
 
     hyf delete 3 --force
 
+done
+----
+
+Mark a task as done from the current working day.
+
+Usage:
+
+.. code-block:: bash
+
+    hyf done [OPTIONS] <id>
+
+- **<id>** The id of the task you want to mark ad done. If you don't remember the id of the task, leave it empty, **Hyperfocus** will display you a little reminder.
+
+Options:
+
+- ``-h``, ``--help`` Command help.
+
+Example:
+
+.. code-block:: bash
+    :caption: Mark task #3 as done.
+
+    hyf done 3
+
+.. code-block:: bash
+    :caption: mark tasks #3 and #4 as done.
+
+    hyf done 3 4
+
 init
 ----
 
