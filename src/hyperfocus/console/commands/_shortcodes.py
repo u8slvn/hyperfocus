@@ -47,16 +47,20 @@ class TaskCommands:
 
         return task
 
-    def update_tasks(
-        self, task_ids: tuple[int, ...], status: TaskStatus, prompt_text: str
-    ) -> None:
+    def get_tasks(self, task_ids: tuple[int, ...], prompt_text: str) -> list[Task]:
         if not task_ids:
             task_id = self.pick_task(prompt_text=prompt_text)
             task_ids = (task_id,)
 
+        tasks = []
         for task_id in task_ids:
-            task = self.get_task(task_id=task_id)
+            task = self.get_task(task_id)
+            tasks.append(task)
 
+        return tasks
+
+    def update_tasks_status(self, tasks: list[Task], status: TaskStatus) -> None:
+        for task in tasks:
             if task.status == status.value:
                 printer.echo(
                     WarningNotification(
@@ -66,7 +70,8 @@ class TaskCommands:
                 )
                 continue
 
-            self.session.daily_tracker.update_task(task=task, status=status)
+            task.status = status
+            self.session.daily_tracker.update_task(task=task)
 
             text_suffix = "reset" if status == TaskStatus.TODO else status.name.lower()
             printer.echo(
