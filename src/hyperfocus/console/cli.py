@@ -5,6 +5,7 @@ from hyperfocus.console.commands.config import config
 from hyperfocus.console.commands.copy import copy
 from hyperfocus.console.commands.delete import delete
 from hyperfocus.console.commands.done import done
+from hyperfocus.console.commands.edit import edit
 from hyperfocus.console.commands.init import init
 from hyperfocus.console.commands.log import log
 from hyperfocus.console.commands.main import hyf
@@ -23,6 +24,7 @@ hyf.add_commands(
         copy,
         delete,
         done,
+        edit,
         init,
         log,
         reset,

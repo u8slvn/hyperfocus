@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 from typing import TYPE_CHECKING
 from typing import cast
 
@@ -24,6 +26,8 @@ if TYPE_CHECKING:
 
 
 class TaskCommands:
+    comment_line_re = r"^#.*\n?"
+
     def __init__(self, session: Session) -> None:
         self.session = session
 
@@ -80,6 +84,27 @@ class TaskCommands:
                     f"[{style.INFO}]{text_suffix}[/]."
                 )
             )
+
+    def edit_task(self, task: Task, field: str, splitlines: bool = False) -> bool:
+        """Edit task field.
+
+        Return a boolean indicating if the field has been edited.
+        """
+        assert hasattr(task, field), f"Task does not have field {field}"
+
+        comment = f"\n# Edit {field} of Task #{task.id}. Lines starting with '#' will be ignored.\n"
+        old_value = getattr(task, field)
+        new_value = click.edit(f"{old_value}{comment}")
+
+        if new_value is None:  # Do nothing if the field is unchanged
+            return False
+
+        new_value = re.sub(self.comment_line_re, "", new_value, flags=re.MULTILINE)
+        new_value = "".join(new_value.splitlines()) if splitlines else new_value
+        new_value = new_value.strip()
+
+        setattr(task, field, new_value)
+        return True
 
 
 class TasksReviewer:
