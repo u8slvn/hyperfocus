@@ -117,7 +117,7 @@ Usage:
 
 Options:
 
-- ``f``, ``--force`` Force a task deletion
+- ``-f``, ``--force`` Force a task deletion
 - ``-h``, ``--help`` Command help.
 
 Examples:
@@ -165,6 +165,42 @@ Examples:
     :caption: mark tasks #3 and #4 as done.
 
     hyf done 3 4
+
+edit
+----
+
+Edit a task from the current working day. You can edit the title and the details of a task. If you want to edit only one attribute, you can use `-t` option for the title or `-d` option for the details. Note that only the details can contains multiple lines, if you edit the title with multiple lines, line breaks will be automatically removed.
+
+Usage:
+
+.. code-block:: bash
+
+    hyf edit [OPTIONS] <id>
+
+- **<id>** The id of the task you want to edit. If you don't remember the id of the task, leave it empty, **Hyperfocus** will display you a little reminder.
+
+Options:
+
+- ``-t``, ``--title`` Edit the title of the task only.
+- ``-d``, ``--details`` Edit the details of the task only.
+- ``-h``, ``--help`` Command help.
+
+Example:
+
+.. code-block:: bash
+    :caption: Edit title and details for task #3.
+
+    hyf edit 3
+
+.. code-block:: bash
+    :caption: Edit title and details for task #3 and #4.
+
+    hyf edit 3 4
+
+.. code-block:: bash
+    :caption: Edit title only for task #3.
+
+    hyf edit --title 3
 
 init
 ----
