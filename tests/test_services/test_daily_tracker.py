@@ -90,11 +90,12 @@ def test_daily_tracker_service_get_tasks_with_exclude_status_filter(test_databas
 
 def test_daily_tracker_service_update_task(test_database):
     daily_tracker = DailyTracker.from_date(datetime.date(2022, 1, 5))
-    _task = daily_tracker.create_task(title="Test add task", details="Test add details")
+    task = daily_tracker.create_task(title="Test add task", details="Test add details")
+    task.status = TaskStatus.DONE
 
-    daily_tracker.update_task(task=_task, status=TaskStatus.DONE)
+    daily_tracker.update_task(task=task)
 
-    updated_task = daily_tracker.get_task(task_id=_task.id)
+    updated_task = daily_tracker.get_task(task_id=task.id)
     assert updated_task.status == TaskStatus.DONE
 
 

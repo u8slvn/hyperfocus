@@ -149,9 +149,8 @@ class DailyTracker:
         task.delete_instance()
 
     @staticmethod
-    def update_task(task: Task, status: TaskStatus) -> None:
+    def update_task(task: Task) -> None:
         """
         Persist an updated task.
         """
-        task.status = status
         task.save()
