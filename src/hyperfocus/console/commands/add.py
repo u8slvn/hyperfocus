@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import click
 
-from hyperfocus.console.core.parameters import NotRequired
-from hyperfocus.console.core.parameters import NotRequiredIf
+from hyperfocus.console.core.arguments import NotRequiredIf
+from hyperfocus.console.core.options import NotRequired
 from hyperfocus.services.session import get_current_session
 from hyperfocus.termui import formatter
 from hyperfocus.termui import printer
