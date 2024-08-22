@@ -120,7 +120,7 @@ Options:
 - ``f``, ``--force`` Force a task deletion
 - ``-h``, ``--help`` Command help.
 
-Example:
+Examples:
 
 .. code-block:: bash
     :caption: Delete task #3.
@@ -154,7 +154,7 @@ Options:
 
 - ``-h``, ``--help`` Command help.
 
-Example:
+Examples:
 
 .. code-block:: bash
     :caption: Mark task #3 as done.
@@ -213,7 +213,7 @@ Options:
 
 - ``-h``, ``--help`` Command help.
 
-Example:
+Examples:
 
 .. code-block:: bash
     :caption: Reset task #1
@@ -325,7 +325,7 @@ Usage:
 
 .. code-block:: bash
 
-    hyf stash pop [OPTIONS] <id>
+    hyf stash push [OPTIONS] <id>
 
 - **<id>** The id of the task you want to stash.
 
@@ -348,7 +348,7 @@ Options:
 
 - ``-h``, ``--help`` Command help.
 
-Example:
+Examples:
 
 .. code-block:: bash
     :caption: Show current working day status
