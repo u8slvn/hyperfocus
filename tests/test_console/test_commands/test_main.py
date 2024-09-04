@@ -37,6 +37,7 @@ def test_hyf(cli_new_day):
         runner.invoke(cli_new_day, ["add", "foo"])
         runner.invoke(cli_new_day, ["add", "bar"])
         runner.invoke(cli_new_day, ["add", "baz"])
+        runner.invoke(cli_new_day, ["add", "qux"])
         runner.invoke(cli_new_day, ["done", "3"])
 
         result = runner.invoke(cli_new_day, [])
@@ -48,9 +49,10 @@ def test_hyf(cli_new_day):
             "  1   ⬢ foo      □     \n"
             "  2   ⬢ bar      □     \n"
             "  3   ⬢ baz      □     \n"
+            "  4   ⬢ qux      □     \n"
             "\n"
-            f" {icons.TASK_STATUS} 33% [{icons.PROGRESSBAR * 10}"
-            f"{icons.PROGRESSBAR_EMPTY * 20}]\n"
+            f" {icons.TASK_STATUS} 25% [{icons.PROGRESSBAR * 8}"
+            f"{icons.PROGRESSBAR_EMPTY * 22}]\n"
             "\n"
         )
         assert result.exit_code == 0
@@ -61,23 +63,25 @@ def test_hyf(cli_new_day):
 
         expected = (
             "> ✨ Sun, 02 January 2022: A new day starts, good luck!\n"
-            "> You have 2 unfinished task(s) from Sat, 01 January 2022, run 'hyf' "
+            "> You have 3 unfinished task(s) from Sat, 01 January 2022, run 'hyf' "
             "to review.\n"
             "No tasks for today...\n"
         )
         assert result.exit_code == 0
         assert result.output == expected
 
-        result = runner.invoke(cli_new_day, [], input="y\ny\nn\n")
+        result = runner.invoke(cli_new_day, [], input="y\ny\nn\n\n")
 
         expected = (
-            "? Review 2 unfinished task(s) from Sat, 01 January 2022 [Y/n]: y\n"
-            '? Continue "foo" [y/n]: y\n'
-            '? Continue "bar" [y/n]: n\n'
+            "? Review 3 unfinished task(s) from Sat, 01 January 2022 [Y/n]: y\n"
+            '? Continue "foo" [Y/n]: y\n'
+            '? Continue "bar" [Y/n]: n\n'
+            '? Continue "qux" [Y/n]: \n'
             "\n"
             "  #   tasks   details  \n"
             " --------------------- \n"
             "  1   ⬢ foo      □     \n"
+            "  2   ⬢ qux      □     \n"
             "\n"
             f" {icons.TASK_STATUS} 0% [{icons.PROGRESSBAR_EMPTY * ProgressBar.width}]\n"
             "\n"

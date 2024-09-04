@@ -154,7 +154,9 @@ class TasksReviewer:
             )
         ):
             for task in unfinished_tasks:
-                if prompt.confirm(f'Continue "[{style.INFO}]{task.title}[/]"'):
+                if prompt.confirm(
+                    f'Continue "[{style.INFO}]{task.title}[/]"', default=True
+                ):
                     self.session.daily_tracker.copy_task(task)
 
         if previous_day:
