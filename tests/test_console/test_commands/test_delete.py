@@ -65,7 +65,7 @@ def test_force_delete(cli):
         " --------------------- \n"
         f"  1   {icons.TASK_STATUS} foo      {icons.NO_DETAILS}     \n"
         "\n"
-        f"{icons.PROMPT} Force delete task: 12\n"
+        f"{icons.PROMPT} Force delete task(s): 12\n"
         f"{icons.ERROR}(error) Task 12 does not exist.\n"
     )
 

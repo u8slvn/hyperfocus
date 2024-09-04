@@ -33,8 +33,7 @@ def push(task_ids: tuple[int, ...] | None) -> None:
     stash_box = StashBox(session.daily_tracker)
 
     if not task_ids:
-        task_id = task_cmd.pick_task(prompt_text="Stash task")
-        task_ids = (task_id,)
+        task_ids = task_cmd.pick_tasks(prompt_text="Stash task(s)")
 
     for task_id in task_ids:
         task = session.daily_tracker.get_task(task_id)

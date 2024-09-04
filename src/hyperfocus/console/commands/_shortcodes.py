@@ -7,6 +7,7 @@ from typing import cast
 
 import click
 
+from hyperfocus.console.core import parameters
 from hyperfocus.console.exceptions import HyperfocusExit
 from hyperfocus.console.exceptions import TaskError
 from hyperfocus.database.models import TaskStatus
@@ -44,6 +45,10 @@ class TaskCommands:
         self.show_tasks()
         return cast(int, prompt.prompt(prompt_text, type=click.INT))
 
+    def pick_tasks(self, prompt_text: str) -> tuple[int]:
+        self.show_tasks()
+        return tuple(prompt.prompt(prompt_text, type=parameters.INT_LIST))
+
     def get_task(self, task_id: int) -> Task:
         task = self.session.daily_tracker.get_task(task_id)
         if not task:
@@ -53,8 +58,7 @@ class TaskCommands:
 
     def get_tasks(self, task_ids: tuple[int, ...], prompt_text: str) -> list[Task]:
         if not task_ids:
-            task_id = self.pick_task(prompt_text=prompt_text)
-            task_ids = (task_id,)
+            task_ids = self.pick_tasks(prompt_text=prompt_text)
 
         tasks = []
         for task_id in task_ids:
