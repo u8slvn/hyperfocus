@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## Version 1.2.0 (2024-09-06)
+
+### Added:
+
+* Add `edit` command to edit task title and details.
+* Task ids prompt accept multiple ids separated by space, for `done`, `reset` and `delete` commands.
+
+### Changed:
+
+* Default response option while reviewing unfinished tasks is now `y`.
+
 ## Version 1.1.0 (2024-08-11)
 
 ### Added:
