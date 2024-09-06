@@ -34,7 +34,7 @@ def edit(task_ids: tuple[int, ...], title: bool, details: bool) -> None:
     if not any([title, details]):
         title = details = True
 
-    tasks = task_cmd.get_tasks(task_ids=task_ids, prompt_text="Edit task")
+    tasks = task_cmd.get_tasks(task_ids=task_ids, prompt_text="Edit task(s)")
     for task in tasks:
         edited = False  # Flag to check if task was edited
 

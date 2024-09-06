@@ -13,5 +13,5 @@ def reset(task_ids: tuple[int, ...]) -> None:
     session = get_current_session()
     task_cmd = TaskCommands(session)
 
-    tasks = task_cmd.get_tasks(task_ids=task_ids, prompt_text="Reset task")
+    tasks = task_cmd.get_tasks(task_ids=task_ids, prompt_text="Reset task(s)")
     task_cmd.update_tasks_status(tasks=tasks, status=TaskStatus.TODO)

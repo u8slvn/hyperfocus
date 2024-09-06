@@ -34,5 +34,5 @@ def delete(task_ids: tuple[int, ...], force: bool) -> None:
                 )
             )
     else:
-        tasks = task_cmd.get_tasks(task_ids=task_ids, prompt_text="Delete task")
+        tasks = task_cmd.get_tasks(task_ids=task_ids, prompt_text="Delete task(s)")
         task_cmd.update_tasks_status(tasks=tasks, status=TaskStatus.DELETED)

@@ -56,7 +56,7 @@ def test_edit(mock_click_edit, cli):
         " --------------------- \n"
         f"  1   {icons.TASK_STATUS} foo      {icons.NO_DETAILS}     \n"
         "\n"
-        f"{icons.PROMPT} Edit task: 12\n"
+        f"{icons.PROMPT} Edit task(s): 12\n"
         f"{icons.ERROR}(error) Task 12 does not exist.\n"
     )
     assert result.exit_code == 1
