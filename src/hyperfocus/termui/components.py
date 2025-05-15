@@ -82,7 +82,7 @@ class TasksTable(UIComponent):
 
     def resolve(self) -> str:
         for task in self._tasks:
-            details = icons.DETAILS if task.details else icons.NO_DETAILS
+            details = formatter.task_details_icon(task.details)
             self._add_cells(str(task.id), formatter.task(task), details)
 
         def col_len(text: str) -> int:

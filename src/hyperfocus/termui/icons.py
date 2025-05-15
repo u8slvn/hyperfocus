@@ -4,6 +4,7 @@ from __future__ import annotations
 NEW_DAY = "✨"
 DETAILS = "■"
 NO_DETAILS = "□"
+LINK = "🔗"
 TASK_STATUS = "⬢"
 LIST = "•"
 SUCCESS = "✔"

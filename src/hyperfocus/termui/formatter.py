@@ -9,6 +9,7 @@ from hyperfocus.database.models import TaskStatus
 from hyperfocus.services.history import History
 from hyperfocus.termui import icons
 from hyperfocus.termui import style
+from hyperfocus.utils import is_valid_url
 
 
 def date(date: datetime.date) -> str:
@@ -29,6 +30,16 @@ def task(task: Task, show_prefix: bool = False) -> str:
     prefix = f"Task: #{task.id!s} " if show_prefix else ""
 
     return f"{prefix}{task_status(task.status)} {title}"
+
+
+def task_details_icon(value: str | None) -> str:
+    if not value:
+        return icons.NO_DETAILS
+
+    if is_valid_url(value):
+        return f"[link={value}]{icons.LINK}[/]"
+
+    return icons.DETAILS
 
 
 def task_details(value: str | None) -> str:

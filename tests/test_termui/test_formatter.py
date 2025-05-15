@@ -54,6 +54,21 @@ def test_task(kwargs, expected):
 @pytest.mark.parametrize(
     "value, expected",
     [
+        (None, icons.NO_DETAILS),
+        ("", icons.NO_DETAILS),
+        ("foo", icons.DETAILS),
+        ("https://example.com", f"[link=https://example.com]{icons.LINK}[/]"),
+    ],
+)
+def test_task_details_icon(value, expected):
+    formatted_icon = formatter.task_details_icon(value)
+
+    assert formatted_icon == expected
+
+
+@pytest.mark.parametrize(
+    "value, expected",
+    [
         (None, "..."),
         ("", "..."),
         ("foo", "foo"),

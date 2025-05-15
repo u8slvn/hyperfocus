@@ -17,6 +17,7 @@ class Markup:
 
     Example:
         bold and red text: "[bold red]my text[/]"
+        link: "[link=https://example.com]example[/]"
 
     Limitation: Markup cannot be nested.
     """
@@ -239,7 +240,10 @@ class Markup:
         "grey89": 254,
         "grey93": 255,
     }
-    _re_markup = re.compile(r"(\[(?P<style>[a-z][^[]*?)](?P<text>.[^[]*|.*)(\[/]))")
+    # _re_markup = re.compile(r"(\[(?P<style>[a-z][^[]*?)](?P<text>.[^[]*|.*)(\[/]))")
+    _re_markup = re.compile(
+        r"(\[((?P<style>[a-z][^[=]*)|(?P<link>link=(?P<url>[^]]*)))](?P<text>.[^[]*|.*)(\[/]))"
+    )
 
     def _resolve_style(self, style: str) -> Any:
         tags: dict[str, int | str | None] = {}
@@ -257,6 +261,13 @@ class Markup:
         return tags
 
     def _parse_markup(self, match: Match[str]) -> str:
+        # Handle link markup
+        if match.group("link"):
+            url = match.group("url")
+            text = match.group("text")
+            return f"\033]8;;{url}\007{text}\033]8;;\007"
+
+        # Handle regular style markup
         tags = self._resolve_style(match.group("style"))
         text = match.group("text")
         text = self.resolve(text)
