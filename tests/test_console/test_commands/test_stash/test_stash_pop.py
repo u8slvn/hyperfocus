@@ -57,7 +57,7 @@ def test_stash_add_without_id(cli):
         "\n"
         "  #   tasks   details  \n"
         " --------------------- \n"
-        f"  1   {icons.TASK_STATUS} foo      {icons.NO_DETAILS}     \n"
+        f"  1   {icons.TASK_STATUS} foo     {icons.NO_DETAILS}    \n"
         "\n"
         "? Stash task: 1\n"
         "✔(success) Task: #1 ⬢ foo added from stash box.\n"

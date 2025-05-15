@@ -21,8 +21,8 @@ def test_stash_clear(cli):
         "\n"
         "  #   tasks   details  \n"
         " --------------------- \n"
-        f"  1   {icons.TASK_STATUS} foo      {icons.NO_DETAILS}     \n"
-        f"  2   {icons.TASK_STATUS} bar      {icons.NO_DETAILS}     \n"
+        f"  1   {icons.TASK_STATUS} foo     {icons.NO_DETAILS}    \n"
+        f"  2   {icons.TASK_STATUS} bar     {icons.NO_DETAILS}    \n"
         "\n"
     )
 
@@ -43,7 +43,7 @@ def test_stash_clear(cli):
         "\n"
         "  #   tasks      details  \n"
         " ------------------------ \n"
-        f"  3   {icons.TASK_STATUS} foobar      {icons.NO_DETAILS}     \n"
+        f"  3   {icons.TASK_STATUS} foobar     {icons.NO_DETAILS}    \n"
         "\n"
         " ⬢ 0% [▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯]\n"
         "\n"

@@ -25,7 +25,7 @@ def test_done(cli):
         "\n"
         "  #   tasks   details  \n"
         " --------------------- \n"
-        f"  1   {icons.TASK_STATUS} foo      {icons.NO_DETAILS}     \n"
+        f"  1   {icons.TASK_STATUS} foo     {icons.NO_DETAILS}    \n"
         "\n"
         f"{icons.PROMPT} Validate task(s): 12\n"
         f"{icons.ERROR}(error) Task 12 does not exist.\n"

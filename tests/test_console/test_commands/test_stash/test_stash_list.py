@@ -19,7 +19,7 @@ def test_stash_list(cli):
         "\n"
         "  #   tasks   details  \n"
         " --------------------- \n"
-        f"  1   {icons.TASK_STATUS} foo      {icons.NO_DETAILS}     \n"
+        f"  1   {icons.TASK_STATUS} foo     {icons.NO_DETAILS}    \n"
         "\n"
     )
 

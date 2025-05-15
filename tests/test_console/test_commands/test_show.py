@@ -28,7 +28,7 @@ def test_show(cli):
         "\n"
         "  #   tasks   details  \n"
         " --------------------- \n"
-        f"  1   {icons.TASK_STATUS} foo      {icons.NO_DETAILS}     \n"
+        f"  1   {icons.TASK_STATUS} foo     {icons.NO_DETAILS}    \n"
         "\n"
         f"{icons.PROMPT} Show task details: 2\n"
         f"{icons.ERROR}(error) "

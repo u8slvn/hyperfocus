@@ -101,6 +101,5 @@ markers = [
 ]
 testpaths = ["tests"]
 addopts = [
-    "--cov=src/hyperfocus/",
     "--import-mode=importlib",
 ]

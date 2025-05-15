@@ -30,8 +30,8 @@ def test_tasks_table(capsys):
         "\n"
         "  #   tasks   details  \n"
         " --------------------- \n"
-        f"  1   {icons.TASK_STATUS} foo      {icons.NO_DETAILS}     \n"
-        f"  1   {icons.TASK_STATUS} bar      {icons.DETAILS}     \n"
+        f"  1   {icons.TASK_STATUS} foo     {icons.NO_DETAILS}    \n"
+        f"  1   {icons.TASK_STATUS} bar     {icons.DETAILS}    \n"
         "\n"
     )
     captured = capsys.readouterr()
