@@ -16,6 +16,7 @@ def test_history(test_database):
     daily_tracker.create_task("task4")
     daily_tracker = DailyTracker.from_date(datetime.date(2022, 2, 3))
     history = History(daily_tracker)
+    history.batch_size = 2  # Set a smaller batch size for testing
 
     result = [data for data in history()]
 

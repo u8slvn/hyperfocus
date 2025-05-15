@@ -19,6 +19,7 @@ class History:
 
     def __init__(self, daily_tracker: DailyTracker) -> None:
         self.start = daily_tracker.date
+        self.batch_size = 100
 
     def __call__(self) -> Generator[tuple[bool, datetime.date | Task], None, None]:
         """
@@ -26,20 +27,29 @@ class History:
         the element is the last element of the list for the given date. This boolean
         is used later to manage pretty display.
         """
-        query = WorkingDay.select()
-        query = query.where(WorkingDay.date < self.start)
-        query = query.order_by(WorkingDay.date.desc())
-        previous_days = query.execute()
+        offset = 0
 
-        for previous_day in previous_days:
-            daily_tracker = DailyTracker(previous_day)
-            tasks = daily_tracker.get_tasks()
+        while True:
+            query = WorkingDay.select()
+            query = query.where(WorkingDay.date < self.start)
+            query = query.order_by(WorkingDay.date.desc())
+            query = query.limit(self.batch_size).offset(offset)
+            previous_days_batch = list(query.execute())
 
-            if not tasks:
-                continue
+            if not previous_days_batch:
+                break
 
-            yield False, previous_day.date
+            for previous_day in previous_days_batch:
+                daily_tracker = DailyTracker(previous_day)
+                tasks = daily_tracker.get_tasks()
 
-            for i, task in enumerate(tasks):
-                last_element = i == len(tasks) - 1
-                yield last_element, task
+                if not tasks:
+                    continue
+
+                yield False, previous_day.date
+
+                for i, task in enumerate(tasks):
+                    last_element = i == len(tasks) - 1
+                    yield last_element, task
+
+            offset += self.batch_size
