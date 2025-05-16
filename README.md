@@ -15,23 +15,47 @@
 
 ---
 
-**HyperFocus** is a minimalist CLI daily tasks manager that helps you stay focused on your work by avoiding distractions.
+**HyperFocus** is a minimalist CLI daily tasks manager designed to help you maintain focus by eliminating distractions. It emphasizes daily planning and intentional task management, helping you concentrate only on what matters today.
 
-## 📜 Philosophy
+## Features
 
-You won't anticipate more than your daily goal with **HyperFocus**. No tasks prepared for the next week or month. The workflow is designed around the idea that, on a daily basis, you will review each unfinished tasks from the past day and choose whether you want to add it to the daily tasks. You are then able to prepare all your tasks for the day and update them to follow your work. The intention is to avoid overwhelming yourself and focus only on what you have prepared to do, for you and only you.
+- **Daily focus**: Plan and manage tasks one day at a time
+- **Clean terminal UI**: Distraction-free interface with colorful, easy-to-read text formatting
+- **Task lifecycle management**: Create, update, complete, and review tasks
+- **Task details**: Add notes, links, and additional information to tasks
+- **Simple workflow**: Review yesterday's tasks and build today's plan
+- **Task stashing**: Temporarily set aside tasks that aren't relevant for today but might be needed later
 
-## 🚀 Quickstart
+## Philosophy
+
+HyperFocus doesn't let you plan weeks or months ahead. Instead, it follows a daily review cycle where you:
+
+1. Review unfinished tasks from the previous day
+2. Decide which tasks to carry forward to today
+3. Add new tasks for the current day
+4. Focus exclusively on your curated daily task list
+
+This approach prevents overwhelm and keeps you focused only on what you've committed to doing today.
+
+## Quickstart
 
 ### Installation
 
-The library [pipx](https://pypa.github.io/pipx/) allows to install and run Python applications in isolated environments so it does not mess around with your local installed library versions by keeping your local machine clean even after an uninstallation.
+#### Using pipx (recommended)
+
+[pipx](https://pypa.github.io/pipx/) installs and runs Python applications in isolated environments, keeping your system clean.
 
 ```bash
 pipx install hyperfocus
 ```
 
-Test your installation:
+#### Using pip
+
+```bash
+pip install hyperfocus
+```
+
+#### Verify Installation
 
 ```bash
 hyf --version
@@ -39,36 +63,63 @@ hyf --version
 
 ### Initialization
 
-In order to work properly, **HyperFocus** needs to initialize a database and a configuration file. Both are generated into your home directory, unless you specified another location.
+HyperFocus needs to initialize a database and configuration file in your home directory:
 
 ```bash
 hyf init
 ```
 
-### Example Usage
+## Usage Examples
 
-Add a new task:
+### Basic Task Management
 
 ```bash
+# Add a new task
 hyf add "Implement the new super feature"
-```
 
-Add a new task with details:
+# Add a task with details
+hyf add "Read article about Python" -d "https://python-article.com"
 
-```bash
-hyf add "Read the great article about Python" -d "https://python-article.com"
-```
-
-Follow your daily tasks:
-
-```bash
+# View your daily tasks, each task has a unique ID
 hyf status
+
+# Complete a task
+hyf done 1
 ```
 
-or:
+### Additional Commands
 
 ```bash
-hyf
+# Show task details
+hyf show 2
+
+# Edit a task
+hyf edit 2 --title "Read article about Python 3"
+
+# Copy task details to clipboard
+hyf copy 2
+
+# Delete a task
+hyf delete 2
+
+# Hard delete a task (permanently)
+hyf delete 2 --hard
+
+# Previous day's tasks
+hyf log
+```
+
+### Stash Tasks
+
+```bash
+# Stash a task for later
+hyf stash 2
+
+# View your stashed tasks
+hyf stash list
+
+# Restore a stashed task to today
+hyf stash pop 1
 ```
 
 Find more information about all the commands in the documentation: [hyperfocus.readthedocs.io](https://hyperfocus.readthedocs.io)
