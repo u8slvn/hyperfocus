@@ -27,19 +27,32 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install poetry
-        poetry install
+    - name: Install poetry
+      run: curl -sSL https://install.python-poetry.org | python - -y
 
-    - name: Check lint
+    - name: Update poetry path for Unix systems
+      if: matrix.os != 'windows'
+      run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+    - name: Update poetry path for Windows
+      if: matrix.os == 'windows'
+      run: echo "$APPDATA\Python\Scripts" >> $GITHUB_PATH
+
+    - name: Configure poetry
+      run: poetry config virtualenvs.in-project true
+
+    - name: Install dependencies
+      shell: bash
+      run: poetry install
+
+    - name: Check quality
       run: |
-        poetry run make lint
+        poetry run pre-commit run --all-files
 
     - name: Check tests
       run: |
-        poetry run make test
+        poetry run pytest tests/ --cov=src
+        poetry run mypy
 
     - name: Publish coverage
       env:
