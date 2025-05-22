@@ -28,14 +28,7 @@
 
 ## Philosophy
 
-HyperFocus doesn't let you plan weeks or months ahead. Instead, it follows a daily review cycle where you:
-
-1. Review unfinished tasks from the previous day
-2. Decide which tasks to carry forward to today
-3. Add new tasks for the current day
-4. Focus exclusively on your curated daily task list
-
-This approach prevents overwhelm and keeps you focused only on what you've committed to doing today.
+**HyperFocus** embraces the principle that productivity comes from intentional constraint rather than endless possibility. By deliberately limiting your planning horizon to a single day, it eliminates the anxiety of long-term task accumulation and the paralysis that comes from seeing an overwhelming future workload. This philosophy recognizes that meaningful progress happens through consistent daily action, not through elaborate multi-week planning that often becomes outdated or ignored.
 
 ## Quickstart
 
