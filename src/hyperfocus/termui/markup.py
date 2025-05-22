@@ -255,8 +255,8 @@ class Markup:
 
             try:
                 tags.update({"fg": self._ansi_colors[tag]})
-            except KeyError:
-                raise TermUIError(f"Unknown markup tag {tag}.")
+            except KeyError as error:
+                raise TermUIError(f"Unknown markup tag {tag}.") from error
 
         return tags
 

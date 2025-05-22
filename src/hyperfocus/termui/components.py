@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import datetime
-
 from abc import ABC
 from abc import abstractmethod
 from typing import TYPE_CHECKING
@@ -16,6 +14,8 @@ from hyperfocus.termui.markup import markup
 
 
 if TYPE_CHECKING:
+    import datetime
+
     from hyperfocus.database.models import Task
 
 

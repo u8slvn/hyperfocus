@@ -2,14 +2,18 @@ from __future__ import annotations
 
 import datetime
 
+from typing import TYPE_CHECKING
 from typing import Generator
 
 from hyperfocus.database.models import Task
 from hyperfocus.database.models import TaskStatus
-from hyperfocus.services.history import History
 from hyperfocus.termui import icons
 from hyperfocus.termui import style
 from hyperfocus.utils import is_valid_url
+
+
+if TYPE_CHECKING:
+    from hyperfocus.services.history import History
 
 
 def date(date: datetime.date) -> str:

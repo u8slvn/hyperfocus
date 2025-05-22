@@ -16,10 +16,11 @@ def db_error_handler(func: Callable[[Any, Any], Any]) -> Callable[[Any, Any], An
         try:
             return func(*args, **kwargs)
         except peewee.DatabaseError as error:
+            error_message = f"Unexpected database error: {error}"
             if "no such table" in str(error):
-                raise DatabaseError(
+                error_message = (
                     "Database not initialized, please run init command first"
                 )
-            raise DatabaseError(f"Unexpected database error: {error}")
+            raise DatabaseError(error_message) from error
 
     return wrapper

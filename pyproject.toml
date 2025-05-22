@@ -54,20 +54,29 @@ line_length = 88
 fix = true
 line-length = 88
 src = ["src"]
-target-version = "py311"
+target-version = "py39"
 
 [tool.ruff.lint]
 select = [
+    "B",   # flake8-bugbear
+    "E",   # pycodestyle errors
     "F",   # pyflakes
     "I",   # isort
     "N",   # pep8-naming
+    "PLW", # pylint - warning
     "RUF", # ruff checks
+    "T20", # flake8-print
+    "TCH", # flake8-type-checking
     "TID", # flake8-tidy-imports
     "SIM", # flake8-simplify
+    "YTT", # flake8-2020
 ]
 
 [tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "all"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["E501"]
 
 [tool.ruff.format]
 quote-style = "double"

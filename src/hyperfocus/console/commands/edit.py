@@ -58,6 +58,9 @@ def edit(task_ids: tuple[int, ...], title: bool, details: bool) -> None:
         session.daily_tracker.update_task(task=task)
         printer.echo(
             SuccessNotification(
-                text=f"{formatter.task(task=task, show_prefix=True)} [{style.INFO}]edited[/].",
+                text=(
+                    f"{formatter.task(task=task, show_prefix=True)} "
+                    f"[{style.INFO}]edited[/]."
+                )
             )
         )

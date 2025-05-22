@@ -96,7 +96,10 @@ class TaskCommands:
         """
         assert hasattr(task, field), f"Task does not have field {field}"
 
-        comment = f"\n# Edit {field} of Task #{task.id}. Lines starting with '#' will be ignored.\n"
+        comment = (
+            f"\n# Edit {field} of Task #{task.id}. "
+            f"Lines starting with '#' will be ignored.\n"
+        )
         old_value = getattr(task, field)
         new_value = click.edit(f"{old_value}{comment}")
 

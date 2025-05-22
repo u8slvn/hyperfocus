@@ -1,9 +1,14 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from hyperfocus.database.models import Task
 from hyperfocus.database.models import TaskStatus
-from hyperfocus.services.daily_tracker import DailyTracker
 from hyperfocus.services.exceptions import StashBoxError
+
+
+if TYPE_CHECKING:
+    from hyperfocus.services.daily_tracker import DailyTracker
 
 
 class StashBox:
@@ -51,8 +56,10 @@ class StashBox:
         tasks = self.get_tasks()
         try:
             task = tasks[task_id - 1]
-        except IndexError:
-            raise StashBoxError(f"Task {task_id} does not exist in stash box.")
+        except IndexError as error:
+            raise StashBoxError(
+                f"Task {task_id} does not exist in stash box."
+            ) from error
 
         self._daily_tracker.add_task(task)
 

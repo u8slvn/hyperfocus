@@ -60,12 +60,12 @@ def hyf_error_handler(func: Callable[[Any, Any], Any]) -> Callable[[Any, Any], A
             return func(*args, **kwargs)
         except HyperfocusError as error:
             printer.echo(ErrorNotification(text=error.message))
-            raise HyperfocusExit(error.exit_code)
+            raise HyperfocusExit(error.exit_code) from error
         except click.ClickException as error:
             hyf_error = HyfClickAdapterError.adapt_from(error)
             if hyf_error.msg_prefix:
                 printer.echo(hyf_error.msg_prefix)
             printer.echo(ErrorNotification(text=hyf_error.message))
-            raise HyperfocusExit(error.exit_code)
+            raise HyperfocusExit(error.exit_code) from error
 
     return wrapper

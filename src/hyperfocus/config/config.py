@@ -4,8 +4,8 @@ import contextlib
 import re
 
 from copy import deepcopy
-from pathlib import Path
 from types import SimpleNamespace
+from typing import TYPE_CHECKING
 from typing import Any
 from typing import ClassVar
 from typing import Generator
@@ -18,6 +18,10 @@ from hyperfocus.config.policy import AliasPolicy
 from hyperfocus.config.policy import ConfigPolicies
 from hyperfocus.config.policy import CorePolicy
 from hyperfocus.locations import CONFIG_DIR
+
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 _loaded_config: Config | None = None
@@ -53,7 +57,9 @@ class Config:
         try:
             cls._dir.mkdir(parents=True, exist_ok=True)
         except OSError as error:
-            raise ConfigError(f"Configuration folder creation failed: {error}")
+            raise ConfigError(
+                f"Configuration folder creation failed: {error}"
+            ) from error
 
     def merge(self, config: dict[str, Any]) -> None:
         self._config.update(config)
@@ -71,7 +77,7 @@ class Config:
 
     @classmethod
     def load(cls, config_path: Path | None = None, reload: bool = False) -> Config:
-        global _loaded_config
+        global _loaded_config  # noqa: PLW0603
 
         if _loaded_config is None or reload:
             config_path = config_path or cls._build_config_path()
@@ -93,7 +99,7 @@ class Config:
         except ConfigFileError as error:
             raise ConfigError(
                 f"Saving config to {self._config_file.path} failed: {error}."
-            )
+            ) from error
 
     @property
     def options(self) -> dict[str, str]:
@@ -128,5 +134,5 @@ class Config:
 
         try:
             yield SimpleNamespace(**match.groupdict())
-        except KeyError:
-            raise ConfigError(f"Variable '{option}' does not exist.")
+        except KeyError as error:
+            raise ConfigError(f"Variable '{option}' does not exist.") from error
